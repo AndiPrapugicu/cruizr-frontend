@@ -1,5 +1,5 @@
 // src/pages/RevMatch.tsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../services/api";
 import { FaStar, FaCar } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";

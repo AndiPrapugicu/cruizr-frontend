@@ -120,8 +120,8 @@ export default function Nearby() {
     activateBoost,
     sendSuperLike,
     revealLikes,
-    rewindLastSwipe,
-    refreshActiveFeatures,
+    // rewindLastSwipe,
+    // refreshActiveFeatures,
     clearError,
   } = usePowerUps();
 

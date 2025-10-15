@@ -18,6 +18,14 @@ interface BlockedUser {
   imageUrl?: string;
 }
 
+interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+
 export default function Settings() {
   const navigate = useNavigate();
 
@@ -68,15 +76,15 @@ export default function Settings() {
   // ===== 5. STATE PENTRU UTILIZATORII BLOCAȚI =====
   const [blockedUsers, setBlockedUsers] = useState<BlockedUser[]>([]);
   const [loadingBlocked, setLoadingBlocked] = useState(true);
-  const [blockedError, setBlockedError] = useState("");
+  // const [blockedError, setBlockedError] = useState("");
 
   // ===== 6. DARK MODE & LIMBĂ =====
-  const [darkMode, setDarkMode] = useState(
-    () => localStorage.getItem("darkMode") === "true"
-  );
-  const [language, setLanguage] = useState(
-    () => localStorage.getItem("language") || "ro"
-  );
+  // const [darkMode, setDarkMode] = useState(
+  //   () => localStorage.getItem("darkMode") === "true"
+  // );
+  // const [language, setLanguage] = useState(
+  //   () => localStorage.getItem("language") || "ro"
+  // );
 
   // ==== FETCH NOTIF & BLOCAȚI ON-MOUNT ====
   useEffect(() => {
@@ -103,7 +111,7 @@ export default function Settings() {
         setBlockedUsers(resBlocked.data);
       } catch (err) {
         console.warn("Eroare la încărcarea blocked users:", err);
-        setBlockedError("Could not load blocked list.");
+        // setBlockedError("Could not load blocked list.");
       } finally {
         setLoadingBlocked(false);
       }
@@ -124,8 +132,10 @@ export default function Settings() {
       setUserData((u) => (u ? { ...u, email: newEmail } : u));
       setNewEmail("");
       alert("Email updated successfully.");
-    } catch (err: any) {
-      setAccountError(err.response?.data?.message || "Error updating email.");
+    } catch (err) {
+      setAccountError(
+        (err as ApiError).response?.data?.message || "Error updating email."
+      );
     }
   };
 
@@ -150,9 +160,9 @@ export default function Settings() {
       setNewPassword("");
       setConfirmPassword("");
       alert("Password changed successfully.");
-    } catch (err: any) {
+    } catch (err) {
       setAccountError(
-        err.response?.data?.message || "Error changing password."
+        (err as ApiError).response?.data?.message || "Error changing password."
       );
     }
   };
@@ -172,7 +182,7 @@ export default function Settings() {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       navigate("/"); // or any other public page
-    } catch (err) {
+    } catch {
       alert("Error deleting account. Try again.");
     }
   };
@@ -202,8 +212,10 @@ export default function Settings() {
         preferredCarBrand: prefCarBrand,
       });
       alert("Preferences saved successfully.");
-    } catch (err: any) {
-      setPrefsError(err.response?.data?.message || "Error saving preferences.");
+    } catch (err) {
+      setPrefsError(
+        (err as ApiError).response?.data?.message || "Error saving preferences."
+      );
     }
   };
 
@@ -218,9 +230,9 @@ export default function Settings() {
         messages: notifyMessages,
       });
       alert("Notification settings saved.");
-    } catch (err: any) {
+    } catch (err) {
       setNotifError(
-        err.response?.data?.message || "Error saving notifications."
+        (err as ApiError).response?.data?.message || "Error saving notifications."
       );
     }
   };
@@ -236,20 +248,20 @@ export default function Settings() {
   };
 
   // 7) Toggle dark mode
-  const toggleDarkMode = () => {
-    const newVal = !darkMode;
-    setDarkMode(newVal);
-    localStorage.setItem("darkMode", newVal.toString());
-    document.documentElement.classList.toggle("dark", newVal);
-  };
+  // const toggleDarkMode = () => {
+  //   const newVal = !darkMode;
+  //   setDarkMode(newVal);
+  //   localStorage.setItem("darkMode", newVal.toString());
+  //   document.documentElement.classList.toggle("dark", newVal);
+  // };
 
   // 8) Schimbă limbă
-  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newLang = e.target.value;
-    setLanguage(newLang);
-    localStorage.setItem("language", newLang);
-    // eventual rerender/refresh text
-  };
+  // const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const newLang = e.target.value;
+  //   setLanguage(newLang);
+  //   localStorage.setItem("language", newLang);
+  //   // eventual rerender/refresh text
+  // };
 
   // ===== RENDER PRINCIPAL =====
   if (loadingUser) {
