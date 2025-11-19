@@ -41,9 +41,6 @@ const MiniStore: React.FC<MiniStoreProps> = ({ visible, onClose }) => {
       return [];
     }
 
-    // Log all unique types to see what we have
-    const uniqueTypes = [...new Set(storeItems.map((item) => item.type))];
-
     const categories = ["boost", "super_like", "profile_frame", "rewind"];
     const featured: StoreItem[] = [];
 

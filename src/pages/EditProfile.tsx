@@ -6,7 +6,6 @@ import {
   FaArrowLeft,
   FaSave,
   FaUser,
-  FaMapMarkerAlt,
   FaHeart,
   FaCamera,
   FaPlus,

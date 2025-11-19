@@ -1,11 +1,88 @@
-# React + TypeScript + Vite
+# Auto-Match Frontend (Cruizr)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Car dating app frontend built with React, TypeScript, and Vite.
 
-Currently, two official plugins are available:
+## 🚀 Getting Started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Prerequisites
+
+- Node.js (v16 or higher)
+- npm or yarn
+- Backend API running on `http://localhost:3000` (or configure `VITE_API_URL`)
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/AndiPrapugicu/cruizr-frontend.git
+   cd auto-match-frontend
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment variables**
+   
+   Copy the example environment file:
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Then edit `.env` and add your configuration:
+   ```env
+   VITE_API_URL=http://localhost:3000
+   VITE_STRIPE_PUBLISHABLE_KEY=pk_test_your_key_here
+   ```
+   
+   ⚠️ **Important:** Never commit your `.env` file! It's already in `.gitignore`.
+
+4. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+   The app will be available at `http://localhost:5173`
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+The built files will be in the `dist/` directory.
+
+## 📁 Project Structure
+
+```
+src/
+├── components/       # Reusable UI components
+│   ├── onboarding/  # Onboarding flow components
+│   └── ...
+├── pages/           # Page components
+├── contexts/        # React contexts (Auth, Notifications, etc.)
+├── hooks/           # Custom React hooks
+├── services/        # API services
+├── types/           # TypeScript type definitions
+└── assets/          # Static assets
+```
+
+## 🔒 Security
+
+- All sensitive data (API keys, tokens) are stored in `.env` files
+- `.env` files are **NOT** committed to the repository
+- Use `.env.example` as a template for required environment variables
+
+## 🛠️ Tech Stack
+
+- **React** - UI library
+- **TypeScript** - Type safety
+- **Vite** - Build tool and dev server
+- **Tailwind CSS** - Styling
+- **Framer Motion** - Animations
+- **React Router** - Routing
+- **Socket.io** - Real-time features
 
 ## Expanding the ESLint configuration
 

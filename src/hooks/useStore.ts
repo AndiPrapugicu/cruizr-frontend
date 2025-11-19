@@ -3,7 +3,6 @@ import { storeService } from "../services/store";
 import {
   paymentService,
   PaymentMethod,
-  PaymentResult,
 } from "../services/paymentService";
 import { StoreItem, UserInventory } from "../types";
 
@@ -206,7 +205,7 @@ export const useStore = (userId?: number) => {
   // Get item quantity
   const getItemQuantity = (itemId: string) => {
     const inventoryItem = userInventory.find((item) => item.itemId === itemId);
-    return inventoryItem?.usesRemaining || inventoryItem?.quantity || 0;
+    return inventoryItem?.usesRemaining || 0;
   };
 
   // Get active items

@@ -5,7 +5,6 @@ import {
   FaCar,
   FaUpload,
   FaTrash,
-  FaPlus,
   FaCheck,
 } from "react-icons/fa";
 import api from "../services/api";
@@ -121,7 +120,6 @@ export default function AddCarModal({ onClose, onCarAdded }: AddCarModalProps) {
   });
   const [carPhotos, setCarPhotos] = useState<File[]>([]);
   const [photoPreview, setPhotoPreview] = useState<string[]>([]);
-  const [newMod, setNewMod] = useState("");
 
   const handleInputChange = (
     field: string,
@@ -155,23 +153,6 @@ export default function AddCarModal({ onClose, onCarAdded }: AddCarModalProps) {
   const removePhoto = (index: number) => {
     setCarPhotos((prev) => prev.filter((_, i) => i !== index));
     setPhotoPreview((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const addModification = () => {
-    if (newMod.trim() && !carData.mods.includes(newMod.trim())) {
-      setCarData((prev) => ({
-        ...prev,
-        mods: [...prev.mods, newMod.trim()],
-      }));
-      setNewMod("");
-    }
-  };
-
-  const removeMod = (mod: string) => {
-    setCarData((prev) => ({
-      ...prev,
-      mods: prev.mods.filter((m) => m !== mod),
-    }));
   };
 
   const toggleMod = (mod: string) => {

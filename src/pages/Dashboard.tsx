@@ -14,12 +14,10 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 import { useFuelWallet } from "../hooks/useFuelWallet";
 import { useBadges } from "../hooks/useBadges";
-import Store from "../components/Store";
 import MiniPremium from "../components/MiniPremium";
 import BadgeDisplay from "../components/BadgeDisplay";
 import MiniStore from "../components/MiniStore";
 import MiniPolls from "../components/MiniPolls";
-import Polls from "../components/Polls";
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
@@ -277,7 +275,7 @@ const Dashboard: React.FC = () => {
             <div className="flex-1">
               <p className="font-medium text-gray-800">Daily Login Bonus</p>
               <p className="text-sm text-gray-600">
-                +5 Fuel Points • Streak: {wallet?.streak || 1} days
+                +5 Fuel Points • Streak: {wallet?.streakDays || 1} days
               </p>
             </div>
             <span className="text-xs text-gray-500">Today</span>
@@ -292,7 +290,7 @@ const Dashboard: React.FC = () => {
               <div className="flex-1">
                 <p className="font-medium text-gray-800">Badge Earned</p>
                 <p className="text-sm text-gray-600">
-                  Unlocked "{userBadges[userBadges.length - 1]?.name}" badge
+                  Unlocked "{userBadges[userBadges.length - 1]?.badge?.name}" badge
                 </p>
               </div>
               <span className="text-xs text-gray-500">Recent</span>

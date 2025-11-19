@@ -1,6 +1,6 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaTimes, FaCrown, FaGem, FaRocket } from "react-icons/fa";
+import { FaTimes, FaCrown, FaGem } from "react-icons/fa";
 
 interface MiniPremiumProps {
   visible: boolean;

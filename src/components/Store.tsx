@@ -41,11 +41,20 @@ const Store: React.FC<StoreProps> = ({
   const { user } = useAuth();
   const { wallet, refreshWallet } = useFuelWallet();
   const {
-    updatePowerUpState,
-    activateProfileBoost,
-    activateUnlimitedSwipes,
     updateProfileFrameColor,
   } = usePowerUps();
+  
+  // Dummy functions for missing PowerUp methods
+  const updatePowerUpState = (_state: any) => {
+    console.log('[Store] updatePowerUpState called (not implemented):', _state);
+  };
+  const activateProfileBoost = (_duration: number) => {
+    console.log('[Store] activateProfileBoost called (not implemented):', _duration);
+  };
+  const activateUnlimitedSwipes = (_hours: number) => {
+    console.log('[Store] activateUnlimitedSwipes called (not implemented):', _hours);
+  };
+  
   const {
     storeItems,
     userInventory,
@@ -274,7 +283,7 @@ const Store: React.FC<StoreProps> = ({
 
   const getItemIcon = (item: StoreItem) => {
     // Get subcategory or fallback to category for icon determination
-    const type = item.subcategory || item.category;
+    const type = item.type || item.category;
 
     switch (type) {
       case "frames":
@@ -614,7 +623,7 @@ const Store: React.FC<StoreProps> = ({
     refreshInventory();
   };
 
-  const handleColorChange = (color: string, inventoryItem: any) => {
+  const handleColorChange = (color: string, _inventoryItem: any) => {
     updateProfileFrameColor(color);
     setShowColorPicker(null);
 
@@ -783,7 +792,7 @@ const Store: React.FC<StoreProps> = ({
                                 {inventoryItem.usesRemaining !== null &&
                                 inventoryItem.usesRemaining !== undefined
                                   ? `Utilizări rămase: ${inventoryItem.usesRemaining}`
-                                  : `Cantitate: ${inventoryItem.quantity || 1}`}
+                                  : `Item permanent`}
                               </span>
                             </div>
                             <div className="flex items-center gap-2">
@@ -815,6 +824,7 @@ const Store: React.FC<StoreProps> = ({
                                     disabled={
                                       !inventoryItem.isActive &&
                                       inventoryItem.usesRemaining !== null &&
+                                      inventoryItem.usesRemaining !== undefined &&
                                       inventoryItem.usesRemaining <= 0
                                     }
                                   >

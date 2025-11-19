@@ -12,14 +12,14 @@ import {
 } from "react-icons/fa";
 import { useBadges } from "../hooks/useBadges";
 import { useAuth } from "../contexts/AuthContext";
-import { Badge, BadgeCategory, BadgeRarity } from "../types";
+import { Badge } from "../types";
 
 interface BadgeDisplayProps {
   userId?: number;
   showTitle?: boolean;
   maxBadges?: number;
   onBadgePress?: (badge: Badge) => void;
-  category?: BadgeCategory;
+  category?: string;
   showAll?: boolean;
 }
 
@@ -48,11 +48,11 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
     if (!a.isUnlocked && b.isUnlocked) return 1;
     if (a.isUnlocked && b.isUnlocked) {
       // Among unlocked badges, sort by rarity (legendary first)
-      const rarityOrder = {
-        [BadgeRarity.LEGENDARY]: 4,
-        [BadgeRarity.EPIC]: 3,
-        [BadgeRarity.RARE]: 2,
-        [BadgeRarity.COMMON]: 1,
+      const rarityOrder: Record<string, number> = {
+        legendary: 4,
+        epic: 3,
+        rare: 2,
+        common: 1,
       };
       return (rarityOrder[b.rarity] || 0) - (rarityOrder[a.rarity] || 0);
     }
@@ -67,43 +67,43 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
 
   const getBadgeIcon = (badge: Badge) => {
     switch (badge.category) {
-      case BadgeCategory.CARS:
+      case "cars":
         return <FaCar className="text-blue-500" />;
-      case BadgeCategory.SOCIAL:
+      case "social":
         return <FaUsers className="text-green-500" />;
-      case BadgeCategory.ACTIVITY:
+      case "activity":
         return <FaFire className="text-red-500" />;
-      case BadgeCategory.ACHIEVEMENTS:
+      case "achievements":
         return <FaTrophy className="text-yellow-500" />;
-      case BadgeCategory.SPECIAL:
+      case "special":
         return <FaCrown className="text-purple-500" />;
       default:
         return <FaStar className="text-gray-500" />;
     }
   };
 
-  const getRarityColor = (rarity: BadgeRarity) => {
+  const getRarityColor = (rarity: string) => {
     switch (rarity) {
-      case BadgeRarity.COMMON:
+      case "common":
         return "border-gray-300 bg-gray-50";
-      case BadgeRarity.RARE:
+      case "rare":
         return "border-blue-300 bg-blue-50";
-      case BadgeRarity.EPIC:
+      case "epic":
         return "border-purple-300 bg-purple-50";
-      case BadgeRarity.LEGENDARY:
+      case "legendary":
         return "border-yellow-300 bg-yellow-50";
       default:
         return "border-gray-300 bg-gray-50";
     }
   };
 
-  const getRarityIcon = (rarity: BadgeRarity) => {
+  const getRarityIcon = (rarity: string) => {
     switch (rarity) {
-      case BadgeRarity.RARE:
+      case "rare":
         return <FaGem className="text-blue-500" />;
-      case BadgeRarity.EPIC:
+      case "epic":
         return <FaStar className="text-purple-500" />;
-      case BadgeRarity.LEGENDARY:
+      case "legendary":
         return <FaCrown className="text-yellow-500" />;
       default:
         return null;
@@ -188,8 +188,8 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
                 : "border-gray-300 bg-gray-50 grayscale opacity-60"
             }`}
           >
-            {/* Rarity indicator */}
-            {badge.isUnlocked && badge.rarity !== BadgeRarity.COMMON && (
+            /* Rarity indicator */
+            {badge.isUnlocked && badge.rarity !== "common" && (
               <div className="absolute -top-1 -right-1 bg-white rounded-full p-0.5 shadow-sm">
                 {getRarityIcon(badge.rarity)}
               </div>
@@ -299,7 +299,7 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
                     >
                       {/* Rarity indicator */}
                       {badge.isUnlocked &&
-                        badge.rarity !== BadgeRarity.COMMON && (
+                        badge.rarity !== "common" && (
                           <div className="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow-md">
                             {getRarityIcon(badge.rarity)}
                           </div>

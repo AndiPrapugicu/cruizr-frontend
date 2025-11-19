@@ -120,7 +120,7 @@ export const useBadges = (userId?: number) => {
 
   // Count badges by rarity
   const countBadgesByRarity = useCallback(() => {
-    const counts = {
+    const counts: Record<string, number> = {
       common: 0,
       rare: 0,
       epic: 0,
@@ -129,7 +129,7 @@ export const useBadges = (userId?: number) => {
 
     userBadges.forEach((userBadge) => {
       const badge = badges.find((b) => b.id === userBadge.badgeId);
-      if (badge) {
+      if (badge && counts[badge.rarity] !== undefined) {
         counts[badge.rarity]++;
       }
     });

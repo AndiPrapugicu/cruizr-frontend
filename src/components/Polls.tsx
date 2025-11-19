@@ -34,7 +34,7 @@ const CreatePollModal: React.FC<CreatePollModalProps> = ({
 }) => {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", ""]);
-  const [category, setCategory] = useState<PollCategory>(PollCategory.GENERAL);
+  const [category, setCategory] = useState<PollCategory>("general");
 
   const handleAddOption = () => {
     if (options.length < 6) {
@@ -60,7 +60,7 @@ const CreatePollModal: React.FC<CreatePollModalProps> = ({
       onSubmit(question.trim(), validOptions, category);
       setQuestion("");
       setOptions(["", ""]);
-      setCategory(PollCategory.GENERAL);
+      setCategory("general");
       onClose();
     }
   };
@@ -116,10 +116,10 @@ const CreatePollModal: React.FC<CreatePollModalProps> = ({
               onChange={(e) => setCategory(e.target.value as PollCategory)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
             >
-              <option value={PollCategory.GENERAL}>General</option>
-              <option value={PollCategory.CARS}>Mașini</option>
-              <option value={PollCategory.DATING}>Dating</option>
-              <option value={PollCategory.AUTOMOTIVE}>Auto</option>
+              <option value="general">General</option>
+              <option value="cars">Mașini</option>
+              <option value="dating">Dating</option>
+              <option value="automotive">Auto</option>
             </select>
           </div>
 

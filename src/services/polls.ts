@@ -29,9 +29,9 @@ class PollsService {
 
   // Get all polls (using my-polls for now since general endpoint doesn't exist)
   async getPolls(
-    page = 1,
-    limit = 20,
-    category?: PollCategory
+    _page = 1,
+    _limit = 20,
+    _category?: PollCategory
   ): Promise<{
     polls: Poll[];
     total: number;
@@ -68,7 +68,7 @@ class PollsService {
             totalVotes: 25,
             createdAt: new Date().toISOString(),
             isActive: true,
-            category: PollCategory.CARS,
+            category: "cars",
             user: { id: 1, name: "CarMatch", imageUrl: "" },
           },
           {
@@ -94,7 +94,7 @@ class PollsService {
             totalVotes: 30,
             createdAt: new Date().toISOString(),
             isActive: true,
-            category: PollCategory.AUTOMOTIVE,
+            category: "automotive",
             user: { id: 1, name: "CarMatch", imageUrl: "" },
           },
           {
@@ -120,7 +120,7 @@ class PollsService {
             totalVotes: 20,
             createdAt: new Date().toISOString(),
             isActive: true,
-            category: PollCategory.CARS,
+            category: "cars",
             user: { id: 1, name: "CarMatch", imageUrl: "" },
           },
         ];
@@ -165,7 +165,7 @@ class PollsService {
           totalVotes: 25,
           createdAt: new Date().toISOString(),
           isActive: true,
-          category: PollCategory.CARS,
+          category: "cars",
           user: { id: 1, name: "CarMatch", imageUrl: "" },
         },
       ];
@@ -199,7 +199,7 @@ class PollsService {
       const response = await api.post("/polls/create", {
         ...pollData,
         matchId: "general", // For community polls
-        durationMinutes: pollData.duration * 60, // Convert hours to minutes
+        durationMinutes: (pollData.duration || 24) * 60, // Convert hours to minutes
       });
       return response.data;
     } catch (error) {
@@ -266,7 +266,7 @@ class PollsService {
 
       if (poll) {
         // Update the poll with the new vote
-        poll.options.forEach((option, index) => {
+        poll.options.forEach((option) => {
           if (option.id === optionId) {
             option.votes += 1;
             option.isSelected = true;
@@ -305,7 +305,7 @@ class PollsService {
   }
 
   // Delete poll (if owner) - endpoint may not exist
-  async deletePoll(pollId: number): Promise<{ success: boolean }> {
+  async deletePoll(_pollId: number): Promise<{ success: boolean }> {
     // This endpoint doesn't seem to exist in the backend
     // const response = await api.delete(`/polls/${pollId}`);
     // return response.data;
@@ -341,7 +341,7 @@ class PollsService {
   }
 
   // Search polls - endpoint may not exist
-  async searchPolls(query: string, category?: PollCategory): Promise<Poll[]> {
+  async searchPolls(query: string, _category?: PollCategory): Promise<Poll[]> {
     // This endpoint doesn't seem to exist in the backend
     // const params = new URLSearchParams({ q: query });
     // if (category) {
@@ -359,8 +359,8 @@ class PollsService {
 
   // Report poll - endpoint may not exist
   async reportPoll(
-    pollId: number,
-    reason: string
+    _pollId: number,
+    _reason: string
   ): Promise<{ success: boolean }> {
     // This endpoint doesn't seem to exist in the backend
     // const response = await api.post(`/polls/${pollId}/report`, { reason });

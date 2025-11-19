@@ -18,7 +18,7 @@ const Polls: React.FC = () => {
   const [newPoll, setNewPoll] = useState({
     question: "",
     options: ["", ""],
-    category: PollCategory.GENERAL,
+    category: "general" as PollCategory,
     duration: 24, // hours
   });
 
@@ -66,7 +66,7 @@ const Polls: React.FC = () => {
       setNewPoll({
         question: "",
         options: ["", ""],
-        category: PollCategory.GENERAL,
+        category: "general" as PollCategory,
         duration: 24,
       });
 
@@ -373,10 +373,10 @@ const Polls: React.FC = () => {
                     }
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
-                    <option value={PollCategory.GENERAL}>General</option>
-                    <option value={PollCategory.CARS}>Cars</option>
-                    <option value={PollCategory.DATING}>Dating</option>
-                    <option value={PollCategory.AUTOMOTIVE}>Automotive</option>
+                    <option value="general">General</option>
+                    <option value="cars">Cars</option>
+                    <option value="dating">Dating</option>
+                    <option value="automotive">Automotive</option>
                   </select>
                 </div>
                 <div>

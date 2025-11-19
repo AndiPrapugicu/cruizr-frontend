@@ -4,11 +4,14 @@ export interface Badge {
   name: string;
   description: string;
   icon: string;
-  category: BadgeCategory;
-  rarity: BadgeRarity;
+  category: string;
+  rarity: string;
   requirements: string;
   isUnlocked?: boolean;
-  progress?: number;
+  progress?: {
+    current: number;
+    total: number;
+  };
   maxProgress?: number;
   unlockedAt?: string;
 }
@@ -19,21 +22,6 @@ export interface UserBadge {
   badgeId: number;
   unlockedAt: string;
   badge: Badge;
-}
-
-export enum BadgeCategory {
-  CARS = "cars",
-  SOCIAL = "social",
-  ACTIVITY = "activity",
-  ACHIEVEMENTS = "achievements",
-  SPECIAL = "special",
-}
-
-export enum BadgeRarity {
-  COMMON = "common",
-  RARE = "rare",
-  EPIC = "epic",
-  LEGENDARY = "legendary",
 }
 
 // Fuel System Types
@@ -58,53 +46,48 @@ export interface FuelWallet {
 export interface FuelTransaction {
   id: number;
   userId: number;
-  type: FuelTransactionType;
+  type: string;
   amount: number;
   reason: string;
   metadata?: Record<string, unknown>;
   createdAt: string;
 }
 
-export enum FuelTransactionType {
-  EARN = "earn",
-  SPEND = "spend",
-}
+export type FuelTransactionType = "earn" | "spend";
 
-export enum FuelEarnReason {
-  MUTUAL_LIKE = "mutual_like",
-  NEW_MATCH = "new_match",
-  FIRST_MESSAGE = "first_message",
-  MESSAGE_STREAK = "message_streak",
-  PROFILE_COMPLETE = "profile_complete",
-  ADD_CAR = "add_car",
-  ADD_PHOTO = "add_photo",
-  ADD_VIDEO = "add_video",
-  ADD_MODIFICATION = "add_modification",
-  UNLOCK_BADGE = "unlock_badge",
-  RARE_BADGE = "rare_badge",
-  LEGENDARY_BADGE = "legendary_badge",
-  DAILY_LOGIN = "daily_login",
-  WEEKLY_STREAK = "weekly_streak",
-  MONTHLY_STREAK = "monthly_streak",
-  CAR_REVIEW = "car_review",
-  GARAGE_TOUR = "garage_tour",
-  CONTEST_WIN = "contest_win",
-  REFERRAL = "referral",
-  SPECIAL_EVENT = "special_event",
-}
+export type FuelEarnReason =
+  | "mutual_like"
+  | "new_match"
+  | "first_message"
+  | "message_streak"
+  | "profile_complete"
+  | "add_car"
+  | "add_photo"
+  | "add_video"
+  | "add_modification"
+  | "unlock_badge"
+  | "rare_badge"
+  | "legendary_badge"
+  | "daily_login"
+  | "weekly_streak"
+  | "monthly_streak"
+  | "car_review"
+  | "garage_tour"
+  | "contest_win"
+  | "referral"
+  | "special_event";
 
-export enum FuelSpendReason {
-  BUY_SUPERLIKE = "buy_superlike",
-  BUY_BOOST = "buy_boost",
-  BUY_REWIND = "buy_rewind",
-  BUY_PASSPORT = "buy_passport",
-  UNLOCK_PREMIUM_FILTER = "unlock_premium_filter",
-  BUY_PREMIUM_BADGE = "buy_premium_badge",
-  UNLOCK_SPECIAL_FEATURE = "unlock_special_feature",
-  GARAGE_UPGRADE = "garage_upgrade",
-  CUSTOM_PLATE = "custom_plate",
-  SPECIAL_EFFECT = "special_effect",
-}
+export type FuelSpendReason =
+  | "buy_superlike"
+  | "buy_boost"
+  | "buy_rewind"
+  | "buy_passport"
+  | "unlock_premium_filter"
+  | "buy_premium_badge"
+  | "unlock_special_feature"
+  | "garage_upgrade"
+  | "custom_plate"
+  | "special_effect";
 
 // Store Types
 export interface StoreItem {
@@ -191,7 +174,7 @@ export interface Poll {
   createdAt: string;
   expiresAt?: string;
   isActive: boolean;
-  category: PollCategory;
+  category: string;
   user: {
     id: number;
     name: string;
@@ -207,12 +190,7 @@ export interface PollOption {
   isSelected?: boolean;
 }
 
-export enum PollCategory {
-  CARS = "cars",
-  GENERAL = "general",
-  DATING = "dating",
-  AUTOMOTIVE = "automotive",
-}
+export type PollCategory = "cars" | "general" | "dating" | "automotive";
 
 export interface PollVote {
   id: number;

@@ -8,7 +8,6 @@ import {
   FaSpinner,
 } from "react-icons/fa";
 import { CarData } from "./CarOnboardingStep";
-import api from "../../services/api";
 
 interface CarPhotosProps {
   car: Partial<CarData>;
