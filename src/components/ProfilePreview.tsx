@@ -52,7 +52,7 @@ export default function ProfilePreview({
 
   if (!isOpen) return null;
 
-  const baseUrl = "http://localhost:3000";
+  const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
   const getPhotos = () => {
     if (profile?.photos && profile.photos.length > 0) return profile.photos;

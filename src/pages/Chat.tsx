@@ -43,7 +43,7 @@ export default function Chat({
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-  const baseUrl = "http://localhost:3000";
+  const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
   const avatarSrc = otherProfile?.avatarUrl
     ? otherProfile.avatarUrl.startsWith("http")

@@ -169,14 +169,14 @@ export default function Nearby() {
                           typeof photo === "string" ? photo : photo.url;
                         return photoUrl?.startsWith("http")
                           ? photoUrl
-                          : `http://localhost:3000${
+                          : `${baseUrl}${
                               photoUrl || "/default-avatar.jpg"
                             }`;
                       })
                     : [
                         user.imageUrl?.startsWith("http")
                           ? user.imageUrl
-                          : `http://localhost:3000${
+                          : `${baseUrl}${
                               user.imageUrl || "/default-avatar.jpg"
                             }`,
                       ],
@@ -279,14 +279,14 @@ export default function Nearby() {
                     typeof photo === "string" ? photo : photo.url;
                   return photoUrl?.startsWith("http")
                     ? photoUrl
-                    : `http://localhost:3000${
+                    : `${baseUrl}${
                         photoUrl || "/default-avatar.jpg"
                       }`;
                 })
               : [
                   user.imageUrl?.startsWith("http")
                     ? user.imageUrl
-                    : `http://localhost:3000${
+                    : `${baseUrl}${
                         user.imageUrl || "/default-avatar.jpg"
                       }`,
                 ],
