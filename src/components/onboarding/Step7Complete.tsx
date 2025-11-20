@@ -73,8 +73,14 @@ const Step7Complete: React.FC = () => {
         };
         formData.append(`cars[${carIndex}]`, JSON.stringify(carData));
 
-        // Note: Car photos are currently stored as strings (URLs/paths)
-        // TODO: Implement car photo file uploads in a future update
+        // Add car photo files
+        car.photos.forEach((photo) => {
+          if (photo instanceof File) {
+            // It's a File object - add to FormData
+            formData.append(`carPhotos_${carIndex}`, photo, photo.name);
+          }
+          // If it's a string (URL), backend will handle it separately
+        });
       });
 
       console.log("📦 FormData prepared with direct file uploads");

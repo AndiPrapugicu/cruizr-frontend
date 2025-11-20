@@ -33,7 +33,7 @@ export interface CarData {
   hasSunroof?: boolean;
   mods: string[];
   isPrimary: boolean;
-  photos: string[];
+  photos: (string | File)[]; // Can be File objects during onboarding or URLs after upload
   garageTourVideo?: string;
 }
 

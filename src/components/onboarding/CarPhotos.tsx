@@ -28,46 +28,16 @@ const CarPhotos: React.FC<CarPhotosProps> = ({
 
   const photos = car.photos || [];
 
-  const uploadPhoto = async (file: File): Promise<string> => {
-    console.log("🖼️ [CarPhotos] Starting photo upload:", {
+  const uploadPhoto = async (file: File): Promise<File> => {
+    console.log("🖼️ [CarPhotos] Storing photo file:", {
       fileName: file.name,
       fileSize: file.size,
       fileType: file.type,
     });
 
-    // During onboarding, we'll store photos locally and upload them later
-    // after user registration is complete
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
-        console.log(
-          "📸 [CarPhotos] Photo converted to base64, length:",
-          result.length
-        );
-        resolve(result);
-      };
-      reader.readAsDataURL(file);
-    });
-
-    /* Original upload code - will be used after registration
-    const formData = new FormData();
-    formData.append("photo", file);
-
-    try {
-      const response = await api.post("/cars/upload-photo", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      console.log("✅ [CarPhotos] Photo uploaded successfully:", response.data);
-      return response.data.url;
-    } catch (error) {
-      console.error("❌ [CarPhotos] Photo upload failed:", error);
-      throw new Error("Failed to upload photo");
-    }
-    */
+    // During onboarding, store the actual File object
+    // It will be uploaded as FormData in Step7Complete
+    return Promise.resolve(file);
   };
 
   const handleFileSelect = async (files: FileList | null) => {
@@ -76,7 +46,7 @@ const CarPhotos: React.FC<CarPhotosProps> = ({
     console.log("📸 [CarPhotos] Files selected:", files.length);
 
     setUploading(true);
-    const uploadedUrls: string[] = [];
+    const uploadedFiles: (string | File)[] = [];
 
     try {
       for (let i = 0; i < Math.min(files.length, 10 - photos.length); i++) {
@@ -101,8 +71,8 @@ const CarPhotos: React.FC<CarPhotosProps> = ({
         }
 
         try {
-          const url = await uploadPhoto(file);
-          uploadedUrls.push(url);
+          const fileObj = await uploadPhoto(file);
+          uploadedFiles.push(fileObj);
           console.log("✅ [CarPhotos] File processed successfully:", file.name);
         } catch (fileError) {
           console.error(
@@ -116,12 +86,12 @@ const CarPhotos: React.FC<CarPhotosProps> = ({
         }
       }
 
-      if (uploadedUrls.length > 0) {
+      if (uploadedFiles.length > 0) {
         setCar((prev) => ({
           ...prev,
-          photos: [...(prev.photos || []), ...uploadedUrls],
+          photos: [...(prev.photos || []), ...uploadedFiles],
         }));
-        console.log("✅ [CarPhotos] Added photos to car:", uploadedUrls.length);
+        console.log("✅ [CarPhotos] Added photos to car:", uploadedFiles.length);
       }
     } catch (error) {
       console.error("❌ [CarPhotos] General error in file selection:", error);
@@ -273,7 +243,7 @@ const CarPhotos: React.FC<CarPhotosProps> = ({
                 className="relative group"
               >
                 <img
-                  src={photo}
+                  src={photo instanceof File ? URL.createObjectURL(photo) : photo}
                   alt={`Car photo ${index + 1}`}
                   className="w-full h-32 object-cover rounded-xl border border-gray-200"
                 />

@@ -180,7 +180,7 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({
           className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-left focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200 flex items-center justify-between"
         >
           <span className={currentValue ? "text-gray-800" : "text-gray-500"}>
-            {currentValue || placeholder}
+            {(typeof currentValue === 'string' || typeof currentValue === 'number' || typeof currentValue === 'boolean') ? currentValue : placeholder}
           </span>
           <FaChevronDown
             className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
