@@ -154,6 +154,9 @@ export default function Nearby() {
               },
             });
 
+            // Define baseUrl for photo URLs
+            const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
             // Transform backend data to match frontend interface
             const nearbyUsers: User[] = response.data.map(
               (user: BackendUser) => ({
@@ -265,6 +268,9 @@ export default function Nearby() {
             distance: 50,
           },
         });
+
+        // Define baseUrl for photo URLs
+        const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
         const transformedUsers = response.data.map((user: BackendUser) => ({
           id: user.id.toString(),
