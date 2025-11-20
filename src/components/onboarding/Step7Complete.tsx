@@ -27,30 +27,46 @@ const Step7Complete: React.FC = () => {
 
       // Submit to the new combined endpoint
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
-      const response = await fetch(
-        `${apiUrl}/users/onboarding-register`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(onboardingData),
+      
+      // Add timeout for fetch (60 seconds for cold start on Render)
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000);
+      
+      try {
+        const response = await fetch(
+          `${apiUrl}/users/onboarding-register`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(onboardingData),
+            signal: controller.signal,
+          }
+        );
+        
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("❌ Server response:", response.status, errorText);
+          throw new Error(`Server error: ${response.status}`);
         }
-      );
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("❌ Server response:", response.status, errorText);
-        throw new Error(`Server error: ${response.status}`);
-      }
+        const result = await response.json();
+        console.log("✅ Registration and onboarding completed:", result);
 
-      const result = await response.json();
-      console.log("✅ Registration and onboarding completed:", result);
-
-      // Store the token for future requests
-      if (result.access_token) {
-        localStorage.setItem("token", result.access_token);
-        localStorage.setItem("user", JSON.stringify(result.user));
+        // Store the token for future requests
+        if (result.access_token) {
+          localStorage.setItem("token", result.access_token);
+          localStorage.setItem("user", JSON.stringify(result.user));
+        }
+      } catch (fetchError) {
+        clearTimeout(timeoutId);
+        if (fetchError.name === 'AbortError') {
+          throw new Error("Server-ul întârzie să răspundă. Te rog încearcă din nou.");
+        }
+        throw fetchError;
       }
 
       // Clear onboarding data by resetting to defaults
@@ -72,9 +88,11 @@ const Step7Complete: React.FC = () => {
       }, 2000);
     } catch (error) {
       console.error("❌ Error completing onboarding:", error);
-      setError(
-        error instanceof Error ? error.message : "Unknown error occurred"
-      );
+      if (error.message.includes("Failed to fetch") || error.message.includes("ERR_CONNECTION_REFUSED")) {
+        setError("Nu ne putem conecta la server. Te rog verifică conexiunea ta la internet și încearcă din nou.");
+      } else {
+        setError(error instanceof Error ? error.message : "A apărut o eroare. Te rog încearcă din nou.");
+      }
     } finally {
       setLoading(false);
     }
