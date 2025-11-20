@@ -24,6 +24,10 @@ import {
 // Helper function to build photo URLs
 const getPhotoUrl = (photo: string | BackendPhoto): string => {
   if (typeof photo === "string") {
+    // If photo is Base64, use as is
+    if (photo.startsWith("data:image")) {
+      return photo;
+    }
     // If photo already starts with http/https, use as is
     if (photo.startsWith("http://") || photo.startsWith("https://")) {
       return photo;
