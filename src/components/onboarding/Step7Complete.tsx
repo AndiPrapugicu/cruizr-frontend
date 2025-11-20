@@ -25,55 +25,59 @@ const Step7Complete: React.FC = () => {
       const onboardingData = data;
       console.log("📋 Onboarding data:", onboardingData);
 
-      // Convert File objects to Base64
-      const convertFileToBase64 = (file: File): Promise<string> => {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result as string);
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
-      };
+      // Create FormData instead of JSON
+      const formData = new FormData();
 
-      // Convert all photos to Base64
-      const photoPromises = onboardingData.photos.map(convertFileToBase64);
-      const photosBase64 = await Promise.all(photoPromises);
-      console.log(`📸 Converted ${photosBase64.length} photos to Base64`);
+      // Add basic fields
+      formData.append("firstName", onboardingData.firstName);
+      formData.append("birthday", onboardingData.birthday);
+      formData.append("gender", onboardingData.gender);
+      formData.append("bio", onboardingData.bio || "");
+      formData.append("agreed", String(onboardingData.agreed));
 
-      // Convert car photos to Base64
-      const carsWithPhotos = await Promise.all(
-        onboardingData.cars.map(async (car) => {
-          const carPhotos = await Promise.all(
-            car.photos.map(async (photo: string | File) => {
-              if (typeof photo === 'string') return photo;
-              // If it's a File object, convert it
-              if (photo instanceof File) {
-                return await convertFileToBase64(photo as File);
-              }
-              return photo;
-            })
-          );
-          return { ...car, photos: carPhotos };
-        })
-      );
+      // Add interests as JSON array
+      formData.append("interests", JSON.stringify(onboardingData.interests));
 
-      // Prepare data for backend
-      const payload = {
-        firstName: onboardingData.firstName,
-        birthday: onboardingData.birthday,
-        gender: onboardingData.gender,
-        interests: onboardingData.interests,
-        bio: onboardingData.bio || "",
-        photos: photosBase64,
-        cars: carsWithPhotos,
-        agreed: onboardingData.agreed,
-      };
-
-      console.log("📦 Payload prepared:", {
-        ...payload,
-        photos: `${payload.photos.length} photos`,
-        cars: `${payload.cars.length} cars`,
+      // Add photo files directly
+      onboardingData.photos.forEach((photo: File, index: number) => {
+        formData.append(`photos`, photo, photo.name);
       });
+      console.log(`📸 Added ${onboardingData.photos.length} photo files to FormData`);
+
+      // Add cars with photos
+      onboardingData.cars.forEach((car, carIndex) => {
+        // Add car data (without photos first)
+        const carData = {
+          make: car.make,
+          model: car.model,
+          year: car.year,
+          color: car.color,
+          engineSize: car.engineSize,
+          horsepower: car.horsepower,
+          torque: car.torque,
+          transmission: car.transmission,
+          fuelType: car.fuelType,
+          drivetrain: car.drivetrain,
+          doors: car.doors,
+          seats: car.seats,
+          mileage: car.mileage,
+          bodyType: car.bodyType,
+          upholsteryType: car.upholsteryType,
+          interiorColor: car.interiorColor,
+          hasSunroof: car.hasSunroof,
+          mods: car.mods,
+        };
+        formData.append(`cars[${carIndex}]`, JSON.stringify(carData));
+
+        // Add car photo files
+        car.photos.forEach((photo: File) => {
+          if (photo instanceof File) {
+            formData.append(`carPhotos_${carIndex}`, photo, photo.name);
+          }
+        });
+      });
+
+      console.log("📦 FormData prepared with direct file uploads");
 
       // Submit to the new combined endpoint
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -87,10 +91,7 @@ const Step7Complete: React.FC = () => {
           `${apiUrl}/users/onboarding-register`,
           {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
+            body: formData, // Send FormData directly (no Content-Type header needed)
             signal: controller.signal,
           }
         );
