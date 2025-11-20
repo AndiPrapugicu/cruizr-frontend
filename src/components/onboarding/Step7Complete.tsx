@@ -44,11 +44,11 @@ const Step7Complete: React.FC = () => {
       const carsWithPhotos = await Promise.all(
         onboardingData.cars.map(async (car) => {
           const carPhotos = await Promise.all(
-            car.photos.map(async (photo) => {
+            car.photos.map(async (photo: string | File) => {
               if (typeof photo === 'string') return photo;
               // If it's a File object, convert it
               if (photo instanceof File) {
-                return await convertFileToBase64(photo);
+                return await convertFileToBase64(photo as File);
               }
               return photo;
             })
@@ -111,9 +111,9 @@ const Step7Complete: React.FC = () => {
           localStorage.setItem("token", result.access_token);
           localStorage.setItem("user", JSON.stringify(result.user));
         }
-      } catch (fetchError) {
+      } catch (fetchError: unknown) {
         clearTimeout(timeoutId);
-        if (fetchError.name === 'AbortError') {
+        if (fetchError instanceof Error && fetchError.name === 'AbortError') {
           throw new Error("Server-ul întârzie să răspundă. Te rog încearcă din nou.");
         }
         throw fetchError;
@@ -136,9 +136,9 @@ const Step7Complete: React.FC = () => {
       setTimeout(() => {
         navigate("/dashboard");
       }, 2000);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("❌ Error completing onboarding:", error);
-      if (error.message.includes("Failed to fetch") || error.message.includes("ERR_CONNECTION_REFUSED")) {
+      if (error instanceof Error && (error.message.includes("Failed to fetch") || error.message.includes("ERR_CONNECTION_REFUSED"))) {
         setError("Nu ne putem conecta la server. Te rog verifică conexiunea ta la internet și încearcă din nou.");
       } else {
         setError(error instanceof Error ? error.message : "A apărut o eroare. Te rog încearcă din nou.");
