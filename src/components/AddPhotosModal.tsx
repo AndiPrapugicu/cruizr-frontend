@@ -48,41 +48,27 @@ export default function AddPhotosModal({
 
     setLoading(true);
     try {
-      // Convert files to Base64
-      const convertFileToBase64 = (file: File): Promise<string> => {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result as string);
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
-      };
-
-      const base64Photos = await Promise.all(
-        selectedFiles.map(convertFileToBase64)
-      );
-
-      console.log(`📸 Converted ${base64Photos.length} photos to Base64`);
-
-      // Get current photos from user
-      const userResponse = await api.get("/users/me");
-      const currentPhotos = userResponse.data.photos || [];
+      // Create FormData for multipart upload
+      const formData = new FormData();
       
-      // Combine current photos with new ones (filter out non-Base64 old photos)
-      const validCurrentPhotos = currentPhotos.filter((photo: string) => 
-        photo && (photo.startsWith('data:image') || photo.startsWith('http'))
-      );
-      
-      const newPhotos = [...validCurrentPhotos, ...base64Photos];
-
-      // Update user profile with new photos
-      await api.patch("/users/me", {
-        photos: newPhotos,
-        imageUrl: newPhotos[0], // Set first photo as profile image
+      // Add all selected files
+      selectedFiles.forEach((file) => {
+        formData.append('photos', file, file.name);
       });
 
-      console.log("✅ Photos updated successfully");
-      onPhotosAdded(newPhotos);
+      console.log(`📸 Uploading ${selectedFiles.length} photo files via FormData`);
+
+      // Upload photos to backend
+      const response = await api.post("/users/upload-photos", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      console.log("✅ Photos uploaded successfully:", response.data);
+      
+      // Return the new photos array to parent
+      onPhotosAdded(response.data.photos);
       onClose();
     } catch (error) {
       console.error("❌ Error uploading photos:", error);
