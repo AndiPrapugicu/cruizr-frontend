@@ -48,60 +48,44 @@ export default function AddPhotosModal({
 
     setLoading(true);
     try {
-      // Get JWT token
-      const token = localStorage.getItem("token");
-      const uploadedUrls: string[] = [];
-
-      // Upload each photo individually since backend accepts only one file per request
-      for (const file of selectedFiles) {
-        const formData = new FormData();
-        formData.append("photo", file); // Backend expects 'photo' key, not 'photos'
-
-        const response = await api.post("/users/upload-photo", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
+      // Convert files to Base64
+      const convertFileToBase64 = (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
         });
+      };
 
-        // Extract photo URL from response
-        if (response.data.url) {
-          uploadedUrls.push(response.data.url);
-        }
-      }
+      const base64Photos = await Promise.all(
+        selectedFiles.map(convertFileToBase64)
+      );
 
-      // After uploading all photos, update user profile with new photos array
-      const userResponse = await api.get("/users/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      console.log(`📸 Converted ${base64Photos.length} photos to Base64`);
+
+      // Get current photos from user
+      const userResponse = await api.get("/users/me");
+      const currentPhotos = userResponse.data.photos || [];
+      
+      // Combine current photos with new ones (filter out non-Base64 old photos)
+      const validCurrentPhotos = currentPhotos.filter((photo: string) => 
+        photo && (photo.startsWith('data:image') || photo.startsWith('http'))
+      );
+      
+      const newPhotos = [...validCurrentPhotos, ...base64Photos];
+
+      // Update user profile with new photos
+      await api.patch("/users/me", {
+        photos: newPhotos,
+        imageUrl: newPhotos[0], // Set first photo as profile image
       });
 
-      const currentPhotos = userResponse.data.photos || [];
-      const newPhotos = [...currentPhotos, ...uploadedUrls];
-      const newImageUrl = userResponse.data.imageUrl || uploadedUrls[0];
-
-      // Update user profile with all photos
-      await api.patch(
-        "/users/me",
-        {
-          photos: newPhotos,
-          imageUrl: newImageUrl,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      console.log(
-        "Successfully uploaded photos and updated profile:",
-        uploadedUrls
-      );
-      onPhotosAdded(uploadedUrls);
+      console.log("✅ Photos updated successfully");
+      onPhotosAdded(newPhotos);
+      onClose();
     } catch (error) {
-      console.error("Error uploading photos:", error);
+      console.error("❌ Error uploading photos:", error);
       alert("Eroare la încărcarea fotografiilor. Te rog încearcă din nou.");
     } finally {
       setLoading(false);
