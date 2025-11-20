@@ -25,6 +25,56 @@ const Step7Complete: React.FC = () => {
       const onboardingData = data;
       console.log("📋 Onboarding data:", onboardingData);
 
+      // Convert File objects to Base64
+      const convertFileToBase64 = (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      };
+
+      // Convert all photos to Base64
+      const photoPromises = onboardingData.photos.map(convertFileToBase64);
+      const photosBase64 = await Promise.all(photoPromises);
+      console.log(`📸 Converted ${photosBase64.length} photos to Base64`);
+
+      // Convert car photos to Base64
+      const carsWithPhotos = await Promise.all(
+        onboardingData.cars.map(async (car) => {
+          const carPhotos = await Promise.all(
+            car.photos.map(async (photo) => {
+              if (typeof photo === 'string') return photo;
+              // If it's a File object, convert it
+              if (photo instanceof File) {
+                return await convertFileToBase64(photo);
+              }
+              return photo;
+            })
+          );
+          return { ...car, photos: carPhotos };
+        })
+      );
+
+      // Prepare data for backend
+      const payload = {
+        firstName: onboardingData.firstName,
+        birthday: onboardingData.birthday,
+        gender: onboardingData.gender,
+        interests: onboardingData.interests,
+        bio: onboardingData.bio || "",
+        photos: photosBase64,
+        cars: carsWithPhotos,
+        agreed: onboardingData.agreed,
+      };
+
+      console.log("📦 Payload prepared:", {
+        ...payload,
+        photos: `${payload.photos.length} photos`,
+        cars: `${payload.cars.length} cars`,
+      });
+
       // Submit to the new combined endpoint
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
       
@@ -40,7 +90,7 @@ const Step7Complete: React.FC = () => {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(onboardingData),
+            body: JSON.stringify(payload),
             signal: controller.signal,
           }
         );
