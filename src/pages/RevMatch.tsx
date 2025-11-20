@@ -68,7 +68,9 @@ export default function RevMatch() {
                 <img
                   src={
                     user.imageUrl
-                      ? `${import.meta.env.VITE_API_URL}${user.imageUrl}`
+                      ? user.imageUrl.startsWith("http://") || user.imageUrl.startsWith("https://")
+                        ? user.imageUrl
+                        : `${import.meta.env.VITE_API_URL}${user.imageUrl}`
                       : `https://ui-avatars.com/api/?name=${encodeURIComponent(
                           user.name
                         )}&background=FFE4E6&color=000000`
