@@ -28,10 +28,14 @@ const Step7Complete: React.FC = () => {
       // Create FormData instead of JSON
       const formData = new FormData();
 
-      // Add basic fields
+      // Add basic fields (with null checks)
       formData.append("firstName", onboardingData.firstName);
-      formData.append("birthday", onboardingData.birthday);
-      formData.append("gender", onboardingData.gender);
+      if (onboardingData.birthday) {
+        formData.append("birthday", onboardingData.birthday.toISOString());
+      }
+      if (onboardingData.gender) {
+        formData.append("gender", onboardingData.gender);
+      }
       formData.append("bio", onboardingData.bio || "");
       formData.append("agreed", String(onboardingData.agreed));
 
@@ -39,7 +43,7 @@ const Step7Complete: React.FC = () => {
       formData.append("interests", JSON.stringify(onboardingData.interests));
 
       // Add photo files directly
-      onboardingData.photos.forEach((photo: File, index: number) => {
+      onboardingData.photos.forEach((photo: File) => {
         formData.append(`photos`, photo, photo.name);
       });
       console.log(`📸 Added ${onboardingData.photos.length} photo files to FormData`);
@@ -48,7 +52,7 @@ const Step7Complete: React.FC = () => {
       onboardingData.cars.forEach((car, carIndex) => {
         // Add car data (without photos first)
         const carData = {
-          make: car.make,
+          brand: car.brand,
           model: car.model,
           year: car.year,
           color: car.color,
@@ -69,12 +73,8 @@ const Step7Complete: React.FC = () => {
         };
         formData.append(`cars[${carIndex}]`, JSON.stringify(carData));
 
-        // Add car photo files
-        car.photos.forEach((photo: File) => {
-          if (photo instanceof File) {
-            formData.append(`carPhotos_${carIndex}`, photo, photo.name);
-          }
-        });
+        // Note: Car photos are currently stored as strings (URLs/paths)
+        // TODO: Implement car photo file uploads in a future update
       });
 
       console.log("📦 FormData prepared with direct file uploads");
