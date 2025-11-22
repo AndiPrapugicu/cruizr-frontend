@@ -16,7 +16,6 @@ const Step7Complete: React.FC = () => {
   const [isComplete, setIsComplete] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
-  const navigate = useNavigate();
 
   const handleComplete = async () => {
     try {

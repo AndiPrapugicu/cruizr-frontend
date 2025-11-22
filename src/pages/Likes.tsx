@@ -1,7 +1,7 @@
 // src/components/Likes.tsx
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import { FaHeart, FaStar, FaCrown } from "react-icons/fa";
+import { FaHeart, FaStar, FaCrown, FaCar } from "react-icons/fa";
 
 interface User {
   id: number;

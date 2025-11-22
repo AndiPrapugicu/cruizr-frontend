@@ -13,7 +13,6 @@ import {
   FaCog,
   FaSignOutAlt,
   FaBell,
-  FaSearch,
   FaTimes,
   FaGem,
   FaCrown,
