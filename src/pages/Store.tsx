@@ -314,7 +314,7 @@ export default function Store() {
                 </p>
 
                 {/* Features */}
-                {item.features.length > 0 && (
+                {item.features && item.features.length > 0 && (
                   <div className="mb-4">
                     <h4 className="font-semibold text-gray-800 text-xs uppercase tracking-wide mb-2">
                       Caracteristici
