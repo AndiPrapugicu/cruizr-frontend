@@ -14,6 +14,7 @@ interface User {
   name: string;
   imageUrl?: string;
   isVip?: boolean;
+  onboardingCompleted?: boolean;
 }
 
 interface AuthContextType {

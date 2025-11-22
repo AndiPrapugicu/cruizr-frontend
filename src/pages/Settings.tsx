@@ -1,6 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import api from "../services/api";
+import {
+  FaUser,
+  FaEnvelope,
+  FaLock,
+  FaTrash,
+  FaHeart,
+  FaBell,
+  FaBan,
+  FaSignOutAlt,
+  FaSave,
+  FaMapMarkerAlt,
+  FaCar,
+  FaUserSlash,
+} from "react-icons/fa";
 
 // Tipurile pentru datele din server
 interface UserData {
@@ -265,101 +280,147 @@ export default function Settings() {
 
   // ===== RENDER PRINCIPAL =====
   if (loadingUser) {
-    return <div className="p-4">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center w-full h-full bg-gray-50">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="w-12 h-12 border-4 border-pink-500 border-t-transparent rounded-full"
+        />
+      </div>
+    );
   }
 
   return (
-    <div className="w-full h-full p-8 bg-white overflow-y-auto">
-      <div className="max-w-4xl space-y-8">
+    <div className="w-full h-full bg-gray-50 overflow-y-auto">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-4xl mx-auto px-8 py-6">
+          <h1 className="text-3xl font-bold text-gray-900">Setări</h1>
+          <p className="text-gray-600 mt-1">Gestionează-ți contul și preferințele</p>
+        </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
         {/* ─────────── 1. ACCOUNT INFO ─────────── */}
-        <section className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
-            Account Information
+        <motion.section
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="bg-white p-6 shadow-lg"
+        >
+          <h2 className="text-2xl font-bold mb-6 text-gray-900 flex items-center">
+            <FaUser className="mr-3 text-pink-500" />
+            Informații Cont
           </h2>
 
           {/* Change Email */}
           <form onSubmit={handleEmailChange} className="mb-6">
-            <label className="block mb-1 text-gray-900 dark:text-gray-100">
-              Current email: {userData?.email}
+            <label className="block mb-2 text-sm font-medium text-gray-700 flex items-center">
+              <FaEnvelope className="mr-2 text-gray-400" />
+              Email curent: <span className="ml-2 text-pink-600 font-semibold">{userData?.email}</span>
             </label>
-            <input
-              type="email"
-              placeholder="New email"
-              value={newEmail}
-              onChange={(e) => setNewEmail(e.target.value)}
-              className="w-full mb-2 p-2 border border-gray-300 dark:border-gray-700 rounded placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-gray-100"
-            />
-            <button
-              type="submit"
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded transition"
-            >
-              Save Email
-            </button>
+            <div className="flex gap-3">
+              <input
+                type="email"
+                placeholder="Email nou"
+                value={newEmail}
+                onChange={(e) => setNewEmail(e.target.value)}
+                className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+              />
+              <button
+                type="submit"
+                className="px-6 py-3 bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 flex items-center space-x-2"
+              >
+                <FaSave />
+                <span>Salvează</span>
+              </button>
+            </div>
           </form>
 
           {/* Change Password */}
           <form onSubmit={handlePasswordChange} className="mb-6">
-            <label className="block mb-1 text-gray-900 dark:text-gray-100">
-              Change password:
+            <label className="block mb-3 text-sm font-medium text-gray-700 flex items-center">
+              <FaLock className="mr-2 text-gray-400" />
+              Schimbă parola
             </label>
-            <input
-              type="password"
-              placeholder="Current password"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              className="w-full mb-2 p-2 border border-gray-300 dark:border-gray-700 rounded placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-gray-100"
-            />
-            <input
-              type="password"
-              placeholder="New password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full mb-2 p-2 border border-gray-300 dark:border-gray-700 rounded placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-gray-100"
-            />
-            <input
-              type="password"
-              placeholder="Confirm password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full mb-2 p-2 border border-gray-300 dark:border-gray-700 rounded placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-gray-100"
-            />
-            <button
-              type="submit"
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded transition"
-            >
-              Change Password
-            </button>
+            <div className="space-y-3">
+              <input
+                type="password"
+                placeholder="Parola curentă"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+              />
+              <input
+                type="password"
+                placeholder="Parolă nouă"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+              />
+              <input
+                type="password"
+                placeholder="Confirmă parola"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+              />
+              <button
+                type="submit"
+                className="px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 flex items-center space-x-2"
+              >
+                <FaLock />
+                <span>Schimbă Parola</span>
+              </button>
+            </div>
           </form>
 
-          {accountError && <p className="text-red-500">{accountError}</p>}
+          {accountError && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-600 text-sm">{accountError}</p>
+            </div>
+          )}
 
           {/* Delete Account */}
-          <button
-            onClick={handleDeleteAccount}
-            className="mt-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition"
-          >
-            Delete Account
-          </button>
-        </section>
+          <div className="pt-6 border-t border-gray-200">
+            <button
+              onClick={handleDeleteAccount}
+              className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 flex items-center space-x-2"
+            >
+              <FaTrash />
+              <span>Șterge Cont</span>
+            </button>
+            <p className="text-sm text-gray-500 mt-2">
+              Atenție: Această acțiune este permanentă și nu poate fi anulată.
+            </p>
+          </div>
+        </motion.section>
 
         {/* ─────────── 2. PARTNER PREFERENCES ─────────── */}
-        <section className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
-            Partner Preferences
+        <motion.section
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.1 }}
+          className="bg-white p-6 shadow-lg"
+        >
+          <h2 className="text-2xl font-bold mb-6 text-gray-900 flex items-center">
+            <FaHeart className="mr-3 text-pink-500" />
+            Preferințe Partener
           </h2>
-          <form onSubmit={handleSavePreferences} className="space-y-4">
+          <form onSubmit={handleSavePreferences} className="space-y-5">
             <div>
-              <label className="block mb-1 text-gray-900 dark:text-gray-100">
-                Interval vârstă:
+              <label className="block mb-2 text-sm font-medium text-gray-700 flex items-center">
+                <FaUser className="mr-2 text-gray-400" />
+                Interval vârstă
               </label>
-              <div className="flex space-x-2">
+              <div className="grid grid-cols-2 gap-3">
                 <input
                   type="number"
                   min={18}
                   max={prefMaxAge}
                   value={prefMinAge}
                   onChange={(e) => setPrefMinAge(Number(e.target.value))}
-                  className="w-1/2 p-2 border border-gray-300 dark:border-gray-700 rounded placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-gray-100"
+                  className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                   placeholder="Minim"
                 />
                 <input
@@ -368,138 +429,183 @@ export default function Settings() {
                   max={100}
                   value={prefMaxAge}
                   onChange={(e) => setPrefMaxAge(Number(e.target.value))}
-                  className="w-1/2 p-2 border border-gray-300 dark:border-gray-700 rounded placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-gray-100"
+                  className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                   placeholder="Maxim"
                 />
               </div>
+              <p className="text-sm text-gray-500 mt-1">
+                {prefMinAge} - {prefMaxAge} ani
+              </p>
             </div>
             <div>
-              <label className="block mb-1 text-gray-900 dark:text-gray-100">
-                Distanță maximă (km):
+              <label className="block mb-2 text-sm font-medium text-gray-700 flex items-center">
+                <FaMapMarkerAlt className="mr-2 text-gray-400" />
+                Distanță maximă: <span className="ml-2 text-pink-600 font-semibold">{prefDistance} km</span>
               </label>
               <input
-                type="number"
+                type="range"
                 min={1}
                 max={200}
                 value={prefDistance}
                 onChange={(e) => setPrefDistance(Number(e.target.value))}
-                className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-gray-100"
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-pink-500"
               />
             </div>
             <div>
-              <label className="block mb-1 text-gray-900 dark:text-gray-100">
-                Brand auto preferat:
+              <label className="block mb-2 text-sm font-medium text-gray-700 flex items-center">
+                <FaCar className="mr-2 text-gray-400" />
+                Brand auto preferat
               </label>
               <input
                 type="text"
                 placeholder="Ex: BMW, Toyota"
                 value={prefCarBrand}
                 onChange={(e) => setPrefCarBrand(e.target.value)}
-                className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-gray-100"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
               />
             </div>
             <button
               type="submit"
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded transition"
+              className="px-6 py-3 bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 flex items-center space-x-2"
             >
-              Salvează Preferințe
+              <FaSave />
+              <span>Salvează Preferințe</span>
             </button>
           </form>
-          {prefsError && <p className="text-red-500">{prefsError}</p>}
-        </section>
+          {prefsError && (
+            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-600 text-sm">{prefsError}</p>
+            </div>
+          )}
+        </motion.section>
 
         {/* ─────────── 3. NOTIFICĂRI ─────────── */}
-        <section className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
+        <motion.section
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="bg-white p-6 shadow-lg"
+        >
+          <h2 className="text-2xl font-bold mb-6 text-gray-900 flex items-center">
+            <FaBell className="mr-3 text-pink-500" />
             Notificări
           </h2>
           {loadingNotif ? (
-            <p className="text-gray-900 dark:text-gray-100">Loading...</p>
+            <div className="flex justify-center py-8">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                className="w-8 h-8 border-4 border-pink-500 border-t-transparent rounded-full"
+              />
+            </div>
           ) : (
             <form onSubmit={handleSaveNotifications} className="space-y-4">
-              <div className="flex items-center">
+              <label className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer">
                 <input
                   type="checkbox"
                   checked={notifySwipe}
                   onChange={(e) => setNotifySwipe(e.target.checked)}
-                  className="mr-2"
+                  className="w-5 h-5 text-pink-500 border-gray-300 rounded focus:ring-pink-500 mr-3"
                 />
-                <label className="text-gray-900 dark:text-gray-100">
-                  Notificări swipe
-                </label>
-              </div>
-              <div className="flex items-center">
+                <div className="flex-1">
+                  <p className="font-medium text-gray-900">Notificări swipe</p>
+                  <p className="text-sm text-gray-500">Primește notificări când cineva dă swipe</p>
+                </div>
+              </label>
+              <label className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer">
                 <input
                   type="checkbox"
                   checked={notifyLikes}
                   onChange={(e) => setNotifyLikes(e.target.checked)}
-                  className="mr-2"
+                  className="w-5 h-5 text-pink-500 border-gray-300 rounded focus:ring-pink-500 mr-3"
                 />
-                <label className="text-gray-900 dark:text-gray-100">
-                  Notificări like-uri
-                </label>
-              </div>
-              <div className="flex items-center">
+                <div className="flex-1">
+                  <p className="font-medium text-gray-900">Notificări like-uri</p>
+                  <p className="text-sm text-gray-500">Primește notificări când cineva îți dă like</p>
+                </div>
+              </label>
+              <label className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer">
                 <input
                   type="checkbox"
                   checked={notifyMessages}
                   onChange={(e) => setNotifyMessages(e.target.checked)}
-                  className="mr-2"
+                  className="w-5 h-5 text-pink-500 border-gray-300 rounded focus:ring-pink-500 mr-3"
                 />
-                <label className="text-gray-900 dark:text-gray-100">
-                  Notificări mesaje
-                </label>
-              </div>
+                <div className="flex-1">
+                  <p className="font-medium text-gray-900">Notificări mesaje</p>
+                  <p className="text-sm text-gray-500">Primește notificări pentru mesaje noi</p>
+                </div>
+              </label>
               <button
                 type="submit"
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded transition"
+                className="px-6 py-3 bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 flex items-center space-x-2 mt-4"
               >
-                Salvează Notificări
+                <FaSave />
+                <span>Salvează Notificări</span>
               </button>
             </form>
           )}
-          {notifError && <p className="text-red-500">{notifError}</p>}
-        </section>
+          {notifError && (
+            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-600 text-sm">{notifError}</p>
+            </div>
+          )}
+        </motion.section>
 
         {/* ─────────── 4. UTILIZATORI BLOCAȚI ─────────── */}
-        <section className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
+        <motion.section
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="bg-white p-6 shadow-lg"
+        >
+          <h2 className="text-2xl font-bold mb-6 text-gray-900 flex items-center">
+            <FaBan className="mr-3 text-pink-500" />
             Utilizatori blocați
           </h2>
           {loadingBlocked ? (
-            <p className="text-gray-900 dark:text-gray-100">Loading...</p>
+            <div className="flex justify-center py-8">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                className="w-8 h-8 border-4 border-pink-500 border-t-transparent rounded-full"
+              />
+            </div>
           ) : blockedUsers.length === 0 ? (
-            <p className="text-gray-500 dark:text-gray-400">
-              Nu ai blocat niciun utilizator.
-            </p>
+            <div className="text-center py-8 bg-gray-50 rounded-lg">
+              <FaUserSlash className="text-4xl text-gray-400 mx-auto mb-3" />
+              <p className="text-gray-600">Nu ai blocat niciun utilizator.</p>
+            </div>
           ) : (
             <ul className="space-y-3">
               {blockedUsers.map((u) => (
-                <li key={u.id} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
+                <li
+                  key={u.id}
+                  className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition"
+                >
+                  <div className="flex items-center space-x-4">
                     {u.imageUrl ? (
                       <img
                         src={u.imageUrl}
                         alt={u.name}
-                        className="w-10 h-10 rounded-full object-cover"
+                        className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
                       />
                     ) : (
-                      <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-400">
-                        ?
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-red-500 flex items-center justify-center text-white font-bold text-lg">
+                        {u.name.charAt(0).toUpperCase()}
                       </div>
                     )}
                     <div>
-                      <p className="font-medium text-gray-900 dark:text-gray-100">
-                        {u.name}
-                      </p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Mașină: {u.carModel}
+                      <p className="font-semibold text-gray-900">{u.name}</p>
+                      <p className="text-sm text-gray-600 flex items-center">
+                        <FaCar className="mr-1" />
+                        {u.carModel}
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={() => handleUnblock(u.id)}
-                    className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded transition text-sm"
+                    className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition shadow-md hover:shadow-lg"
                   >
                     Deblochează
                   </button>
@@ -507,13 +613,23 @@ export default function Settings() {
               ))}
             </ul>
           )}
-        </section>
-        <button
-          onClick={handleLogout}
-          className="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-yellow-600 mb-4"
+        </motion.section>
+
+        {/* ─────────── 5. LOGOUT ─────────── */}
+        <motion.section
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="bg-white p-6 shadow-lg"
         >
-          Deconectează-te
-        </button>
+          <button
+            onClick={handleLogout}
+            className="w-full px-6 py-4 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-bold text-lg rounded-lg shadow-lg transition-all duration-300 flex items-center justify-center space-x-3"
+          >
+            <FaSignOutAlt className="text-xl" />
+            <span>Deconectează-te</span>
+          </button>
+        </motion.section>
       </div>
     </div>
   );

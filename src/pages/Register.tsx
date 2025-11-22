@@ -36,11 +36,27 @@ export default function Register() {
     setError("");
 
     try {
+      // Step 1: Register the user
       await api.post("/auth/register", { name, email, password });
+      
+      // Step 2: Login automatically to get the token
+      const loginResponse = await api.post("/auth/login", { email, password });
+      
+      // Step 3: Store token and user data
+      const { access_token } = loginResponse.data;
+      localStorage.setItem("token", access_token);
+      
+      // Set default authorization header for future requests
+      api.defaults.headers.common["Authorization"] = `Bearer ${access_token}`;
+      
+      console.log("✅ User registered and logged in");
+      
       setSuccess(true);
+      
+      // Redirect directly to onboarding after successful registration
       setTimeout(() => {
-        navigate("/onboarding");
-      }, 2000);
+        window.location.href = "/onboarding";
+      }, 1500);
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
       setError(error.response?.data?.message || "Registration error.");

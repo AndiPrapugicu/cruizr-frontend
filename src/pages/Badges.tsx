@@ -123,8 +123,9 @@ export default function Badges() {
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="px-8 py-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            🏆 Badge-uri
+          <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+            <FaTrophy className="mr-3 text-yellow-500" />
+            Badge-uri
           </h1>
           <p className="text-gray-600">
             Colecționează badge-uri prin activitățile tale
@@ -314,7 +315,7 @@ export default function Badges() {
             animate={{ opacity: 1 }}
             className="text-center py-12"
           >
-            <div className="text-6xl mb-4">🏆</div>
+            <FaTrophy className="text-6xl mb-4 mx-auto text-yellow-500" />
             <h3 className="text-xl font-semibold text-gray-800 mb-2">
               Nu există badge-uri în această categorie
             </h3>

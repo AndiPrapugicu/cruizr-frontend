@@ -1,6 +1,6 @@
 import "./App.css";
 import Home from "./pages/Home";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
@@ -23,11 +23,26 @@ import { PowerUpProvider } from "./contexts/PowerUpContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
 
 function App() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  // Show loading state while checking authentication
+  if (loading) {
+    return (
+      <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-red-50 to-orange-50">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-pink-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Se încarcă...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Pages that don't need sidebar (auth pages)
-  const authPages = ["/login", "/register", "/onboarding"];
+  const authPages = ["/login", "/register"];
   const isAuthPage = authPages.includes(window.location.pathname);
+
+  // Check if user needs to complete onboarding
+  const needsOnboarding = user && !user.onboardingCompleted;
 
   return (
     <div className="w-screen h-screen overflow-auto bg-white">
@@ -35,32 +50,42 @@ function App() {
         <PowerUpProvider>
           <NotificationProvider>
             {user && !isAuthPage ? (
-              // Authenticated layout with sidebar
-              <Sidebar>
+              needsOnboarding ? (
+                // User is authenticated but hasn't completed onboarding
                 <Routes>
-                  <Route path="/" element={<Dashboard />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/chat/:matchId" element={<ChatWrapper />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/nearby" element={<Nearby />} />
-                  <Route path="/likes" element={<Likes />} />
-                  <Route path="/chat" element={<ChatPage />} />
-                  <Route path="/revmatch" element={<RevMatch />} />
-                  <Route path="/settings" element={<Settings />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/store" element={<EnterpriseStore />} />
-                  <Route path="/badges" element={<Badges />} />
-                  <Route path="/polls" element={<Polls />} />
-                  <Route path="/profile/edit" element={<EditProfile />} />
+                  <Route path="/onboarding" element={<OnboardingPage />} />
+                  <Route path="*" element={<Navigate to="/onboarding" replace />} />
                 </Routes>
-              </Sidebar>
+              ) : (
+                // Authenticated layout with sidebar (onboarding completed)
+                <Sidebar>
+                  <Routes>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/chat/:matchId" element={<ChatWrapper />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/nearby" element={<Nearby />} />
+                    <Route path="/likes" element={<Likes />} />
+                    <Route path="/chat" element={<ChatPage />} />
+                    <Route path="/revmatch" element={<RevMatch />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/store" element={<EnterpriseStore />} />
+                    <Route path="/badges" element={<Badges />} />
+                    <Route path="/polls" element={<Polls />} />
+                    <Route path="/profile/edit" element={<EditProfile />} />
+                  </Routes>
+                </Sidebar>
+              )
             ) : (
               // Unauthenticated routes
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/onboarding" element={<OnboardingPage />} />
+                {/* Redirect unauthenticated users trying to access onboarding */}
+                <Route path="/onboarding" element={<Navigate to="/login" replace />} />
+                <Route path="*" element={<Navigate to="/login" replace />} />
               </Routes>
             )}
           </NotificationProvider>

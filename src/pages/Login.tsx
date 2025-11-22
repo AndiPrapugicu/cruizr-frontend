@@ -2,16 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaEnvelope, FaLock, FaHeart, FaCar } from "react-icons/fa";
-import api from "../services/api";
-import { jwtDecode } from "jwt-decode";
-
-interface JwtPayload {
-  sub: number;
-  email: string;
-  name: string;
-  iat: number;
-  exp: number;
-}
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -19,6 +10,7 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,41 +23,18 @@ export default function Login() {
     setError("");
 
     try {
-      const res = await api.post("/auth/login", { email, password });
-      const token = res.data.access_token;
-      localStorage.setItem("token", token);
-
-      const decoded = jwtDecode<JwtPayload>(token);
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          userId: decoded.sub,
-          email: decoded.email,
-          name: decoded.name,
-        })
-      );
-
-      // Check if profile is complete
-      try {
-        const profileRes = await api.get("/users/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (profileRes.data.onboardingCompleted) {
-          navigate("/nearby");
-        } else {
-          navigate("/onboarding");
-        }
-      } catch {
-        navigate("/onboarding");
-      }
+      // Use the login function from AuthContext
+      await login(email, password);
+      
+      // AuthContext will handle the redirect automatically
+      // Just force a page reload to let App.tsx handle routing
+      window.location.href = "/";
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
       setError(
         error.response?.data?.message ||
           "Login error. Check your connection and try again."
       );
-    } finally {
       setLoading(false);
     }
   };

@@ -30,11 +30,14 @@ const getPhotoUrl = (photo: string | BackendPhoto): string => {
     }
     // If photo already starts with http/https, use as is
     if (photo.startsWith("http://") || photo.startsWith("https://")) {
+      console.log("📸 Using full URL:", photo);
       return photo;
     }
     // If it's a relative path, prepend the API base URL
     const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
-    return photo.startsWith("/") ? `${baseUrl}${photo}` : `${baseUrl}/${photo}`;
+    const fullUrl = photo.startsWith("/") ? `${baseUrl}${photo}` : `${baseUrl}/${photo}`;
+    console.log("📸 Built URL from relative path:", fullUrl);
+    return fullUrl;
   }
   // For BackendPhoto objects
   return photo.url ? getPhotoUrl(photo.url) : "";
@@ -757,7 +760,7 @@ export default function Profile() {
         </motion.div>
 
         {/* Tabs */}
-        <div className="flex space-x-1 bg-white rounded-2xl p-1 shadow-lg">
+        <div className="flex space-x-1 bg-white rounded-2xl p-1 shadow-lg mt-8">
           {[
             { id: "overview", label: "Prezentare", icon: <FaCamera /> },
             { id: "cars", label: "Mașinile mele", icon: <FaCar /> },

@@ -4,6 +4,8 @@ import { FaCheck, FaHeart, FaArrowLeft, FaSpinner } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useOnboarding } from "./useOnboarding";
 import ProgressBar from "./ProgressBar";
+import api from "../../services/api";
+import TermsModal from "./TermsModal";
 
 const Step7Complete: React.FC = () => {
   const { data, setData, currentStep, setCurrentStep, totalSteps } =
@@ -12,6 +14,8 @@ const Step7Complete: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [isComplete, setIsComplete] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const navigate = useNavigate();
 
   const handleComplete = async () => {
@@ -85,7 +89,17 @@ const Step7Complete: React.FC = () => {
 
       console.log("📦 FormData prepared with direct file uploads");
 
-      // Submit to the new combined endpoint
+      // Check if user is authenticated
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setError("Trebuie să fii autentificat pentru a completa onboarding-ul. Te rugăm să te loghezi.");
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 2000);
+        return;
+      }
+
+      // Submit to authenticated onboarding endpoint
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
       
       // Add timeout for fetch (60 seconds for cold start on Render)
@@ -94,9 +108,12 @@ const Step7Complete: React.FC = () => {
       
       try {
         const response = await fetch(
-          `${apiUrl}/users/onboarding-register`,
+          `${apiUrl}/users/onboarding`,
           {
             method: "POST",
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
             body: formData, // Send FormData directly (no Content-Type header needed)
             signal: controller.signal,
           }
@@ -111,12 +128,23 @@ const Step7Complete: React.FC = () => {
         }
 
         const result = await response.json();
-        console.log("✅ Registration and onboarding completed:", result);
+        console.log("✅ Onboarding completed:", result);
 
-        // Store the token for future requests
-        if (result.access_token) {
-          localStorage.setItem("token", result.access_token);
-          localStorage.setItem("user", JSON.stringify(result.user));
+        // Fetch updated user data to get onboardingCompleted flag
+        try {
+          const userResponse = await api.get("/users/me");
+          console.log("✅ User data after onboarding:", userResponse.data);
+          
+          // Store updated user data with onboardingCompleted flag
+          const completeUserData = {
+            ...userResponse.data,
+            onboardingCompleted: true // Ensure this is set
+          };
+          localStorage.setItem("user", JSON.stringify(completeUserData));
+          console.log("✅ Stored user data:", completeUserData);
+        } catch (userError) {
+          console.error("❌ Error fetching user data:", userError);
+          throw new Error("Nu am putut actualiza datele profilului. Te rugăm să încerci din nou.");
         }
       } catch (fetchError: unknown) {
         clearTimeout(timeoutId);
@@ -138,10 +166,10 @@ const Step7Complete: React.FC = () => {
         bio: "",
       });
 
-      // Show success and redirect
+      // Show success and redirect - force page reload to update AuthContext
       setIsComplete(true);
       setTimeout(() => {
-        navigate("/dashboard");
+        window.location.href = "/dashboard"; // Force full page reload to refresh AuthContext
       }, 2000);
     } catch (error: unknown) {
       console.error("❌ Error completing onboarding:", error);
@@ -285,32 +313,49 @@ const Step7Complete: React.FC = () => {
               transition={{ delay: 0.8 }}
               className="flex items-start space-x-3"
             >
-              <button
+              <motion.button
                 onClick={() => setAgreed(!agreed)}
-                className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center transition-all duration-200 ${
+                whileTap={{ scale: 0.9 }}
+                className={`flex-shrink-0 w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-200 ${
                   agreed
-                    ? "bg-purple-500 border-purple-500"
-                    : "border-gray-300 hover:border-purple-400"
+                    ? "bg-gradient-to-br from-purple-500 to-pink-500 border-transparent"
+                    : "border-gray-300 bg-white"
                 }`}
               >
-                {agreed && <FaCheck className="text-white text-xs" />}
-              </button>
-              <label className="text-sm text-gray-700 leading-relaxed">
+                {agreed && (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  >
+                    <FaCheck className="text-white text-[10px]" />
+                  </motion.div>
+                )}
+              </motion.button>
+              <label className="text-sm text-gray-700 leading-relaxed cursor-pointer" onClick={() => setAgreed(!agreed)}>
                 Sunt de acord cu{" "}
-                <a
-                  href="/terms"
-                  className="text-purple-600 hover:text-purple-700 underline"
+                <span
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowTermsModal(true);
+                  }}
+                  className="text-purple-600 hover:underline cursor-pointer"
                 >
                   Termenii și Condițiile
-                </a>{" "}
+                </span>{" "}
                 și{" "}
-                <a
-                  href="/privacy"
-                  className="text-purple-600 hover:text-purple-700 underline"
+                <span
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowPrivacyModal(true);
+                  }}
+                  className="text-purple-600 hover:underline cursor-pointer"
                 >
                   Politica de Confidențialitate
-                </a>{" "}
-                CarMatch. Confirm că am cel puțin 18 ani.
+                </span>{" "}
+                Cruizr. Confirm că am cel puțin 18 ani.
               </label>
             </motion.div>
 
@@ -372,6 +417,20 @@ const Step7Complete: React.FC = () => {
           </div>
         </motion.div>
       </div>
+
+      {/* Terms & Conditions Modal */}
+      <TermsModal
+        isOpen={showTermsModal}
+        onClose={() => setShowTermsModal(false)}
+        type="terms"
+      />
+
+      {/* Privacy Policy Modal */}
+      <TermsModal
+        isOpen={showPrivacyModal}
+        onClose={() => setShowPrivacyModal(false)}
+        type="privacy"
+      />
     </motion.div>
   );
 };

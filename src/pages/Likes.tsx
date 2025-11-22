@@ -143,7 +143,11 @@ export default function Likes() {
       {currentUsers.length === 0 ? (
         <div className="text-center py-16">
           <div className="text-6xl mb-4">
-            {activeTab === "likes" ? "💕" : "⭐"}
+            {activeTab === "likes" ? (
+              <FaHeart className="inline text-pink-500" />
+            ) : (
+              <FaStar className="inline text-yellow-500" />
+            )}
           </div>
           <h3 className="text-xl font-semibold text-gray-700 mb-2">
             {activeTab === "likes"
@@ -212,12 +216,14 @@ export default function Likes() {
                     </h3>
                     {user.carModel && (
                       <p className="text-gray-600 text-sm flex items-center">
-                        🚗 {user.carModel}
+                        <FaCar className="inline mr-1" />
+                        {user.carModel}
                       </p>
                     )}
                     {user.type === "super-like" && (
                       <p className="text-orange-600 text-xs font-medium mt-1">
-                        Ți-a trimis un Super Like special! ⭐
+                        Ți-a trimis un Super Like special!
+                        <FaStar className="inline ml-1 text-yellow-500" />
                       </p>
                     )}
                   </div>

@@ -21,21 +21,37 @@ import MiniPolls from "../components/MiniPolls";
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
-  const { wallet, loading: walletLoading, recordDailyLogin } = useFuelWallet();
+  const { wallet, loading: walletLoading, recordDailyLogin, refreshWallet } = useFuelWallet();
   const { userBadges, loading: badgesLoading } = useBadges(user?.userId);
 
   const [showStore, setShowStore] = useState(false);
   const [showPolls, setShowPolls] = useState(false);
   const [showPremium, setShowPremium] = useState(false);
+  const [dailyLoginClaimed, setDailyLoginClaimed] = useState(false);
+  const [claimedAmount, setClaimedAmount] = useState(0);
 
   // Record daily login when component mounts
   useEffect(() => {
-    if (user && recordDailyLogin) {
-      recordDailyLogin().catch((error) => {
-        console.error("Failed to record daily login:", error);
-      });
-    }
-  }, [user, recordDailyLogin]);
+    const handleDailyLogin = async () => {
+      if (user && recordDailyLogin && refreshWallet) {
+        try {
+          const result = await recordDailyLogin();
+          if (result.isNewDay && result.earned > 0) {
+            setDailyLoginClaimed(true);
+            setClaimedAmount(result.earned);
+            // Refresh wallet to show updated balance
+            await refreshWallet();
+            // Show success message
+            setTimeout(() => setDailyLoginClaimed(false), 5000);
+          }
+        } catch (error) {
+          console.error("Failed to record daily login:", error);
+        }
+      }
+    };
+    
+    handleDailyLogin();
+  }, [user, recordDailyLogin, refreshWallet]);
 
   if (walletLoading || badgesLoading) {
     return (
@@ -51,6 +67,26 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="w-full h-full overflow-auto bg-gray-50 p-6">
+      {/* Daily Login Success Notification */}
+      {dailyLoginClaimed && (
+        <motion.div
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -50 }}
+          className="fixed top-4 right-4 z-50 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-4 rounded-lg shadow-2xl flex items-center space-x-3"
+        >
+          <div className="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+            <FaBolt className="text-yellow-300 text-xl" />
+          </div>
+          <div>
+            <p className="font-bold">Daily Login Bonus!</p>
+            <p className="text-sm text-white text-opacity-90">
+              +{claimedAmount} Fuel Points earned 🔥
+            </p>
+          </div>
+        </motion.div>
+      )}
+
       {/* Welcome Header */}
       <div className="mb-6">
         <motion.div

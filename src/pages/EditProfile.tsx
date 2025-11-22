@@ -198,7 +198,7 @@ export default function EditProfile() {
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="bg-white rounded-2xl p-6 shadow-lg"
+            className="bg-white p-6 shadow-lg"
           >
             <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
               <FaUser className="mr-2 text-pink-500" />
@@ -261,7 +261,7 @@ export default function EditProfile() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.1 }}
-            className="bg-white rounded-2xl p-6 shadow-lg"
+            className="bg-white p-6 shadow-lg"
           >
             <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
               <FaHeart className="mr-2 text-pink-500" />
@@ -352,41 +352,52 @@ export default function EditProfile() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="bg-white rounded-2xl p-6 shadow-lg"
+            className="bg-white p-6 shadow-lg"
           >
             <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
               <FaCamera className="mr-2 text-pink-500" />
               Fotografii
             </h2>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {profile.photos.slice(0, 6).map((photo, index) => (
                 <div
                   key={index}
-                  className="aspect-square bg-gray-200 rounded-lg overflow-hidden"
+                  className="relative aspect-square bg-gray-100 rounded-xl overflow-hidden group shadow-md hover:shadow-xl transition-shadow duration-300"
                 >
                   <img
                     src={getPhotoUrl(photo)}
                     alt={`Photo ${index + 1}`}
                     className="w-full h-full object-cover"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-3">
+                    <span className="text-white text-sm font-medium">Foto {index + 1}</span>
+                  </div>
                 </div>
               ))}
 
-              {profile.photos.length < 6 && (
-                <div className="aspect-square bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center">
+              {profile.photos.length < 6 && Array.from({ length: 6 - profile.photos.length }).map((_, index) => (
+                <button
+                  key={`empty-${index}`}
+                  onClick={() => navigate('/profile')}
+                  className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center hover:border-pink-400 hover:bg-pink-50 transition-all duration-300 cursor-pointer"
+                >
                   <div className="text-center">
-                    <FaPlus className="text-gray-400 text-xl mb-2 mx-auto" />
-                    <p className="text-xs text-gray-500">Adaugă foto</p>
+                    <FaPlus className="text-gray-400 text-2xl mb-2 mx-auto" />
+                    <p className="text-xs text-gray-500 font-medium">Adaugă foto</p>
                   </div>
-                </div>
-              )}
+                </button>
+              ))}
             </div>
 
-            <p className="text-sm text-gray-600 mt-3">
-              Pentru a edita fotografiile, folosește butonul "Adaugă Fotografii"
-              din pagina de profil.
-            </p>
+            <div className="mt-4 p-4 bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl border border-pink-200">
+              <p className="text-sm text-gray-700 flex items-center">
+                <FaCamera className="mr-2 text-pink-500" />
+                Pentru a edita fotografiile, folosește butonul{" "}
+                <span className="font-semibold text-pink-600 mx-1">"Adaugă Fotografii"</span>
+                din pagina de profil.
+              </p>
+            </div>
           </motion.div>
         </div>
       </div>

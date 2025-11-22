@@ -114,7 +114,7 @@ const Polls: React.FC = () => {
   }
 
   return (
-    <div className="h-full bg-gray-50 p-6">
+    <div className="h-full bg-gray-50 p-6 pb-12">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between">
