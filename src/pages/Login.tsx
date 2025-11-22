@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaEnvelope, FaLock, FaHeart, FaCar } from "react-icons/fa";
 import { useAuth } from "../contexts/AuthContext";

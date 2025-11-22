@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { FaCheck, FaHeart, FaArrowLeft, FaSpinner } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 import { useOnboarding } from "./useOnboarding";
 import ProgressBar from "./ProgressBar";
 import api from "../../services/api";
