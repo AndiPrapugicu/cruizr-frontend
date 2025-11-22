@@ -74,12 +74,12 @@ export default function Store() {
       return;
     }
 
-    setPurchasing(item.id);
+    setPurchasing(item.itemId);
     try {
-      const result = await storeService.purchaseItem(item.id);
+      const result = await storeService.purchaseItem(item.itemId);Id);
 
       if (result.success) {
-        setPurchaseSuccess(item.id);
+        setPurchaseSuccess(item.itemId);
         setTimeout(() => setPurchaseSuccess(null), 3000);
 
         // Refresh data
@@ -337,14 +337,14 @@ export default function Store() {
                 <button
                   onClick={() => handlePurchase(item)}
                   disabled={
-                    purchasing === item.id ||
+                    purchasing === item.itemId ||
                     (item.isPermanent && item.purchased) ||
                     storeService.isOnCooldown(item) ||
                     !storeService.canAfford(item) ||
-                    !storeService.isItemImplemented(item.id)
+                    !storeService.isItemImplemented(item.itemId)
                   }
                   className={`w-full py-3 px-4 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center ${
-                    !storeService.isItemImplemented(item.id)
+                    !storeService.isItemImplemented(item.itemId)
                       ? "bg-gray-400 text-white cursor-not-allowed"
                       : item.isPermanent && item.purchased
                       ? "bg-gray-500 text-white cursor-not-allowed"
@@ -354,14 +354,14 @@ export default function Store() {
                       ? "bg-blue-500 text-white cursor-default"
                       : !storeService.canAfford(item)
                       ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      : purchasing === item.id
+                      : purchasing === item.itemId
                       ? "bg-gray-400 text-white cursor-wait"
                       : selectedCategory === "fuel"
                       ? "bg-orange-500 text-white hover:bg-orange-600"
                       : "bg-purple-500 text-white hover:bg-purple-600"
                   }`}
                 >
-                  {purchasing === item.id ? (
+                  {purchasing === item.itemId ? (
                     <>
                       <motion.div
                         animate={{ rotate: 360 }}
@@ -374,7 +374,7 @@ export default function Store() {
                       />
                       Se cumpără...
                     </>
-                  ) : !storeService.isItemImplemented(item.id) ? (
+                  ) : !storeService.isItemImplemented(item.itemId) ? (
                     <>
                       <FaTools className="mr-2" />
                       Feature In Development
@@ -411,7 +411,7 @@ export default function Store() {
 
               {/* Purchase Success Animation */}
               <AnimatePresence>
-                {purchaseSuccess === item.id && (
+                {purchaseSuccess === item.itemId && (
                   <motion.div
                     initial={{ opacity: 0, scale: 0.5 }}
                     animate={{ opacity: 1, scale: 1 }}

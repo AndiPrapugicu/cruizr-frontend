@@ -1,7 +1,8 @@
 import api from "./api";
 
 export interface StoreItem {
-  id: string;
+  id: number; // Auto-increment ID from database
+  itemId: string; // Unique string identifier
   name: string;
   description: string;
   category: "fuel" | "premium";
@@ -9,8 +10,9 @@ export interface StoreItem {
   price: number;
   currency: "fuel" | "premium";
   icon: string;
-  features: string[];
-  duration?: string;
+  features?: string[];
+  duration?: number; // Duration in hours
+  maxUses?: number;
   usesIncluded?: number;
   active: boolean;
   purchased: boolean;
@@ -18,6 +20,8 @@ export interface StoreItem {
   cooldownUntil?: string;
   isImplemented?: boolean; // Whether the feature is fully implemented
   isPermanent?: boolean; // Whether it's a one-time purchase
+  isActive?: boolean;
+  type?: string;
 }
 
 export interface UserBalance {
@@ -73,7 +77,8 @@ class StoreService {
   private generateFallbackItems(): StoreItem[] {
     return [
       {
-        id: "fuel-basic-50",
+        id: 1,
+        itemId: "fuel-basic-50",
         name: "50 Fuel Points",
         description: "Boost pentru mai multe swipe-uri",
         category: "fuel",
@@ -86,7 +91,8 @@ class StoreService {
         purchased: false,
       },
       {
-        id: "super-like-pack",
+        id: 2,
+        itemId: "super-like-pack",
         name: "Super Like Pack",
         description: "Să îți remarce cineva profilul",
         category: "premium",
