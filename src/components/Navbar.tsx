@@ -77,7 +77,7 @@ export default function Navbar({ className = "" }: NavbarProps) {
             <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-red-500 rounded-full flex items-center justify-center">
               <span className="text-white font-bold text-sm">C</span>
             </div>
-            <span className="text-xl font-bold text-gray-800">CarMatch</span>
+            <span className="text-xl font-bold text-gray-800">Cruizr</span>
           </Link>
         </div>
 

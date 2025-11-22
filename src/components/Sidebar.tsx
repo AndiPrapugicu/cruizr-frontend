@@ -129,7 +129,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                   <span className="text-white font-bold text-lg">C</span>
                 </div>
                 <span className="ml-3 text-xl font-bold gradient-text">
-                  CarMatch
+                  Cruizr
                 </span>
               </motion.div>
             )}
