@@ -76,7 +76,7 @@ export default function Store() {
 
     setPurchasing(item.itemId);
     try {
-      const result = await storeService.purchaseItem(item.itemId);Id);
+      const result = await storeService.purchaseItem(item.itemId);
 
       if (result.success) {
         setPurchaseSuccess(item.itemId);
