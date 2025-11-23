@@ -16,7 +16,7 @@ import {
   FaCar,
   FaUserSlash,
 } from "react-icons/fa";
-import { Globe, Crown, Sparkles } from "lucide-react";
+import { Globe, Crown } from "lucide-react";
 
 // Tipurile pentru datele din server
 interface UserData {
@@ -24,6 +24,7 @@ interface UserData {
   name: string;
   email: string;
   carModel: string;
+  isVip?: boolean;
   // ... alte câmpuri relevante
 }
 
@@ -76,7 +77,6 @@ export default function Settings() {
   const [prefDistance, setPrefDistance] = useState(20);
   const [prefCarBrand, setPrefCarBrand] = useState("");
   const [prefWorldwide, setPrefWorldwide] = useState(false);
-  const [loadingPrefs, setLoadingPrefs] = useState(true);
 
   // EXISTĂ (SAU NU) UN ENDPOINT "/users/me/preferences"
   // Dacă nu, vom folosi PATCH /users/me pentru a salva preferințe în același DTO.

@@ -57,7 +57,7 @@ const Step7Complete: React.FC = () => {
         console.log("📍 User granted location permission, attempting to get coordinates...");
         try {
           if (navigator.geolocation) {
-            await new Promise<void>((resolve, reject) => {
+            await new Promise<void>((resolve) => {
               navigator.geolocation.getCurrentPosition(
                 (position) => {
                   const { latitude, longitude } = position.coords;

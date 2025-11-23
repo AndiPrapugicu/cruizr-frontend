@@ -9,7 +9,6 @@ const Polls: React.FC = () => {
     polls,
     myVotes,
     loading,
-    error,
     createPoll,
     voteOnPoll,
     hasVotedOnPoll,
