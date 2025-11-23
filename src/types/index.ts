@@ -98,6 +98,8 @@ export interface StoreItem {
   price: number;
   currency: "fuel" | "premium";
   category: string;
+  storeCategory?: string; // Real category from database: boosts, likes, customization, etc.
+  subcategory?: string; // Subcategory: visibility, engagement, frames, etc.
   type?: string;
   icon?: string;
   duration?: number;

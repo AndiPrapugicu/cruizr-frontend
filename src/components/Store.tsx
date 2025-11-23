@@ -20,11 +20,16 @@ import { usePowerUps } from "../hooks/usePowerUps";
 import { StoreItem } from "../types";
 
 const STORE_CATEGORIES = {
-  POWER_UPS: "power_ups",
-  PREMIUM_FEATURES: "premium_features",
+  BOOSTS: "boosts",
+  LIKES: "likes",
   CUSTOMIZATION: "customization",
-  BADGES: "badges",
-  SPECIAL: "special",
+  DISCOVERY: "discovery",
+  MESSAGING: "messaging",
+  MATCHING: "matching",
+  TOOLS: "tools",
+  LOCATION: "location",
+  MEMBERSHIP: "membership",
+  PROFILE_ENHANCEMENT: "Profile Enhancement",
 } as const;
 
 interface StoreProps {
@@ -74,8 +79,9 @@ const Store: React.FC<StoreProps> = ({
     "fuel" | "premium" | "inventory"
   >(initialTab);
   const [selectedCategory, setSelectedCategory] = useState<string>(
-    STORE_CATEGORIES.POWER_UPS
+    STORE_CATEGORIES.BOOSTS
   );
+  
   const [purchasing, setPurchasing] = useState<number | null>(null);
   const [notification, setNotification] = useState<{
     show: boolean;
@@ -112,10 +118,59 @@ const Store: React.FC<StoreProps> = ({
     }
   }, [selectedTab, visible, userInventory.length, refreshStoreItems]);
 
-  const filteredItems = storeItems.filter(
-    (item) =>
-      item.currency === selectedTab && item.category === selectedCategory
-  );
+  const filteredItems = storeItems.filter((item) => {
+    const currencyMatch = item.currency === selectedTab;
+    const categoryToCheck = item.storeCategory || item.subcategory || item.category;
+    const categoryMatch = categoryToCheck === selectedCategory;
+    
+    return currencyMatch && categoryMatch;
+  });
+
+  // Debug logging
+  React.useEffect(() => {
+    if (storeItems.length > 0) {
+      console.log('🔍 DEBUG - All store items:', storeItems.slice(0, 3).map(item => ({
+        name: item.name,
+        currency: item.currency,
+        category: item.category,
+        storeCategory: item.storeCategory,
+        subcategory: item.subcategory
+      })));
+      console.log('🔍 DEBUG - Selected tab:', selectedTab);
+      console.log('🔍 DEBUG - Selected category:', selectedCategory);
+      console.log('🔍 DEBUG - Filtered items count:', filteredItems.length);
+      if (filteredItems.length > 0) {
+        console.log('🔍 DEBUG - First filtered item:', {
+          name: filteredItems[0].name,
+          storeCategory: filteredItems[0].storeCategory,
+          subcategory: filteredItems[0].subcategory
+        });
+      }
+    }
+  }, [storeItems, selectedTab, selectedCategory, filteredItems]);
+
+  // Debug logging
+  React.useEffect(() => {
+    if (storeItems.length > 0) {
+      console.log('🔍 DEBUG - All store items:', storeItems.slice(0, 3).map(item => ({
+        name: item.name,
+        currency: item.currency,
+        category: item.category,
+        storeCategory: item.storeCategory,
+        subcategory: item.subcategory
+      })));
+      console.log('🔍 DEBUG - Selected tab:', selectedTab);
+      console.log('🔍 DEBUG - Selected category:', selectedCategory);
+      console.log('🔍 DEBUG - Filtered items count:', filteredItems.length);
+      if (filteredItems.length > 0) {
+        console.log('🔍 DEBUG - First filtered item:', {
+          name: filteredItems[0].name,
+          storeCategory: filteredItems[0].storeCategory,
+          subcategory: filteredItems[0].subcategory
+        });
+      }
+    }
+  }, [storeItems, selectedTab, selectedCategory, filteredItems]);
 
   const handlePurchase = async (item: StoreItem) => {
     if (purchasing || !canPurchaseItem(item.itemId).canPurchase) return;
@@ -289,6 +344,8 @@ const Store: React.FC<StoreProps> = ({
       case "frames":
       case "customization":
       case "profile_frame":
+      case "cosmetic":
+      case "frame":
         return <FaMagic className="text-purple-500" />; // 🎨 palette icon equivalent
       case "visibility":
       case "boosts":
@@ -296,9 +353,11 @@ const Store: React.FC<StoreProps> = ({
         return <FaRocket className="text-blue-500" />; // 👁️ eye icon equivalent
       case "likes":
       case "engagement":
+      case "super_like":
         return <FaStar className="text-red-500" />; // ❤️ heart replacement
       case "tools":
       case "utility":
+      case "rewind":
         return <FaGem className="text-gray-600" />; // 🔧 tools icon equivalent
       case "discovery":
       case "insight":
@@ -308,6 +367,7 @@ const Store: React.FC<StoreProps> = ({
         return <FaRocket className="text-green-500" />; // 📍 map marker equivalent
       case "messaging":
       case "communication":
+      case "priority":
         return <FaBoxOpen className="text-indigo-500" />; // ✉️ envelope equivalent
       case "matching":
         return <FaCheckCircle className="text-pink-500" />; // ⬆️ arrow up equivalent
@@ -315,14 +375,28 @@ const Store: React.FC<StoreProps> = ({
       case "membership":
       case "vip":
         return <FaCrown className="text-yellow-500" />;
-      case STORE_CATEGORIES.POWER_UPS:
+      case "Profile Enhancement":
+        return <FaMagic className="text-purple-500" />;
+      case STORE_CATEGORIES.BOOSTS:
         return <FaRocket className="text-blue-500" />;
-      case STORE_CATEGORIES.PREMIUM_FEATURES:
-        return <FaCrown className="text-yellow-500" />;
+      case STORE_CATEGORIES.LIKES:
+        return <FaStar className="text-red-500" />;
       case STORE_CATEGORIES.CUSTOMIZATION:
         return <FaMagic className="text-purple-500" />;
-      case STORE_CATEGORIES.BADGES:
-        return <FaStar className="text-orange-500" />;
+      case STORE_CATEGORIES.DISCOVERY:
+        return <FaCrown className="text-blue-600" />;
+      case STORE_CATEGORIES.MESSAGING:
+        return <FaBoxOpen className="text-indigo-500" />;
+      case STORE_CATEGORIES.MATCHING:
+        return <FaCheckCircle className="text-pink-500" />;
+      case STORE_CATEGORIES.TOOLS:
+        return <FaGem className="text-gray-600" />;
+      case STORE_CATEGORIES.LOCATION:
+        return <FaRocket className="text-green-500" />;
+      case STORE_CATEGORIES.MEMBERSHIP:
+        return <FaCrown className="text-yellow-500" />;
+      case STORE_CATEGORIES.PROFILE_ENHANCEMENT:
+        return <FaMagic className="text-purple-500" />;
       default:
         return <FaGem className="text-green-500" />;
     }
@@ -330,16 +404,26 @@ const Store: React.FC<StoreProps> = ({
 
   const getCategoryDisplayName = (category: string) => {
     switch (category) {
-      case STORE_CATEGORIES.POWER_UPS:
-        return "Power-ups";
-      case STORE_CATEGORIES.PREMIUM_FEATURES:
-        return "Premium";
+      case STORE_CATEGORIES.BOOSTS:
+        return "Boosts";
+      case STORE_CATEGORIES.LIKES:
+        return "Super Likes";
       case STORE_CATEGORIES.CUSTOMIZATION:
         return "Customizare";
-      case STORE_CATEGORIES.BADGES:
-        return "Badge-uri";
-      case STORE_CATEGORIES.SPECIAL:
-        return "Special";
+      case STORE_CATEGORIES.DISCOVERY:
+        return "Descoperire";
+      case STORE_CATEGORIES.MESSAGING:
+        return "Mesaje";
+      case STORE_CATEGORIES.MATCHING:
+        return "Matching";
+      case STORE_CATEGORIES.TOOLS:
+        return "Instrumente";
+      case STORE_CATEGORIES.LOCATION:
+        return "Locație";
+      case STORE_CATEGORIES.MEMBERSHIP:
+        return "Abonamente";
+      case STORE_CATEGORIES.PROFILE_ENHANCEMENT:
+        return "Profile";
       default:
         return category;
     }

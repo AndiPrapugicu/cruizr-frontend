@@ -1801,8 +1801,10 @@ export default function EnterpriseStore() {
     }
 
     const matchesCategory = item.currency === selectedCategory;
+    // Use storeCategory from backend instead of type
+    const itemCategory = item.storeCategory || item.subcategory || item.type;
     const matchesSubcategory =
-      selectedSubcategory === "all" || item.type === selectedSubcategory;
+      selectedSubcategory === "all" || itemCategory === selectedSubcategory;
     const isNotRealMoney = !item.realMoneyCost || item.realMoneyCost === 0;
 
     return matchesCategory && matchesSubcategory && isNotRealMoney;
@@ -1835,10 +1837,13 @@ export default function EnterpriseStore() {
 
   const subcategories = [
     { id: "all", name: "All Items" },
-    { id: "boost", name: "Boosts" },
-    { id: "super_like", name: "Super Likes" },
-    { id: "rewind", name: "Rewinds" },
-    { id: "profile_frame", name: "Profile Frames" },
+    { id: "boosts", name: "Boosts" },
+    { id: "likes", name: "Super Likes" },
+    { id: "customization", name: "Profile Frames" },
+    { id: "discovery", name: "Discovery" },
+    { id: "membership", name: "Premium Plans" },
+    { id: "location", name: "Travel Mode" },
+    { id: "matching", name: "Unlimited Swipes" },
   ];
 
   const inventoryFilters = [
