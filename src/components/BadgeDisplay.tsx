@@ -10,6 +10,7 @@ import {
   FaUsers,
   FaTrophy,
 } from "react-icons/fa";
+import * as LucideIcons from "lucide-react";
 import { useBadges } from "../hooks/useBadges";
 import { useAuth } from "../contexts/AuthContext";
 import { Badge } from "../types";
@@ -66,6 +67,15 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
   const rarityCounts = countBadgesByRarity();
 
   const getBadgeIcon = (badge: Badge) => {
+    // Get the icon component from lucide-react dynamically
+    const iconName = badge.icon as keyof typeof LucideIcons;
+    const IconComponent = LucideIcons[iconName] as React.ComponentType<any>;
+    
+    if (IconComponent) {
+      return <IconComponent className="w-6 h-6" style={{ color: badge.color }} />;
+    }
+    
+    // Fallback to category-based icons if icon not found
     switch (badge.category) {
       case "cars":
         return <FaCar className="text-blue-500" />;
@@ -188,9 +198,9 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
                 : "border-gray-300 bg-gray-50 grayscale opacity-60"
             }`}
           >
-            /* Rarity indicator */
+            {/* Rarity indicator */}
             {badge.isUnlocked && badge.rarity !== "common" && (
-              <div className="absolute -top-1 -right-1 bg-white rounded-full p-0.5 shadow-sm">
+              <div className="absolute -top-2 -right-2 bg-white rounded-full p-1.5 shadow-md border-2 border-white">
                 {getRarityIcon(badge.rarity)}
               </div>
             )}
@@ -297,13 +307,12 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
                           : "border-gray-200 bg-gray-50 grayscale opacity-60"
                       }`}
                     >
-                      {/* Rarity indicator */}
-                      {badge.isUnlocked &&
-                        badge.rarity !== "common" && (
-                          <div className="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow-md">
-                            {getRarityIcon(badge.rarity)}
-                          </div>
-                        )}
+                      {/* Rarity indicator badge */}
+                      {badge.isUnlocked && badge.rarity !== "common" && (
+                        <div className="absolute -top-2 -right-2 bg-white rounded-full p-1.5 shadow-lg border-2 border-white animate-pulse">
+                          {getRarityIcon(badge.rarity)}
+                        </div>
+                      )}
 
                       <div className="text-center">
                         <div
