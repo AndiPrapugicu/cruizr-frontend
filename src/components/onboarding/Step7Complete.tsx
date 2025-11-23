@@ -541,11 +541,20 @@ const Step7Complete: React.FC = () => {
               </p>
             </div>
 
+            <div className="bg-yellow-50 rounded-xl p-4 mb-6">
+              <p className="text-xs text-yellow-800">
+                <strong>ℹ️ Notă:</strong> Dacă refuzi, vom folosi o locație aproximativă pentru a-ți arăta utilizatori. 
+                Poți actualiza locația oricând din Setări.
+              </p>
+            </div>
+
             <div className="flex space-x-3">
               <button
                 onClick={() => {
                   setLocationGranted(false);
                   setShowLocationPermission(false);
+                  // Continue with onboarding even without location
+                  setTimeout(() => handleComplete(), 100);
                 }}
                 className="flex-1 py-3 px-4 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition"
               >
