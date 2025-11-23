@@ -123,8 +123,6 @@ export default function Settings() {
         setPrefWorldwide(resPrefs.data.worldwide || false);
       } catch (err) {
         console.warn("Nu am putut încărca preferințe:", err);
-      } finally {
-        setLoadingPrefs(false);
       }
 
       // Notificări
