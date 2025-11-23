@@ -153,12 +153,12 @@ const MiniStore: React.FC<MiniStoreProps> = ({ visible, onClose }) => {
             <div className="flex items-center justify-center space-x-6">
               <div className="flex items-center space-x-2 bg-orange-100 text-orange-700 px-4 py-2 rounded-xl">
                 <FaFire />
-                <span className="font-bold">{wallet?.balance || 0}</span>
+                <span className="font-bold">{Math.floor(wallet?.balance || 0)}</span>
                 <span className="text-sm">Fuel</span>
               </div>
               <div className="flex items-center space-x-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-xl">
                 <FaGem />
-                <span className="font-bold">{wallet?.premiumBalance || 0}</span>
+                <span className="font-bold">{Math.floor(wallet?.premiumBalance || 0)}</span>
                 <span className="text-sm">Premium</span>
               </div>
             </div>

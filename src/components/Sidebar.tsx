@@ -204,7 +204,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                   <div>
                     <p className="text-xs text-gray-600">Fuel</p>
                     <p className="font-bold text-orange-600">
-                      {wallet?.balance || 0}
+                      {Math.floor(wallet?.balance || 0)}
                     </p>
                   </div>
                 </div>
@@ -215,7 +215,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                   <div>
                     <p className="text-xs text-gray-600">Premium</p>
                     <p className="font-bold text-purple-600">
-                      {wallet?.premiumBalance || 0}
+                      {Math.floor(wallet?.premiumBalance || 0)}
                     </p>
                   </div>
                 </div>

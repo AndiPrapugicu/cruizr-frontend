@@ -756,13 +756,13 @@ const Store: React.FC<StoreProps> = ({
               <div className="flex items-center bg-white bg-opacity-20 rounded-full px-4 py-2">
                 <span className="text-orange-300 mr-2 text-lg">⛽</span>
                 <span className="font-semibold text-orange-300">
-                  {wallet?.balance || 0} Fuel
+                  {Math.floor(wallet?.balance || 0)} Fuel
                 </span>
               </div>
               <div className="flex items-center bg-white bg-opacity-20 rounded-full px-4 py-2">
                 <span className="text-purple-300 mr-2 text-lg">💎</span>
                 <span className="font-semibold text-purple-300">
-                  {wallet?.premiumBalance || 0} Premium
+                  {Math.floor(wallet?.premiumBalance || 0)} Premium
                 </span>
               </div>
             </div>

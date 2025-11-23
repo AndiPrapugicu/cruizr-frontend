@@ -81,7 +81,7 @@ export default function Likes() {
   const currentUsers = activeTab === "likes" ? likes : superLikes;
 
   return (
-    <div className="p-6 bg-gradient-to-b from-purple-50 via-pink-50 to-red-50 min-h-screen">
+    <div className="p-6 bg-gray-50 min-h-screen">
       {/* Header */}
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
@@ -165,10 +165,10 @@ export default function Likes() {
           {currentUsers.map((user) => (
             <div
               key={user.id}
-              className={`relative overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 ${
+              className={`relative overflow-hidden rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 ${
                 user.type === "super-like"
-                  ? "bg-gradient-to-r from-yellow-100 to-orange-100 border-2 border-yellow-300"
-                  : "bg-white"
+                  ? "bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200"
+                  : "bg-white border border-gray-100"
               }`}
             >
               {/* Super Like Badge */}

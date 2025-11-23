@@ -1173,11 +1173,14 @@ export default function Nearby() {
                                 powerUpError
                               );
                               alert(
-                                "Failed to reveal likes. Please check your inventory or visit the store."
+                                "Nu ai Reveal Likes în inventar! Vizitează Store-ul pentru a cumpăra 'Reveal Likes' și vezi cine ți-a dat like."
                               );
                             }
                           } catch (error) {
                             console.error("❌ Error revealing likes:", error);
+                            alert(
+                              "Nu ai Reveal Likes în inventar! Mergi la Store pentru a cumpăra acest power-up."
+                            );
                           }
                         }
                       }}

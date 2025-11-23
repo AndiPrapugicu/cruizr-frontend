@@ -189,15 +189,8 @@ button {
   cursor: pointer;
   transition: border-color 0.25s, background-color 0.25s, color 0.25s;
 }
-button:hover {
-  border-color: var(--color-primary);
-  background-color: var(--color-primary);
-  color: white;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto var(--color-secondary);
-}
+/* Removed global button:hover - using component-specific styles instead */
+/* Removed global button:focus outline - using component-specific styles */
 
 /* Dark Mode support for light scheme */
 @media (prefers-color-scheme: light) {
@@ -208,14 +201,7 @@ button:focus-visible {
   a:hover {
     color: var(--color-primary);
   }
-  button {
-    background-color: var(--color-bg-dark);
-    color: white;
-  }
-  button:hover {
-    background-color: var(--color-primary);
-    color: white;
-  }
+  /* Removed global button styles in light mode - using component-specific styles */
 }
 
 .scrollbar-thin {

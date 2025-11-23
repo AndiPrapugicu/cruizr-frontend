@@ -10,6 +10,7 @@ import {
   FaLock,
   FaCheck,
 } from "react-icons/fa";
+import * as LucideIcons from "lucide-react";
 import {
   badgeService,
   Badge,
@@ -51,9 +52,12 @@ export default function Badges() {
   };
 
   const getBadgeIcon = (badge: Badge) => {
-    // Use the icon from backend if available, otherwise fallback to category-based icons
-    if (badge.icon) {
-      return <span className="text-2xl">{badge.icon}</span>;
+    // Get the icon component from lucide-react dynamically
+    const iconName = badge.icon as keyof typeof LucideIcons;
+    const IconComponent = LucideIcons[iconName] as React.ComponentType<any>;
+    
+    if (IconComponent) {
+      return <IconComponent className="w-8 h-8" style={{ color: badge.color }} />;
     }
 
     // Fallback based on badge name patterns
@@ -182,7 +186,7 @@ export default function Badges() {
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center ${
                   selectedCategory === category.id
                     ? "bg-yellow-500 text-white"
-                    : "bg-white text-gray-600 hover:bg-gray-100"
+                    : "bg-white text-gray-600 hover:bg-gray-50 hover:shadow-sm"
                 }`}
               >
                 <span className="mr-1">{category.icon}</span>
@@ -333,7 +337,7 @@ export default function Badges() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4"
             onClick={() => setSelectedBadge(null)}
           >
             <motion.div
@@ -405,7 +409,7 @@ export default function Badges() {
 
                 <button
                   onClick={() => setSelectedBadge(null)}
-                  className="w-full mt-6 bg-gray-200 text-gray-800 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors"
+                  className="w-full mt-6 bg-gray-100 text-gray-800 py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
                 >
                   Închide
                 </button>

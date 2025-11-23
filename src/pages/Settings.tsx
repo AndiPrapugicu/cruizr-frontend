@@ -16,6 +16,7 @@ import {
   FaCar,
   FaUserSlash,
 } from "react-icons/fa";
+import { Globe, Crown, Sparkles } from "lucide-react";
 
 // Tipurile pentru datele din server
 interface UserData {
@@ -74,6 +75,8 @@ export default function Settings() {
   const [prefMaxAge, setPrefMaxAge] = useState(100);
   const [prefDistance, setPrefDistance] = useState(20);
   const [prefCarBrand, setPrefCarBrand] = useState("");
+  const [prefWorldwide, setPrefWorldwide] = useState(false);
+  const [loadingPrefs, setLoadingPrefs] = useState(true);
 
   // EXISTĂ (SAU NU) UN ENDPOINT "/users/me/preferences"
   // Dacă nu, vom folosi PATCH /users/me pentru a salva preferințe în același DTO.
@@ -101,19 +104,38 @@ export default function Settings() {
   //   () => localStorage.getItem("language") || "ro"
   // );
 
-  // ==== FETCH NOTIF & BLOCAȚI ON-MOUNT ====
+  // ==== FETCH PREFERENCES, NOTIF & BLOCAȚI ON-MOUNT ====
   useEffect(() => {
     (async () => {
+      // Preferințe
+      try {
+        const resPrefs = await api.get<{
+          minAge: number;
+          maxAge: number;
+          distance: number;
+          preferredCarBrand: string;
+          worldwide: boolean;
+        }>("/users/me/preferences");
+        setPrefMinAge(resPrefs.data.minAge || 18);
+        setPrefMaxAge(resPrefs.data.maxAge || 100);
+        setPrefDistance(resPrefs.data.distance || 20);
+        setPrefCarBrand(resPrefs.data.preferredCarBrand || "");
+        setPrefWorldwide(resPrefs.data.worldwide || false);
+      } catch (err) {
+        console.warn("Nu am putut încărca preferințe:", err);
+      } finally {
+        setLoadingPrefs(false);
+      }
+
       // Notificări
       try {
         const resNotif = await api.get<{
-          swipe: boolean;
-          likes: boolean;
-          messages: boolean;
+          emailNotifications: boolean;
+          pushNotifications: boolean;
         }>("/users/me/notifications");
-        setNotifySwipe(resNotif.data.swipe);
-        setNotifyLikes(resNotif.data.likes);
-        setNotifyMessages(resNotif.data.messages);
+        setNotifySwipe(resNotif.data.emailNotifications);
+        setNotifyLikes(resNotif.data.pushNotifications);
+        setNotifyMessages(resNotif.data.emailNotifications);
       } catch (err) {
         console.warn("Nu am putut încărca notif:", err);
       } finally {
@@ -219,12 +241,20 @@ export default function Settings() {
   const handleSavePreferences = async (e: React.FormEvent) => {
     e.preventDefault();
     setPrefsError("");
+    
+    // Check if user is VIP when trying to enable worldwide
+    if (prefWorldwide && !userData?.isVip) {
+      setPrefsError("Funcția Worldwide este disponibilă doar pentru utilizatorii VIP!");
+      return;
+    }
+    
     try {
       await api.patch("/users/me/preferences", {
         minAge: prefMinAge,
         maxAge: prefMaxAge,
         distance: prefDistance,
         preferredCarBrand: prefCarBrand,
+        worldwide: prefWorldwide,
       });
       alert("Preferences saved successfully.");
     } catch (err) {
@@ -240,9 +270,8 @@ export default function Settings() {
     setNotifError("");
     try {
       await api.patch("/users/me/notifications", {
-        swipe: notifySwipe,
-        likes: notifyLikes,
-        messages: notifyMessages,
+        emailNotifications: notifySwipe,
+        pushNotifications: notifyLikes,
       });
       alert("Notification settings saved.");
     } catch (err) {
@@ -440,7 +469,14 @@ export default function Settings() {
             <div>
               <label className="block mb-2 text-sm font-medium text-gray-700 flex items-center">
                 <FaMapMarkerAlt className="mr-2 text-gray-400" />
-                Distanță maximă: <span className="ml-2 text-pink-600 font-semibold">{prefDistance} km</span>
+                Distanță maximă: <span className="ml-2 text-pink-600 font-semibold flex items-center gap-1">
+                  {prefWorldwide ? (
+                    <>
+                      <Globe className="w-4 h-4" />
+                      Worldwide
+                    </>
+                  ) : `${prefDistance} km`}
+                </span>
               </label>
               <input
                 type="range"
@@ -448,8 +484,46 @@ export default function Settings() {
                 max={200}
                 value={prefDistance}
                 onChange={(e) => setPrefDistance(Number(e.target.value))}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-pink-500"
+                disabled={prefWorldwide}
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-pink-500 disabled:opacity-50 disabled:cursor-not-allowed"
               />
+              
+              {/* VIP Worldwide Toggle */}
+              <div className="mt-4 p-4 border-2 border-dashed rounded-lg" style={{ borderColor: userData?.isVip ? '#F59E0B' : '#D1D5DB' }}>
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={prefWorldwide}
+                    onChange={(e) => {
+                      if (!userData?.isVip && e.target.checked) {
+                        alert("Feature-ul Worldwide este disponibil doar pentru utilizatorii VIP!");
+                        return;
+                      }
+                      setPrefWorldwide(e.target.checked);
+                    }}
+                    className="w-5 h-5 text-yellow-500 border-gray-300 rounded focus:ring-yellow-500 mr-3"
+                  />
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-900 flex items-center gap-2">
+                      <Globe className="w-5 h-5 text-blue-500" />
+                      Worldwide Search
+                      {userData?.isVip ? (
+                        <span className="ml-2 px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-bold rounded flex items-center gap-1">
+                          <Crown className="w-3 h-3" />
+                          VIP
+                        </span>
+                      ) : (
+                        <span className="ml-2 px-2 py-0.5 bg-gray-200 text-gray-600 text-xs font-bold rounded">VIP Only</span>
+                      )}
+                    </p>
+                    <p className="text-sm text-gray-500 mt-1">
+                      {userData?.isVip 
+                        ? "Vezi utilizatori din toată lumea, fără limitări de distanță"
+                        : "Upgrade la VIP pentru a vedea utilizatori din toată lumea"}
+                    </p>
+                  </div>
+                </label>
+              </div>
             </div>
             <div>
               <label className="block mb-2 text-sm font-medium text-gray-700 flex items-center">

@@ -232,7 +232,7 @@ export default function Store() {
             className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
               selectedSubcategory === "all"
                 ? "bg-blue-500 text-white"
-                : "bg-white text-gray-600 hover:bg-gray-100"
+                : "bg-white text-gray-600 hover:bg-gray-50 hover:shadow-md"
             }`}
           >
             Toate
@@ -244,7 +244,7 @@ export default function Store() {
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all capitalize flex items-center ${
                 selectedSubcategory === subcategory
                   ? "bg-blue-500 text-white"
-                  : "bg-white text-gray-600 hover:bg-gray-100"
+                  : "bg-white text-gray-600 hover:bg-gray-50 hover:shadow-sm"
               }`}
             >
               <span className="mr-1">{getItemIcon(subcategory)}</span>

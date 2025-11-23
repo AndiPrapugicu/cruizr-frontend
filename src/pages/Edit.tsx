@@ -320,7 +320,7 @@ export default function Edits() {
                 onClick={() => {
                   if (!carMods.includes(mod)) setCarMods([...carMods, mod]);
                 }}
-                className="px-3 py-1 bg-gray-100 hover:bg-pink-100 text-sm rounded-full border border-gray-300"
+                className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-sm rounded-full border border-gray-300 transition-colors"
               >
                 {mod}
               </button>

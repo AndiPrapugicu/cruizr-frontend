@@ -151,7 +151,7 @@ const Dashboard: React.FC = () => {
             Fuel Points
           </h3>
           <div className="text-3xl font-bold text-orange-600 mb-2">
-            {wallet?.balance || 0}
+            {Math.floor(wallet?.balance || 0)}
           </div>
           <div className="flex items-center justify-between">
             <span className="text-gray-500 text-sm">
@@ -183,7 +183,7 @@ const Dashboard: React.FC = () => {
           </div>
           <h3 className="text-lg font-semibold text-gray-800 mb-1">Premium</h3>
           <div className="text-3xl font-bold text-purple-600 mb-2">
-            {wallet?.premiumBalance || 0}
+            {Math.floor(wallet?.premiumBalance || 0)}
           </div>
           <div className="text-gray-500 text-sm">Premium Points</div>
         </motion.div>
@@ -292,7 +292,7 @@ const Dashboard: React.FC = () => {
             Unlock exclusive benefits and advanced features.
           </p>
           <button
-            className="w-full bg-white bg-opacity-20 backdrop-blur-sm text-purple-500 py-3 px-6 rounded-xl font-semibold hover:bg-yellow-400 hover:text-white-900 transition-all"
+            className="w-full bg-white bg-opacity-20 backdrop-blur-sm text-purple-600 py-3 px-6 rounded-xl font-semibold hover:bg-opacity-30 transition-all"
             onClick={() => setShowPremium(true)}
           >
             Upgrade Now
@@ -410,7 +410,7 @@ const Dashboard: React.FC = () => {
                 Complete your profile and start matching to see activity here
               </p>
               <button
-                onClick={() => (window.location.href = "/discover")}
+                onClick={() => (window.location.href = "/nearby")}
                 className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-2 rounded-lg font-medium hover:from-pink-600 hover:to-purple-600 transition-all"
               >
                 Start Discovering
