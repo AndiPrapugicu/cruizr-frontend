@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { FaCheck, FaHeart, FaArrowLeft, FaSpinner } from "react-icons/fa";
+import { FaCheck, FaHeart, FaArrowLeft, FaSpinner, FaMapMarkerAlt, FaTimes } from "react-icons/fa";
 import { useOnboarding } from "./useOnboarding";
 import ProgressBar from "./ProgressBar";
 import api from "../../services/api";
@@ -15,8 +15,16 @@ const Step7Complete: React.FC = () => {
   const [isComplete, setIsComplete] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+  const [showLocationPermission, setShowLocationPermission] = useState(false);
+  const [locationGranted, setLocationGranted] = useState<boolean | null>(null);
 
   const handleComplete = async () => {
+    // First, show location permission dialog
+    if (locationGranted === null) {
+      setShowLocationPermission(true);
+      return;
+    }
+
     try {
       setLoading(true);
       setError("");
@@ -43,6 +51,41 @@ const Step7Complete: React.FC = () => {
 
       // Add interests as JSON array
       formData.append("interests", JSON.stringify(onboardingData.interests));
+
+      // Try to get user's current location if permission was granted
+      if (locationGranted) {
+        console.log("📍 User granted location permission, attempting to get coordinates...");
+        try {
+          if (navigator.geolocation) {
+            await new Promise<void>((resolve, reject) => {
+              navigator.geolocation.getCurrentPosition(
+                (position) => {
+                  const { latitude, longitude } = position.coords;
+                  formData.append("latitude", String(latitude));
+                  formData.append("longitude", String(longitude));
+                  console.log(`✅ Location obtained: ${latitude}, ${longitude}`);
+                  resolve();
+                },
+                (error) => {
+                  console.warn("⚠️ Could not get location:", error.message);
+                  console.log("📍 Will use default location on backend");
+                  resolve(); // Continue even if location fails
+                },
+                {
+                  timeout: 5000,
+                  maximumAge: 0,
+                  enableHighAccuracy: false,
+                }
+              );
+            });
+          }
+        } catch (locationError) {
+          console.warn("⚠️ Location error:", locationError);
+          console.log("📍 Will use default location on backend");
+        }
+      } else {
+        console.log("📍 User declined location permission, will use default location");
+      }
 
       // Add photo files directly
       onboardingData.photos.forEach((photo: File) => {
@@ -429,6 +472,104 @@ const Step7Complete: React.FC = () => {
         onClose={() => setShowPrivacyModal(false)}
         type="privacy"
       />
+
+      {/* Location Permission Modal */}
+      {showLocationPermission && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => {
+            setLocationGranted(false);
+            setShowLocationPermission(false);
+          }}
+        >
+          <motion.div
+            initial={{ scale: 0.9, y: 20 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.9, y: 20 }}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative"
+          >
+            <button
+              onClick={() => {
+                setLocationGranted(false);
+                setShowLocationPermission(false);
+              }}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition"
+            >
+              <FaTimes />
+            </button>
+
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FaMapMarkerAlt className="text-white text-2xl" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                Permite Accesul la Locație
+              </h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Pentru o experiență mai bună, Cruizr ar dori să știe locația ta aproximativă.
+              </p>
+            </div>
+
+            <div className="bg-purple-50 rounded-xl p-4 mb-6">
+              <h4 className="font-semibold text-purple-900 mb-2 text-sm">
+                De ce avem nevoie de locația ta?
+              </h4>
+              <ul className="space-y-2 text-sm text-purple-800">
+                <li className="flex items-start">
+                  <span className="text-purple-500 mr-2">•</span>
+                  <span>Îți arătăm utilizatori din apropierea ta</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-purple-500 mr-2">•</span>
+                  <span>Calculăm distanța exactă față de potențiale match-uri</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-purple-500 mr-2">•</span>
+                  <span>Îmbunătățim recomandările bazate pe proximitate</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-blue-50 rounded-xl p-4 mb-6">
+              <p className="text-xs text-blue-800">
+                <strong>🔒 Confidențialitate:</strong> Locația ta exactă nu va fi niciodată partajată cu alți utilizatori. 
+                Ei vor vedea doar distanța aproximativă față de tine (ex: "5 km depărtare").
+              </p>
+            </div>
+
+            <div className="flex space-x-3">
+              <button
+                onClick={() => {
+                  setLocationGranted(false);
+                  setShowLocationPermission(false);
+                }}
+                className="flex-1 py-3 px-4 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition"
+              >
+                Nu acum
+              </button>
+              <button
+                onClick={() => {
+                  setLocationGranted(true);
+                  setShowLocationPermission(false);
+                  // Retry handleComplete after permission granted
+                  setTimeout(() => handleComplete(), 100);
+                }}
+                className="flex-1 py-3 px-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl hover:shadow-lg transition"
+              >
+                Permite
+              </button>
+            </div>
+
+            <p className="text-xs text-gray-500 text-center mt-4">
+              Poți schimba această setare oricând din setările aplicației
+            </p>
+          </motion.div>
+        </motion.div>
+      )}
     </motion.div>
   );
 };
