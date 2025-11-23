@@ -65,91 +65,27 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
       setLoading(true);
       setError(null);
 
-      // Fetch different types of notifications
-      const [
-        likesResponse,
-        superLikesResponse,
-        matchesResponse,
-        messagesResponse,
-      ] = await Promise.all([
-        api.get("/matches/received-likes").catch(() => ({ data: [] })),
-        api.get("/matches/received-super-likes").catch(() => ({ data: [] })),
-        api.get("/matches/recent-matches").catch(() => ({ data: [] })),
-        api.get("/messages/unread").catch(() => ({ data: [] })),
-      ]);
+      // Fetch notifications from unified endpoint
+      const response = await api.get("/notifications");
+      
+      const backendNotifications = response.data || [];
 
-      const newNotifications: Notification[] = [];
-
-      // Process likes
-      likesResponse.data.forEach((like: any) => {
-        newNotifications.push({
-          id: `like-${like.id}`,
-          type: "like",
-          title: "New Like! 💕",
-          message: `${like.name} liked your profile`,
-          userId: like.id,
-          userName: like.name,
-          userPhoto: like.imageUrl,
-          timestamp: like.createdAt || new Date().toISOString(),
-          isRead: false,
-        });
-      });
-
-      // Process super likes
-      superLikesResponse.data.forEach((superLike: any) => {
-        newNotifications.push({
-          id: `super-like-${superLike.id}`,
-          type: "super-like",
-          title: "Super Like! ⭐",
-          message: `${superLike.name} sent you a Super Like!`,
-          userId: superLike.id,
-          userName: superLike.name,
-          userPhoto: superLike.imageUrl,
-          timestamp: superLike.receivedAt || new Date().toISOString(),
-          isRead: false,
-        });
-      });
-
-      // Process matches
-      matchesResponse.data.forEach((match: any) => {
-        newNotifications.push({
-          id: `match-${match.id}`,
-          type: "match",
-          title: "It's a Match! 🎉",
-          message: `You and ${match.name} liked each other!`,
-          userId: match.userId,
-          userName: match.name,
-          userPhoto: match.imageUrl,
-          timestamp: match.createdAt || new Date().toISOString(),
-          isRead: false,
-        });
-      });
-
-      // Process messages
-      messagesResponse.data.forEach((message: any) => {
-        newNotifications.push({
-          id: `message-${message.id}`,
-          type: "message",
-          title: "New Message 💬",
-          message: `${message.senderName}: ${message.content.substring(0, 50)}${
-            message.content.length > 50 ? "..." : ""
-          }`,
-          userId: message.senderId,
-          userName: message.senderName,
-          userPhoto: message.senderPhoto,
-          timestamp: message.createdAt || new Date().toISOString(),
-          isRead: false,
-        });
-      });
-
-      // Sort by timestamp (newest first)
-      newNotifications.sort(
-        (a, b) =>
-          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+      // Transform backend notifications to frontend format
+      const transformedNotifications: Notification[] = backendNotifications.map(
+        (notif: any) => ({
+          id: notif.id.toString(),
+          type: notif.type,
+          title: notif.title,
+          message: notif.message,
+          userId: notif.fromUserId,
+          userName: notif.fromUser?.name,
+          userPhoto: notif.imageUrl || notif.fromUser?.imageUrl,
+          timestamp: notif.createdAt,
+          isRead: notif.isRead,
+        })
       );
 
-      // Limit to last 50 notifications
-      setNotifications(newNotifications.slice(0, 50));
+      setNotifications(transformedNotifications);
     } catch (err) {
       console.error("❌ Error fetching notifications:", err);
       setError("Failed to fetch notifications");
@@ -166,8 +102,8 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
         prev.map((n) => (n.id === notificationId ? { ...n, isRead: true } : n))
       );
 
-      // TODO: Send to backend if needed
-      // await api.patch(`/notifications/${notificationId}/read`);
+      // Send to backend
+      await api.patch(`/notifications/${notificationId}/read`);
     } catch (err) {
       console.error("❌ Error marking notification as read:", err);
     }
@@ -177,8 +113,9 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
   const markAllAsRead = async () => {
     try {
       setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
-      // TODO: Send to backend if needed
-      // await api.patch('/notifications/mark-all-read');
+      
+      // Send to backend
+      await api.patch('/notifications/read-all');
     } catch (err) {
       console.error("❌ Error marking all notifications as read:", err);
     }

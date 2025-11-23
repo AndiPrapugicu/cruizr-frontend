@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useFuelWallet } from "../hooks/useFuelWallet";
+import { useNotifications } from "../contexts/NotificationContext";
 import {
   FaHome,
   FaFire,
@@ -43,6 +44,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { wallet } = useFuelWallet();
+  const { notifications, unreadCount, markAsRead } = useNotifications();
   const [collapsed, setCollapsed] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
 
@@ -379,9 +381,11 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                   className="p-2 rounded-lg hover:bg-gray-100 transition-colors relative"
                 >
                   <FaBell className="text-gray-600 text-lg" />
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                    3
-                  </span>
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                      {unreadCount}
+                    </span>
+                  )}
                 </button>
 
                 {/* Notifications Dropdown */}
@@ -407,26 +411,92 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                         </div>
                       </div>
                       <div className="max-h-96 overflow-y-auto">
-                        {/* Notification items */}
-                        <div className="p-4 hover:bg-gray-50 border-b border-gray-100">
-                          <div className="flex items-start gap-3">
-                            <div className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center">
-                              <FaHeart className="text-pink-500 text-sm" />
-                            </div>
-                            <div className="flex-1">
-                              <p className="text-sm font-medium text-gray-800">
-                                New like received!
-                              </p>
-                              <p className="text-xs text-gray-600">
-                                Someone liked your profile
-                              </p>
-                              <p className="text-xs text-gray-400 mt-1">
-                                2 minutes ago
-                              </p>
-                            </div>
+                        {notifications.length === 0 ? (
+                          <div className="p-8 text-center text-gray-500">
+                            <FaBell className="mx-auto text-4xl mb-2 text-gray-300" />
+                            <p>No notifications yet</p>
                           </div>
-                        </div>
-                        {/* Add more notification items */}
+                        ) : (
+                          notifications.map((notif) => {
+                            const getIcon = () => {
+                              switch (notif.type) {
+                                case 'like':
+                                  return <FaHeart className="text-pink-500 text-sm" />;
+                                case 'super-like':
+                                  return <FaStar className="text-yellow-500 text-sm" />;
+                                case 'match':
+                                  return <FaHeart className="text-red-500 text-sm" />;
+                                case 'message':
+                                  return <FaComments className="text-blue-500 text-sm" />;
+                                default:
+                                  return <FaBell className="text-gray-500 text-sm" />;
+                              }
+                            };
+
+                            const getBgColor = () => {
+                              switch (notif.type) {
+                                case 'like':
+                                  return 'bg-pink-100';
+                                case 'super-like':
+                                  return 'bg-yellow-100';
+                                case 'match':
+                                  return 'bg-red-100';
+                                case 'message':
+                                  return 'bg-blue-100';
+                                default:
+                                  return 'bg-gray-100';
+                              }
+                            };
+
+                            const timeAgo = (timestamp: string) => {
+                              const now = new Date();
+                              const notifTime = new Date(timestamp);
+                              const diffMs = now.getTime() - notifTime.getTime();
+                              const diffMins = Math.floor(diffMs / 60000);
+                              const diffHours = Math.floor(diffMins / 60);
+                              const diffDays = Math.floor(diffHours / 24);
+
+                              if (diffDays > 0) return `${diffDays}d ago`;
+                              if (diffHours > 0) return `${diffHours}h ago`;
+                              if (diffMins > 0) return `${diffMins}m ago`;
+                              return 'Just now';
+                            };
+
+                            return (
+                              <div
+                                key={notif.id}
+                                onClick={() => {
+                                  if (!notif.isRead) {
+                                    markAsRead(notif.id);
+                                  }
+                                }}
+                                className={`p-4 hover:bg-gray-50 border-b border-gray-100 cursor-pointer transition-colors ${
+                                  !notif.isRead ? 'bg-blue-50' : ''
+                                }`}
+                              >
+                                <div className="flex items-start gap-3">
+                                  <div className={`w-8 h-8 ${getBgColor()} rounded-full flex items-center justify-center shrink-0`}>
+                                    {getIcon()}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <p className={`text-sm font-medium text-gray-800 ${!notif.isRead ? 'font-bold' : ''}`}>
+                                      {notif.title}
+                                    </p>
+                                    <p className="text-xs text-gray-600 truncate">
+                                      {notif.message}
+                                    </p>
+                                    <p className="text-xs text-gray-400 mt-1">
+                                      {timeAgo(notif.timestamp)}
+                                    </p>
+                                  </div>
+                                  {!notif.isRead && (
+                                    <div className="w-2 h-2 bg-blue-500 rounded-full shrink-0 mt-2"></div>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })
+                        )}
                       </div>
                     </motion.div>
                   )}
