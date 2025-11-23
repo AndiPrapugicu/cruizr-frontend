@@ -177,7 +177,7 @@ export default function ChatPage() {
                 Începe să explorezi și să dai like pentru a găsi match-uri!
               </p>
               <button
-                onClick={() => navigate("/discover")}
+                onClick={() => navigate("/nearby")}
                 className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-full font-semibold shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
               >
                 <FaSearch className="inline mr-2" />

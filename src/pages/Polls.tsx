@@ -22,24 +22,8 @@ const Polls: React.FC = () => {
     duration: 24, // hours
   });
 
-  // Debug logging
-  console.log("🗳️ [Polls] Debug info:", {
-    polls,
-    loading,
-    error,
-    pollsLength: polls?.length || 0,
-  });
-
-  // Enhanced debugging for poll structure
-  if (polls && polls.length > 0) {
-    console.log("🗳️ [Polls] First poll structure:", polls[0]);
-    console.log("🗳️ [Polls] First poll options:", polls[0]?.options);
-  }
-
   const handleCreatePoll = async () => {
     try {
-      console.log("🗳️ [Polls] Creating poll with data:", newPoll);
-
       // Validate data before sending
       const pollData = {
         question: newPoll.question.trim(),
@@ -58,8 +42,6 @@ const Polls: React.FC = () => {
         return;
       }
 
-      console.log("🗳️ [Polls] Sending poll data:", pollData);
-
       await createPoll(pollData);
 
       setShowCreateModal(false);
@@ -69,8 +51,6 @@ const Polls: React.FC = () => {
         category: "general" as PollCategory,
         duration: 24,
       });
-
-      console.log("✅ [Polls] Poll created successfully");
     } catch (err) {
       console.error("❌ [Polls] Error creating poll:", err);
       // Don't close modal if there's an error so user can try again

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import { FaTimes } from "react-icons/fa";
+import { Crown } from "lucide-react";
 
 interface ProfileData {
   id: number;
@@ -115,7 +116,7 @@ export default function ProfilePreview({
               {/* VIP Badge */}
               {profile.isVip && (
                 <div className="flex items-center justify-center bg-yellow-400 text-yellow-800 px-4 py-2 rounded-full mb-4 shadow-lg">
-                  <span className="text-lg mr-2">👑</span>
+                  <Crown className="w-5 h-5 mr-2" />
                   <span className="font-bold text-sm">{profile.vipTitle || 'VIP'}</span>
                 </div>
               )}

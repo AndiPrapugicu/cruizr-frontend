@@ -11,6 +11,7 @@ import {
   FaBolt,
   FaRocket,
 } from "react-icons/fa";
+import { Flame } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useFuelWallet } from "../hooks/useFuelWallet";
 import { useBadges } from "../hooks/useBadges";
@@ -98,8 +99,8 @@ const Dashboard: React.FC = () => {
           </div>
           <div>
             <p className="font-bold">Daily Login Bonus!</p>
-            <p className="text-sm text-white text-opacity-90">
-              +{claimedAmount} Fuel Points earned 🔥
+            <p className="text-sm text-white text-opacity-90 flex items-center">
+              +{claimedAmount} Fuel Points earned <Flame className="ml-1 w-4 h-4" />
             </p>
           </div>
         </motion.div>

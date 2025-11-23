@@ -13,6 +13,7 @@ import {
   FaCheckCircle,
   FaTools,
 } from "react-icons/fa";
+import { Fuel, Gem } from "lucide-react";
 import { useStore } from "../hooks/useStore";
 import { useFuelWallet } from "../hooks/useFuelWallet";
 import { useAuth } from "../contexts/AuthContext";
@@ -125,52 +126,6 @@ const Store: React.FC<StoreProps> = ({
     
     return currencyMatch && categoryMatch;
   });
-
-  // Debug logging
-  React.useEffect(() => {
-    if (storeItems.length > 0) {
-      console.log('🔍 DEBUG - All store items:', storeItems.slice(0, 3).map(item => ({
-        name: item.name,
-        currency: item.currency,
-        category: item.category,
-        storeCategory: item.storeCategory,
-        subcategory: item.subcategory
-      })));
-      console.log('🔍 DEBUG - Selected tab:', selectedTab);
-      console.log('🔍 DEBUG - Selected category:', selectedCategory);
-      console.log('🔍 DEBUG - Filtered items count:', filteredItems.length);
-      if (filteredItems.length > 0) {
-        console.log('🔍 DEBUG - First filtered item:', {
-          name: filteredItems[0].name,
-          storeCategory: filteredItems[0].storeCategory,
-          subcategory: filteredItems[0].subcategory
-        });
-      }
-    }
-  }, [storeItems, selectedTab, selectedCategory, filteredItems]);
-
-  // Debug logging
-  React.useEffect(() => {
-    if (storeItems.length > 0) {
-      console.log('🔍 DEBUG - All store items:', storeItems.slice(0, 3).map(item => ({
-        name: item.name,
-        currency: item.currency,
-        category: item.category,
-        storeCategory: item.storeCategory,
-        subcategory: item.subcategory
-      })));
-      console.log('🔍 DEBUG - Selected tab:', selectedTab);
-      console.log('🔍 DEBUG - Selected category:', selectedCategory);
-      console.log('🔍 DEBUG - Filtered items count:', filteredItems.length);
-      if (filteredItems.length > 0) {
-        console.log('🔍 DEBUG - First filtered item:', {
-          name: filteredItems[0].name,
-          storeCategory: filteredItems[0].storeCategory,
-          subcategory: filteredItems[0].subcategory
-        });
-      }
-    }
-  }, [storeItems, selectedTab, selectedCategory, filteredItems]);
 
   const handlePurchase = async (item: StoreItem) => {
     if (purchasing || !canPurchaseItem(item.itemId).canPurchase) return;
@@ -754,13 +709,13 @@ const Store: React.FC<StoreProps> = ({
             {/* Wallet Balance */}
             <div className="flex items-center gap-4 mt-4">
               <div className="flex items-center bg-white bg-opacity-20 rounded-full px-4 py-2">
-                <span className="text-orange-300 mr-2 text-lg">⛽</span>
+                <Fuel className="text-orange-300 mr-2 w-5 h-5" />
                 <span className="font-semibold text-orange-300">
                   {Math.floor(wallet?.balance || 0)} Fuel
                 </span>
               </div>
               <div className="flex items-center bg-white bg-opacity-20 rounded-full px-4 py-2">
-                <span className="text-purple-300 mr-2 text-lg">💎</span>
+                <Gem className="text-purple-300 mr-2 w-5 h-5" />
                 <span className="font-semibold text-purple-300">
                   {Math.floor(wallet?.premiumBalance || 0)} Premium
                 </span>
@@ -772,24 +727,24 @@ const Store: React.FC<StoreProps> = ({
           <div className="flex border-b">
             <button
               onClick={() => setSelectedTab("fuel")}
-              className={`flex-1 py-4 px-6 font-semibold transition-colors ${
+              className={`flex-1 py-4 px-6 font-semibold transition-colors flex items-center justify-center ${
                 selectedTab === "fuel"
                   ? "border-b-2 border-orange-500 text-orange-500"
                   : "text-gray-600 hover:text-orange-500"
               }`}
             >
-              <span className="inline mr-2 text-lg">⛽</span>
+              <Fuel className="inline mr-2 w-5 h-5" />
               Fuel Store
             </button>
             <button
               onClick={() => setSelectedTab("premium")}
-              className={`flex-1 py-4 px-6 font-semibold transition-colors ${
+              className={`flex-1 py-4 px-6 font-semibold transition-colors flex items-center justify-center ${
                 selectedTab === "premium"
                   ? "border-b-2 border-purple-500 text-purple-500"
                   : "text-gray-600 hover:text-purple-500"
               }`}
             >
-              <span className="inline mr-2 text-lg">💎</span>
+              <Gem className="inline mr-2 w-5 h-5" />
               Premium Store
             </button>
             <button
@@ -1060,13 +1015,9 @@ const Store: React.FC<StoreProps> = ({
                           <div className="flex items-center justify-between">
                             <div className="flex items-center">
                               {item.currency === "fuel" ? (
-                                <span className="text-orange-500 mr-1 text-lg">
-                                  ⛽
-                                </span>
+                                <Fuel className="text-orange-500 mr-1 w-5 h-5" />
                               ) : (
-                                <span className="text-purple-500 mr-1 text-lg">
-                                  💎
-                                </span>
+                                <Gem className="text-purple-500 mr-1 w-5 h-5" />
                               )}
                               <span className="font-bold text-lg">
                                 {item.price}

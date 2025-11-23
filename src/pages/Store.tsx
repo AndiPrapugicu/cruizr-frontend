@@ -17,6 +17,7 @@ import {
   FaArrowUp,
   FaPalette,
 } from "react-icons/fa";
+import { Store as StoreIcon, Fuel, Gem } from "lucide-react";
 import { storeService, StoreItem, UserBalance } from "../services/storeService";
 
 export default function Store() {
@@ -171,7 +172,9 @@ export default function Store() {
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="px-8 py-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">🏪 Store</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+            <StoreIcon className="w-8 h-8 mr-2" /> Store
+          </h1>
           <p className="text-gray-600">
             Îmbunătățește-ți experiența cu articole premium
           </p>
@@ -179,11 +182,11 @@ export default function Store() {
           {/* Balance Display */}
           <div className="flex items-center space-x-6 mt-4">
             <div className="flex items-center bg-orange-100 text-orange-800 px-4 py-2 rounded-full">
-              <span className="mr-2 text-lg">⛽</span>
+              <Fuel className="mr-2 w-5 h-5" />
               <span className="font-semibold">{userBalance.fuel} Fuel</span>
             </div>
             <div className="flex items-center bg-purple-100 text-purple-800 px-4 py-2 rounded-full">
-              <span className="mr-2 text-lg">💎</span>
+              <Gem className="mr-2 w-5 h-5" />
               <span className="font-semibold">
                 {userBalance.premium} Premium
               </span>
@@ -206,7 +209,7 @@ export default function Store() {
                 : "text-gray-600 hover:text-gray-900"
             }`}
           >
-            <span className="mr-2 text-lg">⛽</span>
+            <Fuel className="mr-2 w-5 h-5" />
             Fuel Items
           </button>
           <button
@@ -220,7 +223,7 @@ export default function Store() {
                 : "text-gray-600 hover:text-gray-900"
             }`}
           >
-            <span className="mr-2 text-lg">💎</span>
+            <Gem className="mr-2 w-5 h-5" />
             Premium Items
           </button>
         </div>
@@ -286,8 +289,13 @@ export default function Store() {
                 <div className="flex items-center justify-between">
                   <div className="text-2xl">{item.icon}</div>
                   <div className="text-right">
-                    <div className="text-xl font-bold">
-                      {item.price} {item.currency === "fuel" ? "⛽" : "💎"}
+                    <div className="text-xl font-bold flex items-center justify-end">
+                      {item.price}{" "}
+                      {item.currency === "fuel" ? (
+                        <Fuel className="ml-1 w-5 h-5" />
+                      ) : (
+                        <Gem className="ml-1 w-5 h-5" />
+                      )}
                     </div>
                     {item.duration && (
                       <div className="text-xs opacity-90">{item.duration}</div>
