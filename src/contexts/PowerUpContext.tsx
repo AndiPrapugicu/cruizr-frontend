@@ -131,9 +131,14 @@ export function PowerUpProvider({ children }: { children: React.ReactNode }) {
         );
         setRewindsRemaining(totalRewinds);
 
-        // Check for active profile frames
+        // Check for active profile frames (check both 'profile_frame' and 'frames' subcategory)
         const profileFrameFeature = features.find(
-          (f) => f.storeItem?.subcategory === "profile_frame" && f.isActive
+          (f) => 
+            (f.storeItem?.subcategory === "profile_frame" || 
+             f.storeItem?.subcategory === "frames" ||
+             f.storeItem?.type === "frames" ||
+             f.itemId?.includes("frame")) && 
+            f.isActive
         );
         if (profileFrameFeature) {
           console.log(
