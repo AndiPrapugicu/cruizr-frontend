@@ -21,7 +21,14 @@ import MiniPolls from "../components/MiniPolls";
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
-  const { wallet, loading: walletLoading, recordDailyLogin, refreshWallet } = useFuelWallet();
+  const { 
+    wallet, 
+    transactions,
+    loading: walletLoading, 
+    recordDailyLogin, 
+    refreshWallet,
+    loadTransactions,
+  } = useFuelWallet();
   const { userBadges, loading: badgesLoading } = useBadges(user?.userId);
 
   const [showStore, setShowStore] = useState(false);
@@ -41,6 +48,10 @@ const Dashboard: React.FC = () => {
             setClaimedAmount(result.earned);
             // Refresh wallet to show updated balance
             await refreshWallet();
+            // Reload transactions to show new login
+            if (loadTransactions) {
+              await loadTransactions(1, 10);
+            }
             // Show success message
             setTimeout(() => setDailyLoginClaimed(false), 5000);
           }
@@ -51,7 +62,14 @@ const Dashboard: React.FC = () => {
     };
     
     handleDailyLogin();
-  }, [user, recordDailyLogin, refreshWallet]);
+  }, [user, recordDailyLogin, refreshWallet, loadTransactions]);
+
+  // Load recent transactions
+  useEffect(() => {
+    if (user && loadTransactions) {
+      loadTransactions(1, 10);
+    }
+  }, [user, loadTransactions]);
 
   if (walletLoading || badgesLoading) {
     return (
@@ -303,73 +321,102 @@ const Dashboard: React.FC = () => {
           Recent Activity
         </h3>
         <div className="space-y-3">
-          {/* Daily Login */}
-          <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
-            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-              <FaBolt className="text-green-500" />
-            </div>
-            <div className="flex-1">
-              <p className="font-medium text-gray-800">Daily Login Bonus</p>
-              <p className="text-sm text-gray-600">
-                +5 Fuel Points • Streak: {wallet?.streakDays || 1} days
-              </p>
-            </div>
-            <span className="text-xs text-gray-500">Today</span>
-          </div>
+          {transactions && transactions.length > 0 ? (
+            transactions.slice(0, 5).map((transaction, index) => {
+              // Helper to format time ago
+              const getTimeAgo = (date: string) => {
+                const now = new Date();
+                const txDate = new Date(date);
+                const diffMs = now.getTime() - txDate.getTime();
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
 
-          {/* Badge Achievement */}
-          {userBadges && userBadges.length > 0 && (
-            <div className="flex items-center gap-3 p-3 bg-yellow-50 rounded-lg">
-              <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
-                <FaStar className="text-yellow-500" />
-              </div>
-              <div className="flex-1">
-                <p className="font-medium text-gray-800">Badge Earned</p>
-                <p className="text-sm text-gray-600">
-                  Unlocked "{userBadges[userBadges.length - 1]?.badge?.name}" badge
-                </p>
-              </div>
-              <span className="text-xs text-gray-500">Recent</span>
-            </div>
-          )}
+                if (diffMins < 1) return "Just now";
+                if (diffMins < 60) return `${diffMins}m ago`;
+                if (diffHours < 24) return `${diffHours}h ago`;
+                if (diffDays < 7) return `${diffDays}d ago`;
+                return txDate.toLocaleDateString();
+              };
 
-          {/* Premium Points */}
-          {wallet?.premiumBalance && wallet.premiumBalance > 0 && (
-            <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
-              <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                <FaGem className="text-purple-500" />
-              </div>
-              <div className="flex-1">
-                <p className="font-medium text-gray-800">Premium Balance</p>
-                <p className="text-sm text-gray-600">
-                  {wallet.premiumBalance} Premium Points available
-                </p>
-              </div>
-              <span className="text-xs text-gray-500">Current</span>
-            </div>
-          )}
+              // Helper to get icon and color based on transaction type/reason
+              const getTransactionDisplay = () => {
+                if (transaction.type === "earned") {
+                  switch (transaction.reason) {
+                    case "daily_login":
+                      return {
+                        icon: <FaBolt className="text-green-500" />,
+                        bg: "bg-green-50",
+                        iconBg: "bg-green-100",
+                        title: "Daily Login Bonus",
+                        description: `+${transaction.amount} Fuel Points`,
+                      };
+                    case "profile_completed":
+                      return {
+                        icon: <FaStar className="text-yellow-500" />,
+                        bg: "bg-yellow-50",
+                        iconBg: "bg-yellow-100",
+                        title: "Profile Completed",
+                        description: `+${transaction.amount} Fuel Points`,
+                      };
+                    default:
+                      return {
+                        icon: <FaBolt className="text-blue-500" />,
+                        bg: "bg-blue-50",
+                        iconBg: "bg-blue-100",
+                        title: "Fuel Earned",
+                        description: `+${transaction.amount} Fuel Points`,
+                      };
+                  }
+                } else {
+                  // spent
+                  return {
+                    icon: <FaStore className="text-purple-500" />,
+                    bg: "bg-purple-50",
+                    iconBg: "bg-purple-100",
+                    title: "Purchase",
+                    description: `-${transaction.amount} Fuel Points`,
+                  };
+                }
+              };
 
-          {/* Call to Action if no activity */}
-          {!wallet?.lastActivity &&
-            (!userBadges || userBadges.length === 0) && (
-              <div className="text-center py-8">
-                <div className="w-16 h-16 bg-gradient-to-r from-pink-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FaRocket className="text-2xl text-pink-500" />
+              const display = getTransactionDisplay();
+
+              return (
+                <div key={transaction.id || index} className={`flex items-center gap-3 p-3 ${display.bg} rounded-lg`}>
+                  <div className={`w-8 h-8 ${display.iconBg} rounded-full flex items-center justify-center`}>
+                    {display.icon}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-800">{display.title}</p>
+                    <p className="text-sm text-gray-600">{display.description}</p>
+                  </div>
+                  <span className="text-xs text-gray-500">
+                    {getTimeAgo(transaction.createdAt)}
+                  </span>
                 </div>
-                <p className="text-gray-800 font-medium mb-2">
-                  Start Your Journey!
-                </p>
-                <p className="text-gray-600 text-sm mb-4">
-                  Complete your profile and start matching to see activity here
-                </p>
-                <button
-                  onClick={() => (window.location.href = "/discover")}
-                  className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-2 rounded-lg font-medium hover:from-pink-600 hover:to-purple-600 transition-all"
-                >
-                  Start Discovering
-                </button>
+              );
+            })
+          ) : (
+            /* Call to Action if no activity */
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-gradient-to-r from-pink-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FaRocket className="text-2xl text-pink-500" />
               </div>
-            )}
+              <p className="text-gray-800 font-medium mb-2">
+                Start Your Journey!
+              </p>
+              <p className="text-gray-600 text-sm mb-4">
+                Complete your profile and start matching to see activity here
+              </p>
+              <button
+                onClick={() => (window.location.href = "/discover")}
+                className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-2 rounded-lg font-medium hover:from-pink-600 hover:to-purple-600 transition-all"
+              >
+                Start Discovering
+              </button>
+            </div>
+          )}
         </div>
       </motion.div>
 
