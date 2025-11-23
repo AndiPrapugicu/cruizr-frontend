@@ -72,7 +72,8 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
     const IconComponent = LucideIcons[iconName] as React.ComponentType<any>;
     
     if (IconComponent) {
-      return <IconComponent className="w-6 h-6" style={{ color: badge.color ?? '#666' }} />;
+      const iconColor = badge.color ? badge.color : '#666';
+      return <IconComponent className="w-6 h-6" style={{ color: iconColor }} />;
     }
     
     // Fallback to category-based icons if icon not found
