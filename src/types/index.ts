@@ -4,6 +4,7 @@ export interface Badge {
   name: string;
   description: string;
   icon: string;
+  color?: string;
   category: string;
   rarity: string;
   requirements: string;
