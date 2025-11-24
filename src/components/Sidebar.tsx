@@ -49,6 +49,9 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMobileMoreMenu, setShowMobileMoreMenu] = useState(false);
 
+  // Check if we're in an individual chat (hide bottom nav on mobile)
+  const isInIndividualChat = location.pathname.startsWith('/chat/') && location.pathname !== '/chat';
+
   const menuItems = [
     {
       path: "/dashboard",
@@ -528,8 +531,9 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
         <main className="flex-1 h-full overflow-y-auto">{children}</main>
       </div>
 
-      {/* Mobile Bottom Navigation - Hidden on Desktop */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 shadow-lg safe-area-pb">
+      {/* Mobile Bottom Navigation - Hidden on Desktop and in individual chat */}
+      {!isInIndividualChat && (
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 shadow-lg safe-area-pb">
         <div className="flex justify-around items-center h-16 px-2">
           {/* Main 4 navigation items */}
           {menuItems.slice(0, 4).map((item) => {
@@ -678,6 +682,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
           )}
         </AnimatePresence>
       </div>
+      )}
     </div>
   );
 };
