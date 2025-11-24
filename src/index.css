@@ -55,6 +55,16 @@ body {
   }
 }
 
+/* Root container fix for all mobile browsers */
+#root {
+  width: 100%;
+  height: 100vh;
+  height: -webkit-fill-available;
+  /* Support for modern browsers with dynamic viewport */
+  height: 100dvh;
+  overflow: hidden;
+}
+
 /* Custom animations for dating app */
 @keyframes blob {
   0% {
@@ -536,30 +546,54 @@ button:not([class*="bg-gradient"]):not([class*="rounded-xl"]) {
   .chat-mobile-container {
     height: 100vh;
     height: -webkit-fill-available;
+    /* Dynamic viewport for browsers with collapsible UI */
+    height: 100dvh;
+    /* Fallback to custom property for precise control */
+    height: calc(var(--vh, 1vh) * 100);
     display: flex;
     flex-direction: column;
     position: relative;
+    overflow: hidden;
   }
   
   .chat-header-mobile {
     flex-shrink: 0;
-    position: sticky;
-    top: 0;
+    position: relative;
     z-index: 10;
+    /* Add safe area for notch */
+    padding-top: max(env(safe-area-inset-top, 0px), 0px);
   }
   
   .chat-messages-mobile {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
+    /* Ensure messages don't get cut off */
+    min-height: 0;
   }
   
   .chat-input-mobile {
     flex-shrink: 0;
-    position: sticky;
-    bottom: 0;
+    position: relative;
     z-index: 10;
-    padding-bottom: env(safe-area-inset-bottom, 12px);
+    /* Combine safe area with extra padding for browser UI */
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+  }
+  
+  /* Input field specific fixes */
+  .chat-input-mobile input {
+    font-size: 16px !important; /* Prevent zoom on iOS */
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  
+  /* Chrome specific fix for bottom navbar */
+  @supports (-webkit-appearance:none) {
+    .chat-mobile-container {
+      /* Extra padding for Chrome's bottom bar */
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
   }
 }
 

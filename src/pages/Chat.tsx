@@ -82,6 +82,33 @@ export default function Chat({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Handle viewport resize for mobile keyboard
+  useEffect(() => {
+    const handleResize = () => {
+      // Force viewport recalculation when keyboard appears/disappears
+      const vh = window.visualViewport?.height || window.innerHeight;
+      document.documentElement.style.setProperty('--vh', `${vh * 0.01}px`);
+    };
+
+    handleResize(); // Initial call
+    
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleResize);
+      window.visualViewport.addEventListener('scroll', handleResize);
+    } else {
+      window.addEventListener('resize', handleResize);
+    }
+
+    return () => {
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', handleResize);
+        window.visualViewport.removeEventListener('scroll', handleResize);
+      } else {
+        window.removeEventListener('resize', handleResize);
+      }
+    };
+  }, []);
+
   // 3. Fetch profil celuilalt user (avatar + mașină)
   useEffect(() => {
     api
@@ -280,17 +307,21 @@ export default function Chat({
       <motion.div
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="chat-input-mobile md:shrink-0 p-3 sm:p-4 bg-white border-t border-gray-200 shadow-lg"
+        className="chat-input-mobile md:shrink-0 bg-white border-t border-gray-200 shadow-lg"
+        style={{ touchAction: 'manipulation' }}
       >
-        <div className="flex items-center gap-2 sm:gap-3 max-w-4xl mx-auto">
+        <div className="flex items-center gap-2 sm:gap-3 max-w-4xl mx-auto px-3 py-3 sm:px-4 sm:py-4">
           <div className="flex-1 min-w-0 relative">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="w-full p-3 sm:p-4 pr-10 sm:pr-12 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 text-gray-800 placeholder-gray-500 transition-all duration-200 text-base"
+              className="w-full p-3 sm:p-4 pr-10 sm:pr-12 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 text-gray-800 placeholder-gray-500 transition-all duration-200"
               placeholder="Scrie un mesaj..."
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="sentences"
             />
             {input.trim() && (
               <motion.div
@@ -309,6 +340,7 @@ export default function Chat({
             onClick={handleSend}
             disabled={!input.trim()}
             className="flex-shrink-0 p-3 sm:p-4 bg-pink-500 hover:bg-pink-600 text-white rounded-2xl shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14"
+            style={{ touchAction: 'manipulation' }}
           >
             <FaPaperPlane className="text-base sm:text-lg" />
           </motion.button>
