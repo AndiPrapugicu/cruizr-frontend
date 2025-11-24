@@ -45,13 +45,6 @@ export default function Chat({
   
   // Get the username that matches what backend sends (from JWT payload)
   const currentUserName = user.name || user.email || "";
-  
-  // Debug: Log pentru a vedea ce avem
-  console.log("🔍 Chat Debug:", {
-    userFromLocalStorage: user,
-    currentUserName,
-    userNameExists: !!user.name,
-  });
 
   const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -132,12 +125,12 @@ export default function Chat({
   };
 
   return (
-    <div className="flex flex-col w-full h-screen bg-white text-gray-900 fixed inset-0 md:relative md:h-full">
+    <div className="flex flex-col w-full h-full md:h-full bg-white text-gray-900">
       {/* ==== Header-ul cu avatar, nume, mașină și buton Raportează ==== */}
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="flex items-center justify-between py-3 sm:py-4 px-3 sm:px-6 bg-white border-b border-gray-100 shadow-sm shrink-0"
+        className="flex items-center justify-between py-3 sm:py-4 px-3 sm:px-6 bg-white border-b border-gray-100 shadow-sm shrink-0 sticky top-0 z-10"
       >
         <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
           {/* Back Button */}
@@ -237,12 +230,6 @@ export default function Chat({
         <AnimatePresence>
           {messages.map((msg, index) => {
             const isMe = msg.from === currentUserName;
-            console.log(`📨 Message comparison:`, {
-              msgFrom: msg.from,
-              currentUserName,
-              isMe,
-              messageText: msg.text.substring(0, 20),
-            });
             return (
               <motion.div
                 key={msg.id}
@@ -293,7 +280,7 @@ export default function Chat({
       <motion.div
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="p-3 sm:p-4 bg-white border-t border-gray-200 shadow-lg shrink-0"
+        className="p-3 sm:p-4 bg-white border-t border-gray-200 shadow-lg shrink-0 sticky bottom-0 z-10"
         style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}
       >
         <div className="flex items-end space-x-2 sm:space-x-3 max-w-4xl mx-auto">
