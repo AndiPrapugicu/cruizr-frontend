@@ -282,21 +282,21 @@ export default function Chat({
         animate={{ y: 0, opacity: 1 }}
         className="chat-input-mobile md:shrink-0 p-3 sm:p-4 bg-white border-t border-gray-200 shadow-lg"
       >
-        <div className="flex items-end space-x-2 sm:space-x-3 max-w-4xl mx-auto">
-          <div className="flex-1 relative">
+        <div className="flex items-center gap-2 sm:gap-3 max-w-4xl mx-auto">
+          <div className="flex-1 min-w-0 relative">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="w-full p-3 sm:p-4 pr-10 sm:pr-12 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 text-gray-800 placeholder-gray-500 transition-all duration-200 text-sm sm:text-base"
+              className="w-full p-3 sm:p-4 pr-10 sm:pr-12 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 text-gray-800 placeholder-gray-500 transition-all duration-200 text-base"
               placeholder="Scrie un mesaj..."
             />
             {input.trim() && (
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
               >
                 <FaHeart className="text-pink-500 text-lg" />
               </motion.div>
@@ -308,7 +308,7 @@ export default function Chat({
             whileTap={{ scale: 0.95 }}
             onClick={handleSend}
             disabled={!input.trim()}
-            className="p-3 sm:p-4 bg-pink-500 hover:bg-pink-600 text-white rounded-2xl shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center min-w-[48px] sm:min-w-[56px] min-h-[48px] sm:min-h-[56px]"
+            className="flex-shrink-0 p-3 sm:p-4 bg-pink-500 hover:bg-pink-600 text-white rounded-2xl shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14"
           >
             <FaPaperPlane className="text-base sm:text-lg" />
           </motion.button>
