@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '../components/atoms/Button';
 import { Input } from '../components/atoms/Input';
 import { Avatar } from '../components/atoms/Avatar';
@@ -16,6 +16,10 @@ import { SearchBar } from '../components/molecules/SearchBar';
 // import { ChatList } from '../components/organisms/ChatList';
 // import { StoreGrid } from '../components/organisms/StoreGrid';
 import { HeartIcon, ChatBubbleLeftIcon } from '@heroicons/react/24/outline';
+import { useResponsive } from '../hooks/useMediaQuery';
+import { ResponsiveLayout } from '../components/templates/ResponsiveLayout';
+import { PageContainer } from '../components/templates/PageTransition';
+import { Toast } from '../components/molecules/Toast';
 
 /**
  * ComponentShowcase - Pagină demonstrativă cu toate componentele

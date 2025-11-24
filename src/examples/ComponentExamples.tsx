@@ -3,7 +3,6 @@
  * Ghid rapid pentru implementare
  */
 
-import React from 'react';
 import {
   ResponsiveLayout,
   PageContainer,
@@ -11,7 +10,8 @@ import {
   Card,
   ProfileCard,
   CarGrid,
-  StoreGrid,
+  Input,
+  useResponsive,
 } from '@/components';
 
 // ==================== EXAMPLE 1: Basic Page Layout ====================
@@ -60,9 +60,9 @@ export function ProfileExample() {
       <PageContainer title="Profile">
         <ProfileCard
           profile={profile}
-          onLike={(id) => console.log('Liked:', id)}
-          onDislike={(id) => console.log('Passed:', id)}
-          onMessage={(id) => console.log('Message:', id)}
+          onLike={(id: string) => console.log('Liked:', id)}
+          onDislike={(id: string) => console.log('Passed:', id)}
+          onMessage={(id: string) => console.log('Message:', id)}
           showActions
         />
       </PageContainer>
@@ -93,7 +93,7 @@ export function CarGalleryExample() {
       >
         <CarGrid
           cars={cars}
-          onCarClick={(id) => console.log('Car:', id)}
+          onCarClick={(id: string) => console.log('Car:', id)}
         />
       </PageContainer>
     </ResponsiveLayout>
@@ -101,37 +101,36 @@ export function CarGalleryExample() {
 }
 
 // ==================== EXAMPLE 4: Store ====================
-export function StoreExample() {
-  const items = [
-    {
-      id: '1',
-      name: 'VIP Badge',
-      description: 'Stand out with VIP status',
-      price: 999,
-      currency: 'coins' as const,
-      category: 'Premium',
-      discount: 20,
-      popular: true,
-      icon: '👑',
-    },
-    // ... more items
-  ];
+// Note: StoreGrid component is not yet implemented
+// export function StoreExample() {
+//   const items = [
+//     {
+//       id: '1',
+//       name: 'VIP Badge',
+//       description: 'Stand out with VIP status',
+//       price: 999,
+//       currency: 'coins' as const,
+//       category: 'Premium',
+//       discount: 20,
+//       popular: true,
+//       icon: '👑',
+//     },
+//     // ... more items
+//   ];
 
-  return (
-    <ResponsiveLayout>
-      <PageContainer
-        title="Store"
-        subtitle="Buy power-ups and features"
-      >
-        <StoreGrid
-          items={items}
-          userBalance={5000}
-          onPurchase={(id) => console.log('Purchase:', id)}
-        />
-      </PageContainer>
-    </ResponsiveLayout>
-  );
-}
+//   return (
+//     <ResponsiveLayout>
+//       <PageContainer
+//         title="Store"
+//         subtitle="Buy power-ups and features"
+//       >
+//         <Card>
+//           <p>Store Grid component will be implemented soon</p>
+//         </Card>
+//       </PageContainer>
+//     </ResponsiveLayout>
+//   );
+// }
 
 // ==================== EXAMPLE 5: Responsive Hook Usage ====================
 export function ResponsiveExample() {
@@ -178,8 +177,6 @@ export function FormExample() {
             />
             <Input
               label="Bio"
-              as="textarea"
-              rows={4}
               placeholder="Tell us about yourself..."
             />
             <div className="flex gap-3">

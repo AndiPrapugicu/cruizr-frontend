@@ -47,7 +47,6 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
   const { notifications, unreadCount, markAsRead } = useNotifications();
   const [collapsed, setCollapsed] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showMobileMoreMenu, setShowMobileMoreMenu] = useState(false);
 
   const menuItems = [

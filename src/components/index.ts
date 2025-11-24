@@ -6,18 +6,18 @@
  */
 
 // ========== HOOKS ==========
-export { useMediaQuery, useResponsive, breakpoints } from './hooks/useMediaQuery';
-export { useDeviceDetect } from './hooks/useDeviceDetect';
-export type { DeviceType, DeviceInfo } from './hooks/useDeviceDetect';
+export { useMediaQuery, useResponsive, breakpoints } from '../hooks/useMediaQuery';
+export { useDeviceDetect } from '../hooks/useDeviceDetect';
+export type { DeviceType, DeviceInfo } from '../hooks/useDeviceDetect';
 
 // ========== ATOMS ==========
-export * from './components/atoms';
+export * from './atoms';
 
 // ========== MOLECULES ==========
-export * from './components/molecules';
+export * from './molecules';
 
 // ========== ORGANISMS ==========
-export * from './components/organisms';
+export * from './organisms';
 
 // ========== TEMPLATES ==========
-export * from './components/templates';
+export * from './templates';
