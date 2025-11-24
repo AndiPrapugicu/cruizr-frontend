@@ -1,28 +1,20 @@
 import React, { useState } from 'react';
-import {
-  ResponsiveLayout,
-  PageContainer,
-  Button,
-  Input,
-  Avatar,
-  Badge,
-  Card,
-  CardHeader,
-  CardBody,
-  Modal,
-  Toast,
-  SearchBar,
-  TabBar,
-  CarCard,
-  ProfileCard,
-  CarGrid,
-  ChatList,
-  StoreGrid,
-  Typography,
-  Switch,
-  Checkbox,
-} from '@/components';
-import { useResponsive } from '@/hooks/useMediaQuery';
+import { Button } from '../components/atoms/Button';
+import { Input } from '../components/atoms/Input';
+import { Avatar } from '../components/atoms/Avatar';
+import { Badge } from '../components/atoms/Badge';
+import { Typography } from '../components/atoms/Typography';
+import { Switch } from '../components/atoms/Switch';
+import { Checkbox } from '../components/atoms/Checkbox';
+import { Card, CardHeader, CardBody } from '../components/molecules/Card';
+import { Modal } from '../components/molecules/Modal';
+import { SearchBar } from '../components/molecules/SearchBar';
+// import { TabBar } from '../components/molecules/TabBar';
+// import { CarCard } from '../components/molecules/CarCard';
+// import { ProfileCard } from '../components/molecules/ProfileCard';
+// import { CarGrid } from '../components/organisms/CarGrid';
+// import { ChatList } from '../components/organisms/ChatList';
+// import { StoreGrid } from '../components/organisms/StoreGrid';
 import { HeartIcon, ChatBubbleLeftIcon } from '@heroicons/react/24/outline';
 
 /**
@@ -79,13 +71,30 @@ export default function ComponentShowcase() {
         </Card>
 
         {/* Tab Navigation */}
-        <TabBar
+        {/* <TabBar
           tabs={tabs}
           activeTab={activeTab}
           onChange={setActiveTab}
           variant="pills"
           className="mb-8"
-        />
+        /> */}
+        
+        {/* Temporary simple tab navigation */}
+        <div className="flex gap-2 mb-8 flex-wrap">
+          {tabs.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                activeTab === tab.id 
+                  ? 'bg-blue-500 text-white' 
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
         {/* ATOMS Section */}
         {activeTab === 'atoms' && (
@@ -204,7 +213,7 @@ export default function ComponentShowcase() {
               <CardBody>
                 <SearchBar
                   placeholder="Search for cars, users..."
-                  onSearch={(value) => console.log('Search:', value)}
+                  onSearch={(value: string) => console.log('Search:', value)}
                 />
               </CardBody>
             </Card>
@@ -235,6 +244,7 @@ export default function ComponentShowcase() {
             </Card>
 
             {/* Car Cards */}
+            {/* Commented out - CarCard component not yet implemented
             <Card>
               <CardHeader title="Car Cards" />
               <CardBody>
@@ -257,6 +267,7 @@ export default function ComponentShowcase() {
                 </div>
               </CardBody>
             </Card>
+            */}
           </div>
         )}
 
@@ -264,6 +275,7 @@ export default function ComponentShowcase() {
         {activeTab === 'organisms' && (
           <div className="space-y-8">
             {/* Profile Card */}
+            {/* Commented out - ProfileCard and CarGrid components not yet implemented
             <Card>
               <CardHeader title="Profile Card" subtitle="Card complex pentru utilizatori" />
               <CardBody>
@@ -289,14 +301,13 @@ export default function ComponentShowcase() {
                     badges: ['First Match', 'Popular'],
                     isVIP: true,
                   }}
-                  onLike={(id) => console.log('Liked:', id)}
-                  onDislike={(id) => console.log('Disliked:', id)}
+                  onLike={(id: string) => console.log('Liked:', id)}
+                  onDislike={(id: string) => console.log('Disliked:', id)}
                   showActions
                 />
               </CardBody>
             </Card>
 
-            {/* Car Grid */}
             <Card>
               <CardHeader title="Car Grid" subtitle="Grid responsive pentru mașini" />
               <CardBody>
@@ -327,8 +338,18 @@ export default function ComponentShowcase() {
                       badges: ['New'],
                     },
                   ]}
-                  onCarClick={(id) => console.log('Car clicked:', id)}
+                  onCarClick={(id: string) => console.log('Car clicked:', id)}
                 />
+              </CardBody>
+            </Card>
+            */}
+            
+            <Card>
+              <CardBody>
+                <div className="text-center py-8 text-gray-500">
+                  <p>Organisms components are under development</p>
+                  <p className="text-sm mt-2">ProfileCard, CarGrid, ChatList, and StoreGrid will be added soon</p>
+                </div>
               </CardBody>
             </Card>
           </div>

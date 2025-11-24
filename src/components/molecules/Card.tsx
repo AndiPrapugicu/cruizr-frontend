@@ -10,6 +10,17 @@ export interface CardProps {
   hoverable?: boolean;
 }
 
+export interface CardHeaderProps {
+  title: string;
+  subtitle?: string;
+  className?: string;
+}
+
+export interface CardBodyProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
 const variantStyles = {
   default: 'bg-white shadow-md',
   elevated: 'bg-white shadow-xl',
@@ -22,6 +33,25 @@ const paddingStyles = {
   sm: 'p-3 md:p-4',
   md: 'p-4 md:p-6',
   lg: 'p-6 md:p-8',
+};
+
+/**
+ * Component CardHeader
+ */
+export const CardHeader: React.FC<CardHeaderProps> = ({ title, subtitle, className = '' }) => {
+  return (
+    <div className={`mb-4 ${className}`}>
+      <h3 className="text-xl font-bold text-gray-900">{title}</h3>
+      {subtitle && <p className="text-sm text-gray-600 mt-1">{subtitle}</p>}
+    </div>
+  );
+};
+
+/**
+ * Component CardBody
+ */
+export const CardBody: React.FC<CardBodyProps> = ({ children, className = '' }) => {
+  return <div className={className}>{children}</div>;
 };
 
 /**
