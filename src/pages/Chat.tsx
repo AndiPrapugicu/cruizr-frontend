@@ -45,6 +45,13 @@ export default function Chat({
   
   // Get the username that matches what backend sends (from JWT payload)
   const currentUserName = user.name || user.email || "";
+  
+  // Debug: Log pentru a vedea ce avem
+  console.log("🔍 Chat Debug:", {
+    userFromLocalStorage: user,
+    currentUserName,
+    userNameExists: !!user.name,
+  });
 
   const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -230,6 +237,12 @@ export default function Chat({
         <AnimatePresence>
           {messages.map((msg, index) => {
             const isMe = msg.from === currentUserName;
+            console.log(`📨 Message comparison:`, {
+              msgFrom: msg.from,
+              currentUserName,
+              isMe,
+              messageText: msg.text.substring(0, 20),
+            });
             return (
               <motion.div
                 key={msg.id}
