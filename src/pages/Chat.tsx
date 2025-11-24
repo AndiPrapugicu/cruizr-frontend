@@ -82,33 +82,6 @@ export default function Chat({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Handle viewport resize for mobile keyboard
-  useEffect(() => {
-    const handleResize = () => {
-      // Force viewport recalculation when keyboard appears/disappears
-      const vh = window.visualViewport?.height || window.innerHeight;
-      document.documentElement.style.setProperty('--vh', `${vh * 0.01}px`);
-    };
-
-    handleResize(); // Initial call
-    
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', handleResize);
-      window.visualViewport.addEventListener('scroll', handleResize);
-    } else {
-      window.addEventListener('resize', handleResize);
-    }
-
-    return () => {
-      if (window.visualViewport) {
-        window.visualViewport.removeEventListener('resize', handleResize);
-        window.visualViewport.removeEventListener('scroll', handleResize);
-      } else {
-        window.removeEventListener('resize', handleResize);
-      }
-    };
-  }, []);
-
   // 3. Fetch profil celuilalt user (avatar + mașină)
   useEffect(() => {
     api
@@ -152,12 +125,12 @@ export default function Chat({
   };
 
   return (
-    <div className="chat-mobile-container md:flex md:flex-col w-full md:h-full bg-white text-gray-900">
+    <div className="flex flex-col w-full h-screen bg-white text-gray-900 overflow-hidden">
       {/* ==== Header-ul cu avatar, nume, mașină și buton Raportează ==== */}
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="chat-header-mobile md:shrink-0 flex items-center justify-between py-3 sm:py-4 px-3 sm:px-6 bg-white border-b border-gray-100 shadow-sm"
+        className="flex-shrink-0 flex items-center justify-between py-3 sm:py-4 px-3 sm:px-6 bg-white border-b border-gray-100 shadow-sm"
       >
         <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
           {/* Back Button */}
@@ -235,7 +208,7 @@ export default function Chat({
       </motion.div>
 
       {/* ==== Zona de mesaje ==== */}
-      <div className="chat-messages-mobile md:flex-1 md:overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 bg-gradient-to-b from-gray-50 to-white">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 bg-gradient-to-b from-gray-50 to-white" style={{ WebkitOverflowScrolling: 'touch' }}>
         {messages.length === 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -307,8 +280,8 @@ export default function Chat({
       <motion.div
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="chat-input-mobile md:shrink-0 bg-white border-t border-gray-200 shadow-lg"
-        style={{ touchAction: 'manipulation' }}
+        className="flex-shrink-0 bg-white border-t border-gray-200 shadow-lg"
+        style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 12px)' }}
       >
         <div className="flex items-center gap-2 sm:gap-3 max-w-4xl mx-auto px-3 py-3 sm:px-4 sm:py-4">
           <div className="flex-1 min-w-0 relative">
@@ -317,11 +290,8 @@ export default function Chat({
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="w-full p-3 sm:p-4 pr-10 sm:pr-12 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 text-gray-800 placeholder-gray-500 transition-all duration-200"
+              className="w-full p-3 sm:p-4 pr-10 sm:pr-12 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 text-gray-800 placeholder-gray-500 transition-all duration-200 text-base"
               placeholder="Scrie un mesaj..."
-              autoComplete="off"
-              autoCorrect="off"
-              autoCapitalize="sentences"
             />
             {input.trim() && (
               <motion.div
@@ -340,7 +310,6 @@ export default function Chat({
             onClick={handleSend}
             disabled={!input.trim()}
             className="flex-shrink-0 p-3 sm:p-4 bg-pink-500 hover:bg-pink-600 text-white rounded-2xl shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14"
-            style={{ touchAction: 'manipulation' }}
           >
             <FaPaperPlane className="text-base sm:text-lg" />
           </motion.button>
