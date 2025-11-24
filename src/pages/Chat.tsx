@@ -122,49 +122,49 @@ export default function Chat({
   };
 
   return (
-    <div className="flex flex-col w-full h-full bg-white text-gray-900">
+    <div className="flex flex-col w-full h-full bg-white text-gray-900 pb-24 md:pb-0">
       {/* ==== Header-ul cu avatar, nume, mașină și buton Raportează ==== */}
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="flex items-center justify-between py-4 px-6 bg-white border-b border-gray-100 shadow-sm"
+        className="flex items-center justify-between py-3 sm:py-4 px-3 sm:px-6 bg-white border-b border-gray-100 shadow-sm"
       >
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
           {/* Back Button */}
           <button
             onClick={() => navigate("/chat")}
-            className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors duration-200"
+            className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors duration-200 min-w-[44px] min-h-[44px] flex items-center justify-center shrink-0"
           >
-            <FaArrowLeft className="text-lg" />
+            <FaArrowLeft className="text-base sm:text-lg" />
           </button>
 
           {/* Avatar */}
-          <div className="relative">
+          <div className="relative shrink-0">
             {otherProfile?.avatarUrl ? (
               <img
                 src={avatarSrc || ""}
                 alt={`Avatar ${otherUserName}`}
-                className="w-10 h-10 rounded-full object-cover border-2 border-pink-200 shadow-sm"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-pink-200 shadow-sm"
               />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center border-2 border-pink-200 shadow-sm">
-                <FaUserCircle className="text-gray-400 text-xl" />
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-100 flex items-center justify-center border-2 border-pink-200 shadow-sm">
+                <FaUserCircle className="text-gray-400 text-lg sm:text-xl" />
               </div>
             )}
             {/* Online indicator */}
-            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></div>
+            <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-400 border-2 border-white rounded-full"></div>
           </div>
 
-          <div className="flex flex-col min-w-0">
+          <div className="flex flex-col min-w-0 flex-1">
             {/* Numele userului */}
-            <h1 className="text-lg font-semibold text-gray-800 truncate flex items-center">
+            <h1 className="text-base sm:text-lg font-semibold text-gray-800 truncate flex items-center">
               {otherUserName}
-              <FaHeart className="ml-2 text-pink-400 text-sm" />
+              <FaHeart className="ml-1.5 sm:ml-2 text-pink-400 text-xs sm:text-sm shrink-0" />
             </h1>
             {/* Mașina */}
             {otherProfile?.car && (
-              <div className="flex items-center text-gray-500 text-sm">
-                <FaCar className="mr-1" />
+              <div className="flex items-center text-gray-500 text-xs sm:text-sm">
+                <FaCar className="mr-1 shrink-0" />
                 <span className="truncate">{otherProfile.car}</span>
               </div>
             )}
@@ -172,7 +172,7 @@ export default function Chat({
         </div>
 
         {/* Actions */}
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 shrink-0">
           {/* Menu Button */}
           <button
             onClick={() => setShowMenu(!showMenu)}

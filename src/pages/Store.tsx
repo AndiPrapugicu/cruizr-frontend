@@ -168,26 +168,33 @@ export default function Store() {
   }
 
   return (
-    <div className="w-full h-full bg-gray-50 overflow-y-auto">
+    <div className="w-full h-full bg-gray-50 overflow-y-auto pb-24 md:pb-0">
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="px-8 py-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center">
-            <StoreIcon className="w-8 h-8 mr-2" /> Store
-          </h1>
-          <p className="text-gray-600">
-            Îmbunătățește-ți experiența cu articole premium
-          </p>
+        <div className="px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-6">
+          <div className="flex items-start justify-between mb-3 sm:mb-4">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-1 flex items-center">
+                <StoreIcon className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 mr-2 flex-shrink-0" /> 
+                <span>Store</span>
+              </h1>
+              <p className="text-xs sm:text-sm md:text-base text-gray-600">
+                Îmbunătățește-ți experiența
+              </p>
+            </div>
+          </div>
 
           {/* Balance Display */}
-          <div className="flex items-center space-x-6 mt-4">
-            <div className="flex items-center bg-orange-100 text-orange-800 px-4 py-2 rounded-full">
-              <Fuel className="mr-2 w-5 h-5" />
-              <span className="font-semibold">{userBalance.fuel} Fuel</span>
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <div className="flex items-center bg-orange-100 text-orange-800 px-3 py-2 rounded-full shadow-sm">
+              <Fuel className="mr-1.5 w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+              <span className="font-semibold text-sm sm:text-base whitespace-nowrap">
+                {userBalance.fuel} Fuel
+              </span>
             </div>
-            <div className="flex items-center bg-purple-100 text-purple-800 px-4 py-2 rounded-full">
-              <Gem className="mr-2 w-5 h-5" />
-              <span className="font-semibold">
+            <div className="flex items-center bg-purple-100 text-purple-800 px-3 py-2 rounded-full shadow-sm">
+              <Gem className="mr-1.5 w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+              <span className="font-semibold text-sm sm:text-base whitespace-nowrap">
                 {userBalance.premium} Premium
               </span>
             </div>
@@ -195,21 +202,21 @@ export default function Store() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className="max-w-7xl mx-auto px-4 py-4 sm:py-6">
         {/* Category Tabs */}
-        <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-6 w-fit">
+        <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-4 sm:mb-6 w-full sm:w-fit overflow-x-auto scrollbar-hide">
           <button
             onClick={() => {
               setSelectedCategory("fuel");
               setSelectedSubcategory("all");
             }}
-            className={`px-6 py-3 rounded-md transition-all duration-200 flex items-center ${
+            className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-md transition-all duration-200 flex items-center whitespace-nowrap text-sm sm:text-base flex-shrink-0 ${
               selectedCategory === "fuel"
                 ? "bg-white shadow-sm text-orange-600 font-semibold"
                 : "text-gray-600 hover:text-gray-900"
             }`}
           >
-            <Fuel className="mr-2 w-5 h-5" />
+            <Fuel className="mr-1.5 sm:mr-2 w-4 h-4 sm:w-5 sm:h-5" />
             Fuel Items
           </button>
           <button
@@ -217,24 +224,24 @@ export default function Store() {
               setSelectedCategory("premium");
               setSelectedSubcategory("all");
             }}
-            className={`px-6 py-3 rounded-md transition-all duration-200 flex items-center ${
+            className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-md transition-all duration-200 flex items-center whitespace-nowrap text-sm sm:text-base flex-shrink-0 ${
               selectedCategory === "premium"
                 ? "bg-white shadow-sm text-purple-600 font-semibold"
                 : "text-gray-600 hover:text-gray-900"
             }`}
           >
-            <Gem className="mr-2 w-5 h-5" />
+            <Gem className="mr-1.5 sm:mr-2 w-4 h-4 sm:w-5 sm:h-5" />
             Premium Items
           </button>
         </div>
 
         {/* Subcategory Filter */}
-        <div className="flex flex-wrap gap-2 mb-6">
+        <div className="flex flex-wrap gap-2 mb-4 sm:mb-6">
           <button
             onClick={() => setSelectedSubcategory("all")}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+            className={`px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
               selectedSubcategory === "all"
-                ? "bg-blue-500 text-white"
+                ? "bg-blue-500 text-white shadow-md"
                 : "bg-white text-gray-600 hover:bg-gray-50 hover:shadow-md"
             }`}
           >
@@ -244,14 +251,14 @@ export default function Store() {
             <button
               key={subcategory}
               onClick={() => setSelectedSubcategory(subcategory)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all capitalize flex items-center ${
+              className={`px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all capitalize flex items-center gap-1 ${
                 selectedSubcategory === subcategory
-                  ? "bg-blue-500 text-white"
+                  ? "bg-blue-500 text-white shadow-md"
                   : "bg-white text-gray-600 hover:bg-gray-50 hover:shadow-sm"
               }`}
             >
-              <span className="mr-1">{getItemIcon(subcategory)}</span>
-              {subcategory}
+              {getItemIcon(subcategory)}
+              <span>{subcategory}</span>
             </button>
           ))}
         </div>
@@ -262,7 +269,7 @@ export default function Store() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 md:gap-6"
         >
           {getFilteredItems().map((item, index) => (
             <motion.div
@@ -280,21 +287,21 @@ export default function Store() {
             >
               {/* Item Header */}
               <div
-                className={`p-4 ${
+                className={`p-3 sm:p-4 ${
                   selectedCategory === "fuel"
                     ? "bg-gradient-to-r from-orange-400 to-red-500"
                     : "bg-gradient-to-r from-purple-500 to-pink-500"
                 } text-white`}
               >
                 <div className="flex items-center justify-between">
-                  <div className="text-2xl">{item.icon}</div>
+                  <div className="text-xl sm:text-2xl">{item.icon}</div>
                   <div className="text-right">
-                    <div className="text-xl font-bold flex items-center justify-end">
+                    <div className="text-lg sm:text-xl font-bold flex items-center justify-end">
                       {item.price}{" "}
                       {item.currency === "fuel" ? (
-                        <Fuel className="ml-1 w-5 h-5" />
+                        <Fuel className="ml-1 w-4 h-4 sm:w-5 sm:h-5" />
                       ) : (
-                        <Gem className="ml-1 w-5 h-5" />
+                        <Gem className="ml-1 w-4 h-4 sm:w-5 sm:h-5" />
                       )}
                     </div>
                     {item.duration && (
@@ -302,7 +309,7 @@ export default function Store() {
                     )}
                   </div>
                 </div>
-                <h3 className="font-bold text-lg mt-2">{item.name}</h3>
+                <h3 className="font-bold text-base sm:text-lg mt-2">{item.name}</h3>
 
                 {/* Cooldown Timer */}
                 {storeService.isOnCooldown(item) && (
@@ -351,7 +358,7 @@ export default function Store() {
                     !storeService.canAfford(item) ||
                     !storeService.isItemImplemented(item.itemId)
                   }
-                  className={`w-full py-3 px-4 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center ${
+                  className={`w-full py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center text-sm sm:text-base ${
                     !storeService.isItemImplemented(item.itemId)
                       ? "bg-gray-400 text-white cursor-not-allowed"
                       : item.isPermanent && item.purchased

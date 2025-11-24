@@ -126,38 +126,38 @@ export default function Badges() {
     <div className="w-full h-full bg-gray-50 overflow-y-auto">
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="px-8 py-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center">
-            <FaTrophy className="mr-3 text-yellow-500" />
+        <div className="px-4 sm:px-6 md:px-8 py-4 sm:py-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 flex items-center">
+            <FaTrophy className="mr-2 sm:mr-3 text-yellow-500 text-xl sm:text-2xl" />
             Badge-uri
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600">
             Colecționează badge-uri prin activitățile tale
           </p>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-            <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-4 rounded-lg">
-              <div className="text-2xl font-bold">{stats.totalEarned}</div>
-              <div className="text-sm opacity-90">Badge-uri câștigate</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-4">
+            <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-3 sm:p-4 rounded-lg">
+              <div className="text-xl sm:text-2xl font-bold">{stats.totalEarned}</div>
+              <div className="text-xs sm:text-sm opacity-90">Badge-uri câștigate</div>
             </div>
-            <div className="bg-gradient-to-r from-blue-400 to-blue-600 text-white p-4 rounded-lg">
-              <div className="text-2xl font-bold">{stats.totalAvailable}</div>
-              <div className="text-sm opacity-90">Total disponibile</div>
+            <div className="bg-gradient-to-r from-blue-400 to-blue-600 text-white p-3 sm:p-4 rounded-lg">
+              <div className="text-xl sm:text-2xl font-bold">{stats.totalAvailable}</div>
+              <div className="text-xs sm:text-sm opacity-90">Total disponibile</div>
             </div>
-            <div className="bg-gradient-to-r from-purple-400 to-purple-600 text-white p-4 rounded-lg">
-              <div className="text-2xl font-bold">{stats.rareEarned}</div>
-              <div className="text-sm opacity-90">Badge-uri rare</div>
+            <div className="bg-gradient-to-r from-purple-400 to-purple-600 text-white p-3 sm:p-4 rounded-lg">
+              <div className="text-xl sm:text-2xl font-bold">{stats.rareEarned}</div>
+              <div className="text-xs sm:text-sm opacity-90">Badge-uri rare</div>
             </div>
-            <div className="bg-gradient-to-r from-green-400 to-green-600 text-white p-4 rounded-lg">
-              <div className="text-2xl font-bold">{stats.totalPoints}</div>
-              <div className="text-sm opacity-90">Puncte totale</div>
+            <div className="bg-gradient-to-r from-green-400 to-green-600 text-white p-3 sm:p-4 rounded-lg">
+              <div className="text-xl sm:text-2xl font-bold">{stats.totalPoints}</div>
+              <div className="text-xs sm:text-sm opacity-90">Puncte totale</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className="max-w-7xl mx-auto px-4 py-4 sm:py-6 pb-24 md:pb-6">
         {/* Category Filter */}
         <div className="flex flex-wrap gap-2 mb-6">
           <button
@@ -303,8 +303,8 @@ export default function Badges() {
 
                 {/* Lock overlay for unearned badges */}
                 {!earned && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-10 rounded-xl opacity-0 hover:opacity-100 transition-opacity">
-                    <FaLock className="text-gray-400 text-lg" />
+                  <div className="absolute inset-0 flex items-center justify-center bg-white/20 backdrop-blur-[2px] rounded-xl opacity-0 hover:opacity-100 transition-opacity">
+                    <FaLock className="text-gray-600 text-lg drop-shadow-md" />
                   </div>
                 )}
               </motion.div>

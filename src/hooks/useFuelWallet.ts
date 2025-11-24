@@ -137,13 +137,17 @@ export const useFuelWallet = () => {
       if (result.success && result.isNewDay) {
         // Refresh wallet to get updated streak and balance
         await refreshWallet();
+        // Small delay to ensure backend has saved the transaction
+        await new Promise(resolve => setTimeout(resolve, 300));
+        // Force reload transactions
+        await loadTransactions(1, 10);
       }
       return result;
     } catch (err) {
       console.error("❌ Error recording daily login:", err);
       throw err;
     }
-  }, [refreshWallet]);
+  }, [refreshWallet, loadTransactions]);
 
   // Check if can afford
   const canAfford = useCallback(

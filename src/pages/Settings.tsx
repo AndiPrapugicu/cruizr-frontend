@@ -322,41 +322,41 @@ export default function Settings() {
     <div className="w-full h-full bg-gray-50 overflow-y-auto">
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-8 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">Setări</h1>
-          <p className="text-gray-600 mt-1">Gestionează-ți contul și preferințele</p>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Setări</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">Gestionează-ți contul și preferințele</p>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+      <div className="max-w-4xl mx-auto px-4 py-4 sm:py-6 pb-24 md:pb-6 space-y-4 sm:space-y-6">
         {/* ─────────── 1. ACCOUNT INFO ─────────── */}
         <motion.section
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="bg-white p-6 shadow-lg"
+          className="bg-white p-4 sm:p-6 shadow-lg rounded-lg"
         >
-          <h2 className="text-2xl font-bold mb-6 text-gray-900 flex items-center">
-            <FaUser className="mr-3 text-pink-500" />
+          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-900 flex items-center">
+            <FaUser className="mr-2 sm:mr-3 text-pink-500 text-lg sm:text-xl" />
             Informații Cont
           </h2>
 
           {/* Change Email */}
-          <form onSubmit={handleEmailChange} className="mb-6">
-            <label className="block mb-2 text-sm font-medium text-gray-700 flex items-center">
+          <form onSubmit={handleEmailChange} className="mb-4 sm:mb-6">
+            <label className="block mb-2 text-sm font-medium text-gray-700 flex items-center flex-wrap">
               <FaEnvelope className="mr-2 text-gray-400" />
-              Email curent: <span className="ml-2 text-pink-600 font-semibold">{userData?.email}</span>
+              Email curent: <span className="ml-2 text-pink-600 font-semibold break-all">{userData?.email}</span>
             </label>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <input
                 type="email"
                 placeholder="Email nou"
                 value={newEmail}
                 onChange={(e) => setNewEmail(e.target.value)}
-                className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                className="flex-1 p-2.5 sm:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm sm:text-base"
               />
               <button
                 type="submit"
-                className="px-6 py-3 bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 flex items-center space-x-2"
+                className="px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 flex items-center justify-center space-x-2 text-sm sm:text-base whitespace-nowrap"
               >
                 <FaSave />
                 <span>Salvează</span>
@@ -365,7 +365,7 @@ export default function Settings() {
           </form>
 
           {/* Change Password */}
-          <form onSubmit={handlePasswordChange} className="mb-6">
+          <form onSubmit={handlePasswordChange} className="mb-4 sm:mb-6">
             <label className="block mb-3 text-sm font-medium text-gray-700 flex items-center">
               <FaLock className="mr-2 text-gray-400" />
               Schimbă parola

@@ -455,18 +455,18 @@ export default function Nearby() {
         }}
       >
         {/* Header */}
-        <div className="px-8 py-6 border-b border-gray-200">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <div className="px-4 sm:px-6 md:px-8 py-3 sm:py-4 border-b border-gray-200">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-1">
             Discover People
           </h1>
-          <p className="text-gray-600">Find your perfect match nearby</p>
+          <p className="text-xs sm:text-sm md:text-base text-gray-600">Find your perfect match nearby</p>
         </div>
 
         {/* Main Swipe Area */}
-        <div className="flex gap-8 h-[calc(100vh-140px)] px-8 py-6">
+        <div className="flex flex-col md:flex-row gap-0 md:gap-8 h-[calc(100vh-100px)] md:h-[calc(100vh-140px)] px-0 md:px-8 py-0 md:py-6">
           {/* Card Stack Section */}
           <motion.div
-            className="flex-1 flex items-start justify-center relative"
+            className="flex-1 flex items-center md:items-start justify-center relative px-4 md:px-0 z-10"
             animate={{
               x: showDetailModal.show ? -150 : 0,
               scale: showDetailModal.show ? 1 : 1,
@@ -474,8 +474,12 @@ export default function Nearby() {
             }}
           >
             <div
-              className="relative w-full max-w-md mx-auto"
-              style={{ height: "600px", minHeight: "600px" }}
+              className="relative w-full mx-auto"
+              style={{ 
+                height: "min(calc(100vh - 180px), 550px)",
+                maxWidth: "440px",
+                zIndex: 1
+              }}
             >
               {users.length > 0 &&
                 users.map((user, index) => {
@@ -498,13 +502,13 @@ export default function Nearby() {
                         animate={{ scale: 1, opacity: 1, y: 0 }}
                         transition={{ duration: 0.4, ease: "easeOut" }}
                         whileHover={{ scale: 1.02 }}
-                        className="relative w-full h-full bg-white rounded-3xl shadow-2xl overflow-hidden cursor-grab active:cursor-grabbing"
+                        className="relative w-full h-full bg-white rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden cursor-grab active:cursor-grabbing"
                         style={{
                           position: "relative",
                           width: "100%",
                           height: "100%",
                           backgroundColor: "white",
-                          borderRadius: "24px",
+                          borderRadius: window.innerWidth < 768 ? "16px" : "24px",
                           boxShadow:
                             index === currentIndex
                               ? "0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1)"
@@ -620,7 +624,7 @@ export default function Nearby() {
             </div>
           </motion.div>
 
-          {/* Detail Panel - appears next to cards */}
+          {/* Detail Panel - appears next to cards on desktop, full screen on mobile */}
           <AnimatePresence>
             {showDetailModal.show && showDetailModal.user && (
               <motion.div
@@ -628,7 +632,7 @@ export default function Nearby() {
                 animate={{ opacity: 1, x: 0, scale: 1 }}
                 exit={{ opacity: 0, x: 100, scale: 0.8 }}
                 transition={{ duration: 0.6, ease: "easeInOut" }}
-                className="w-[450px] bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden relative flex flex-col"
+                className="hidden md:flex md:w-[450px] bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden relative flex-col z-30"
                 style={{
                   height: "600px",
                   position: "relative",
@@ -849,9 +853,98 @@ export default function Nearby() {
             )}
           </AnimatePresence>
 
-          {/* Right Sidebar - Actions & Stats - compressed when detail panel is open */}
+          {/* Mobile Action Buttons - Tinder Style (below cards) */}
+          <div className="lg:hidden fixed bottom-20 left-0 right-0 z-50 pointer-events-none">
+            <div className="flex justify-center items-center gap-3 px-4 pointer-events-auto">
+              {/* Rewind Button */}
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => {
+                  if (rewindsRemaining > 0) {
+                    // Implement rewind logic
+                    console.log("Rewind clicked");
+                  }
+                }}
+                disabled={rewindsRemaining === 0 || currentIndex < 0}
+                className="w-14 h-14 bg-white rounded-full flex items-center justify-center text-yellow-500 shadow-xl border-2 border-gray-100 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z" />
+                </svg>
+              </motion.button>
+
+              {/* Pass Button (X) */}
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => swipe("left")}
+                disabled={currentIndex < 0}
+                className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-red-500 shadow-xl border-2 border-gray-100 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <FaTimes className="text-3xl" />
+              </motion.button>
+
+              {/* Super Like Button (Star) */}
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={async () => {
+                  if (
+                    currentIndex >= 0 &&
+                    users[currentIndex] &&
+                    superLikesRemaining > 0
+                  ) {
+                    const currentUser = users[currentIndex];
+                    try {
+                      await sendSuperLike(parseInt(currentUser.id));
+                      swipe("up");
+                    } catch (error) {
+                      console.error("Super Like failed:", error);
+                    }
+                  }
+                }}
+                disabled={currentIndex < 0 || superLikesRemaining === 0}
+                className="w-14 h-14 bg-white rounded-full flex items-center justify-center text-blue-500 shadow-xl border-2 border-gray-100 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <FaStar className="text-2xl" />
+              </motion.button>
+
+              {/* Like Button (Heart) */}
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => swipe("right")}
+                disabled={currentIndex < 0}
+                className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-green-500 shadow-xl border-2 border-gray-100 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <FaHeart className="text-3xl" />
+              </motion.button>
+
+              {/* Boost Button */}
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={async () => {
+                  if (!isBoostActive && !isSpotlightActive) {
+                    try {
+                      await activateBoost("boost-3h");
+                    } catch (error) {
+                      console.error("Boost activation failed:", error);
+                    }
+                  }
+                }}
+                disabled={isBoostActive || isSpotlightActive || currentIndex < 0}
+                className="w-14 h-14 bg-white rounded-full flex items-center justify-center text-purple-500 shadow-xl border-2 border-gray-100 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <FaFire className="text-2xl" />
+              </motion.button>
+            </div>
+          </div>
+
+          {/* Right Sidebar - Actions & Stats - DESKTOP ONLY */}
           <motion.div
-            className="h-full overflow-y-auto space-y-6 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+            className="hidden lg:block h-full overflow-y-auto space-y-6 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 z-20"
             animate={{
               width: showDetailModal.show ? 240 : 320,
               transition: { duration: 0.6, ease: "easeInOut" },
@@ -1209,7 +1302,7 @@ export default function Nearby() {
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="absolute inset-0 flex flex-col items-center justify-center text-center p-8"
+              className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 z-20"
             >
               <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-6">
                 <FaHeart className="text-3xl text-gray-400" />

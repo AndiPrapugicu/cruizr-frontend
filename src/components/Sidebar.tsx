@@ -47,6 +47,8 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
   const { notifications, unreadCount, markAsRead } = useNotifications();
   const [collapsed, setCollapsed] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [showMobileMoreMenu, setShowMobileMoreMenu] = useState(false);
 
   const menuItems = [
     {
@@ -109,12 +111,12 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
 
   return (
     <div className="flex w-screen h-screen bg-white overflow-hidden">
-      {/* Sidebar */}
+      {/* Desktop Sidebar - Hidden on Mobile */}
       <motion.div
         initial={false}
         animate={{ width: collapsed ? 80 : 280 }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
-        className="bg-white shadow-xl border-r border-gray-200 flex flex-col h-full"
+        className="hidden md:flex bg-white shadow-xl border-r border-gray-200 flex-col h-full"
       >
         {/* Header */}
         <div className="p-6 border-b border-gray-100">
@@ -364,16 +366,16 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col h-full overflow-hidden">
-        {/* Top Bar */}
-        <header className="bg-white shadow-sm border-b border-gray-200 px-8 py-4 shrink-0">
+        {/* Top Bar - Desktop only, Mobile has logo in bottom nav */}
+        <header className="hidden md:block bg-white shadow-sm border-b border-gray-200 px-4 md:px-8 py-3 md:py-4 shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              {/* Search Bar */}
+              {/* Search Bar - Desktop only */}
               <div className="max-w-lg">
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 md:gap-4">
               {/* Notifications */}
               <div className="relative">
                 <button
@@ -503,8 +505,8 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                 </AnimatePresence>
               </div>
 
-              {/* Quick Stats */}
-              <div className="flex items-center gap-4 bg-gray-50 rounded-lg px-4 py-2">
+              {/* Quick Stats - Hidden on Mobile */}
+              <div className="hidden md:flex items-center gap-4 bg-gray-50 rounded-lg px-4 py-2">
                 <div className="flex items-center gap-2">
                   <FaChartLine className="text-green-500" />
                   <span className="text-sm font-medium text-gray-700">
@@ -525,6 +527,157 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
 
         {/* Page Content */}
         <main className="flex-1 h-full overflow-y-auto">{children}</main>
+      </div>
+
+      {/* Mobile Bottom Navigation - Hidden on Desktop */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 shadow-lg safe-area-pb">
+        <div className="flex justify-around items-center h-16 px-2">
+          {/* Main 4 navigation items */}
+          {menuItems.slice(0, 4).map((item) => {
+            const Icon = item.icon;
+            const active = isActive(item.path);
+            return (
+              <button
+                key={item.path}
+                onClick={() => navigate(item.path)}
+                className={`flex flex-col items-center justify-center min-w-[44px] min-h-[44px] px-2 transition-colors ${
+                  active ? item.color : 'text-gray-400'
+                }`}
+              >
+                <Icon className="text-xl" />
+                <span className={`text-xs mt-1 font-medium ${
+                  active ? '' : 'text-gray-500'
+                }`}>
+                  {item.label === 'Dashboard' ? 'Home' : item.label}
+                </span>
+              </button>
+            );
+          })}
+          
+          {/* More Menu Button */}
+          <button
+            onClick={() => setShowMobileMoreMenu(!showMobileMoreMenu)}
+            className={`flex flex-col items-center justify-center min-w-[44px] min-h-[44px] px-2 transition-colors ${
+              showMobileMoreMenu ? 'text-purple-500' : 'text-gray-400'
+            }`}
+          >
+            <FaBars className="text-xl" />
+            <span className={`text-xs mt-1 font-medium ${
+              showMobileMoreMenu ? 'text-purple-500' : 'text-gray-500'
+            }`}>
+              More
+            </span>
+          </button>
+        </div>
+
+        {/* More Menu Popup */}
+        <AnimatePresence>
+          {showMobileMoreMenu && (
+            <>
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+                onClick={() => setShowMobileMoreMenu(false)}
+              />
+              
+              {/* Menu */}
+              <motion.div
+                initial={{ y: 100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 100, opacity: 0 }}
+                transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                className="fixed bottom-16 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-50 p-6 max-h-[70vh] overflow-y-auto"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-bold text-gray-900">More Options</h3>
+                  <button
+                    onClick={() => setShowMobileMoreMenu(false)}
+                    className="p-2 hover:bg-gray-100 rounded-full transition"
+                  >
+                    <FaTimes className="text-gray-600" />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  {/* Profile */}
+                  <button
+                    onClick={() => {
+                      navigate('/profile');
+                      setShowMobileMoreMenu(false);
+                    }}
+                    className="flex flex-col items-center p-4 bg-purple-50 rounded-xl hover:bg-purple-100 transition"
+                  >
+                    <FaUser className="text-purple-500 text-2xl mb-2" />
+                    <span className="text-sm font-medium text-gray-900">Profile</span>
+                  </button>
+
+                  {/* Store */}
+                  <button
+                    onClick={() => {
+                      navigate('/store');
+                      setShowMobileMoreMenu(false);
+                    }}
+                    className="flex flex-col items-center p-4 bg-indigo-50 rounded-xl hover:bg-indigo-100 transition"
+                  >
+                    <FaStore className="text-indigo-500 text-2xl mb-2" />
+                    <span className="text-sm font-medium text-gray-900">Store</span>
+                  </button>
+
+                  {/* Badges */}
+                  <button
+                    onClick={() => {
+                      navigate('/badges');
+                      setShowMobileMoreMenu(false);
+                    }}
+                    className="flex flex-col items-center p-4 bg-yellow-50 rounded-xl hover:bg-yellow-100 transition"
+                  >
+                    <FaStar className="text-yellow-500 text-2xl mb-2" />
+                    <span className="text-sm font-medium text-gray-900">Badges</span>
+                  </button>
+
+                  {/* Polls */}
+                  <button
+                    onClick={() => {
+                      navigate('/polls');
+                      setShowMobileMoreMenu(false);
+                    }}
+                    className="flex flex-col items-center p-4 bg-cyan-50 rounded-xl hover:bg-cyan-100 transition"
+                  >
+                    <FaVoteYea className="text-cyan-500 text-2xl mb-2" />
+                    <span className="text-sm font-medium text-gray-900">Polls</span>
+                  </button>
+
+                  {/* Settings */}
+                  <button
+                    onClick={() => {
+                      navigate('/settings');
+                      setShowMobileMoreMenu(false);
+                    }}
+                    className="flex flex-col items-center p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition"
+                  >
+                    <FaCog className="text-gray-600 text-2xl mb-2" />
+                    <span className="text-sm font-medium text-gray-900">Settings</span>
+                  </button>
+
+                  {/* Logout */}
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setShowMobileMoreMenu(false);
+                    }}
+                    className="flex flex-col items-center p-4 bg-red-50 rounded-xl hover:bg-red-100 transition"
+                  >
+                    <FaSignOutAlt className="text-red-500 text-2xl mb-2" />
+                    <span className="text-sm font-medium text-gray-900">Logout</span>
+                  </button>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

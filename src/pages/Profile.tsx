@@ -538,34 +538,34 @@ export default function Profile() {
     <div className="w-full h-full bg-white overflow-y-auto">
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="px-8 py-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900">Profilul meu</h1>
-          <div className="flex space-x-3">
+        <div className="px-4 sm:px-6 md:px-8 py-4 sm:py-6 flex items-center justify-between">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Profilul meu</h1>
+          <div className="flex space-x-2 sm:space-x-3">
             <button
               onClick={() => navigate("/settings")}
-              className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition"
+              className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition min-w-[44px] min-h-[44px] flex items-center justify-center"
             >
-              <FaCog className="text-xl" />
+              <FaCog className="text-lg sm:text-xl" />
             </button>
             <button
               onClick={handleLogout}
-              className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition"
+              className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition min-w-[44px] min-h-[44px] flex items-center justify-center"
             >
-              <FaSignOutAlt className="text-xl" />
+              <FaSignOutAlt className="text-lg sm:text-xl" />
             </button>
           </div>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+      <div className="max-w-4xl mx-auto px-4 py-4 sm:py-6 pb-24 md:pb-6 space-y-4 sm:space-y-6">
         {/* Profile Header */}
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="bg-white rounded-3xl shadow-xl overflow-hidden"
+          className="bg-white rounded-2xl sm:rounded-3xl shadow-xl overflow-hidden"
         >
           {/* Cover Photo */}
-          <div className="h-48 bg-gradient-to-r from-pink-500 to-red-500 relative">
+          <div className="h-32 sm:h-48 bg-gradient-to-r from-pink-500 to-red-500 relative">
             {user.isVip && (
               <div className="absolute top-4 right-4">
                 <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 rounded-full font-bold flex items-center">
