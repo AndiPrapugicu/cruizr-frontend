@@ -130,7 +130,7 @@ export default function Chat({
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="flex-shrink-0 flex items-center justify-between pb-3 sm:pb-4 px-3 sm:px-6 bg-white border-b border-gray-100 shadow-sm"
+        className="sticky top-0 z-20 flex-shrink-0 flex items-center justify-between pb-3 sm:pb-4 px-3 sm:px-6 bg-white border-b border-gray-100 shadow-sm"
         style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 16px)' }}
       >
         <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
@@ -281,7 +281,7 @@ export default function Chat({
       <motion.div
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="flex-shrink-0 bg-white border-t border-gray-200 shadow-lg"
+        className="sticky bottom-0 z-20 flex-shrink-0 bg-white border-t border-gray-200 shadow-lg"
         style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)', paddingTop: '12px' }}
       >
         <div className="flex items-center gap-2 sm:gap-3 max-w-4xl mx-auto px-3 pb-3 sm:px-4">
