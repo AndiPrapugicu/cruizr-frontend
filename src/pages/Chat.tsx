@@ -125,12 +125,12 @@ export default function Chat({
   };
 
   return (
-    <div className="flex flex-col w-full h-full md:h-full bg-white text-gray-900">
+    <div className="chat-mobile-container md:flex md:flex-col w-full md:h-full bg-white text-gray-900">
       {/* ==== Header-ul cu avatar, nume, mașină și buton Raportează ==== */}
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="flex items-center justify-between py-3 sm:py-4 px-3 sm:px-6 bg-white border-b border-gray-100 shadow-sm shrink-0 sticky top-0 z-10"
+        className="chat-header-mobile md:shrink-0 flex items-center justify-between py-3 sm:py-4 px-3 sm:px-6 bg-white border-b border-gray-100 shadow-sm"
       >
         <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
           {/* Back Button */}
@@ -208,7 +208,7 @@ export default function Chat({
       </motion.div>
 
       {/* ==== Zona de mesaje ==== */}
-      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 bg-gradient-to-b from-gray-50 to-white">
+      <div className="chat-messages-mobile md:flex-1 md:overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 bg-gradient-to-b from-gray-50 to-white">
         {messages.length === 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -280,8 +280,7 @@ export default function Chat({
       <motion.div
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="p-3 sm:p-4 bg-white border-t border-gray-200 shadow-lg shrink-0 sticky bottom-0 z-10"
-        style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}
+        className="chat-input-mobile md:shrink-0 p-3 sm:p-4 bg-white border-t border-gray-200 shadow-lg"
       >
         <div className="flex items-end space-x-2 sm:space-x-3 max-w-4xl mx-auto">
           <div className="flex-1 relative">
