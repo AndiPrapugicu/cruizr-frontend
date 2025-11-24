@@ -854,8 +854,8 @@ export default function Nearby() {
           </AnimatePresence>
 
           {/* Mobile Action Buttons - Tinder Style (below cards) */}
-          <div className="lg:hidden fixed bottom-20 left-0 right-0 z-50 pointer-events-none">
-            <div className="flex justify-center items-center gap-3 px-4 pointer-events-auto">
+          <div className="lg:hidden fixed bottom-24 sm:bottom-28 left-0 right-0 z-50 pointer-events-none pb-safe">
+            <div className="flex justify-center items-center gap-2 sm:gap-3 px-4 pointer-events-auto">
               {/* Rewind Button */}
               <motion.button
                 whileHover={{ scale: 1.1 }}
@@ -867,9 +867,9 @@ export default function Nearby() {
                   }
                 }}
                 disabled={rewindsRemaining === 0 || currentIndex < 0}
-                className="w-14 h-14 bg-white rounded-full flex items-center justify-center text-yellow-500 shadow-xl border-2 border-gray-100 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                className="w-12 h-12 sm:w-14 sm:h-14 bg-white rounded-full flex items-center justify-center text-yellow-500 shadow-xl border-2 border-gray-100 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed"
               >
-                <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z" />
                 </svg>
               </motion.button>
@@ -880,9 +880,9 @@ export default function Nearby() {
                 whileTap={{ scale: 0.9 }}
                 onClick={() => swipe("left")}
                 disabled={currentIndex < 0}
-                className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-red-500 shadow-xl border-2 border-gray-100 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                className="w-14 h-14 sm:w-16 sm:h-16 bg-white rounded-full flex items-center justify-center text-red-500 shadow-xl border-2 border-gray-100 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed"
               >
-                <FaTimes className="text-3xl" />
+                <FaTimes className="text-2xl sm:text-3xl" />
               </motion.button>
 
               {/* Super Like Button (Star) */}
@@ -905,9 +905,9 @@ export default function Nearby() {
                   }
                 }}
                 disabled={currentIndex < 0 || superLikesRemaining === 0}
-                className="w-14 h-14 bg-white rounded-full flex items-center justify-center text-blue-500 shadow-xl border-2 border-gray-100 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                className="w-12 h-12 sm:w-14 sm:h-14 bg-white rounded-full flex items-center justify-center text-blue-500 shadow-xl border-2 border-gray-100 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed"
               >
-                <FaStar className="text-2xl" />
+                <FaStar className="text-xl sm:text-2xl" />
               </motion.button>
 
               {/* Like Button (Heart) */}
@@ -916,9 +916,9 @@ export default function Nearby() {
                 whileTap={{ scale: 0.9 }}
                 onClick={() => swipe("right")}
                 disabled={currentIndex < 0}
-                className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-green-500 shadow-xl border-2 border-gray-100 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                className="w-14 h-14 sm:w-16 sm:h-16 bg-white rounded-full flex items-center justify-center text-green-500 shadow-xl border-2 border-gray-100 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed"
               >
-                <FaHeart className="text-3xl" />
+                <FaHeart className="text-2xl sm:text-3xl" />
               </motion.button>
 
               {/* Boost Button */}
@@ -935,9 +935,9 @@ export default function Nearby() {
                   }
                 }}
                 disabled={isBoostActive || isSpotlightActive || currentIndex < 0}
-                className="w-14 h-14 bg-white rounded-full flex items-center justify-center text-purple-500 shadow-xl border-2 border-gray-100 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                className="w-12 h-12 sm:w-14 sm:h-14 bg-white rounded-full flex items-center justify-center text-purple-500 shadow-xl border-2 border-gray-100 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed"
               >
-                <FaFire className="text-2xl" />
+                <FaFire className="text-xl sm:text-2xl" />
               </motion.button>
             </div>
           </div>
