@@ -125,12 +125,12 @@ export default function Chat({
   };
 
   return (
-    <div className="flex flex-col w-full h-screen bg-white text-gray-900 overflow-hidden">
+    <div className="flex flex-col w-full h-screen bg-white text-gray-900 overflow-hidden relative">
       {/* ==== Header-ul cu avatar, nume, mașină și buton Raportează ==== */}
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="sticky top-0 z-20 flex-shrink-0 flex items-center justify-between pb-3 sm:pb-4 px-3 sm:px-6 bg-white border-b border-gray-100 shadow-sm"
+        className="fixed top-0 left-0 right-0 z-20 flex items-center justify-between pb-3 sm:pb-4 px-3 sm:px-6 bg-white border-b border-gray-100 shadow-sm"
         style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 16px)' }}
       >
         <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
@@ -209,7 +209,7 @@ export default function Chat({
       </motion.div>
 
       {/* ==== Zona de mesaje ==== */}
-      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 bg-gradient-to-b from-gray-50 to-white" style={{ WebkitOverflowScrolling: 'touch' }}>
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 bg-gradient-to-b from-gray-50 to-white" style={{ WebkitOverflowScrolling: 'touch', paddingTop: 'calc(env(safe-area-inset-top, 0px) + 80px)', paddingBottom: '140px' }}>
         {messages.length === 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -281,7 +281,7 @@ export default function Chat({
       <motion.div
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="sticky bottom-0 z-20 flex-shrink-0 bg-white border-t border-gray-200 shadow-lg"
+        className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-gray-200 shadow-lg"
         style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)', paddingTop: '12px' }}
       >
         <div className="flex items-center gap-2 sm:gap-3 max-w-4xl mx-auto px-3 pb-3 sm:px-4">
