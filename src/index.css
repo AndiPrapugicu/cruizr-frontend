@@ -476,6 +476,15 @@ button:not([class*="bg-gradient"]):not([class*="rounded-xl"]) {
   @apply pb-20 md:pb-6;
 }
 
+/* Safe area support for iOS devices */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.pb-safe {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
 /* Responsive text sizes */
 .text-responsive-xs {
   @apply text-xs sm:text-sm;

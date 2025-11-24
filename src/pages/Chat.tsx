@@ -42,6 +42,9 @@ export default function Chat({
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
+  
+  // Get the username that matches what backend sends (from JWT payload)
+  const currentUserName = user.name || user.email || "";
 
   const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -122,7 +125,7 @@ export default function Chat({
   };
 
   return (
-    <div className="flex flex-col w-full h-full bg-white text-gray-900 pb-24 md:pb-0">
+    <div className="flex flex-col w-full h-full bg-white text-gray-900">
       {/* ==== Header-ul cu avatar, nume, mașină și buton Raportează ==== */}
       <motion.div
         initial={{ y: -20, opacity: 0 }}
@@ -205,7 +208,7 @@ export default function Chat({
       </motion.div>
 
       {/* ==== Zona de mesaje ==== */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-gray-50 to-white">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 bg-gradient-to-b from-gray-50 to-white pb-4">
         {messages.length === 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -226,7 +229,7 @@ export default function Chat({
 
         <AnimatePresence>
           {messages.map((msg, index) => {
-            const isMe = msg.from === user.name;
+            const isMe = msg.from === currentUserName;
             return (
               <motion.div
                 key={msg.id}
@@ -277,16 +280,16 @@ export default function Chat({
       <motion.div
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="p-4 bg-white border-t border-gray-200 shadow-lg"
+        className="p-3 sm:p-4 bg-white border-t border-gray-200 shadow-lg safe-bottom"
       >
-        <div className="flex items-end space-x-3 max-w-4xl mx-auto">
+        <div className="flex items-end space-x-2 sm:space-x-3 max-w-4xl mx-auto">
           <div className="flex-1 relative">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="w-full p-4 pr-12 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 text-gray-800 placeholder-gray-500 transition-all duration-200"
+              className="w-full p-3 sm:p-4 pr-10 sm:pr-12 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 text-gray-800 placeholder-gray-500 transition-all duration-200 text-sm sm:text-base"
               placeholder="Scrie un mesaj..."
             />
             {input.trim() && (
@@ -305,9 +308,9 @@ export default function Chat({
             whileTap={{ scale: 0.95 }}
             onClick={handleSend}
             disabled={!input.trim()}
-            className="p-4 bg-pink-500 hover:bg-pink-600 text-white rounded-2xl shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center min-w-[56px]"
+            className="p-3 sm:p-4 bg-pink-500 hover:bg-pink-600 text-white rounded-2xl shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center min-w-[48px] sm:min-w-[56px] min-h-[48px] sm:min-h-[56px]"
           >
-            <FaPaperPlane className="text-lg" />
+            <FaPaperPlane className="text-base sm:text-lg" />
           </motion.button>
         </div>
       </motion.div>
