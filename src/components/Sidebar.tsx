@@ -22,8 +22,6 @@ import {
   FaStar,
   FaChartLine,
   FaBars,
-  FaMoon,
-  FaSun,
 } from "react-icons/fa";
 
 // Helper function to build photo URLs
@@ -48,7 +46,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
   const { user, logout } = useAuth();
   const { wallet } = useFuelWallet();
   const { notifications, unreadCount, markAsRead } = useNotifications();
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
   const [collapsed, setCollapsed] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMobileMoreMenu, setShowMobileMoreMenu] = useState(false);
