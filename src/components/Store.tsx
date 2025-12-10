@@ -97,11 +97,11 @@ const Store: React.FC<StoreProps> = ({
     { name: "Galben", color: "#facc15" },
     { name: "Roz", color: "#ec4899" },
     { name: "Albastru", color: "#3b82f6" },
-    { name: "Verde", color: "#10b981" },
-    { name: "Portocaliu", color: "#f97316" },
-    { name: "Mov", color: "#a855f7" },
-    { name: "Roșu", color: "#ef4444" },
-    { name: "Turcoaz", color: "#14b8a6" },
+    { name: "Green", color: "#10b981" },
+    { name: "Orange", color: "#f97316" },
+    { name: "Purple", color: "#a855f7" },
+    { name: "Red", color: "#ef4444" },
+    { name: "Turquoise", color: "#14b8a6" },
   ];
 
   useEffect(() => {
@@ -229,14 +229,14 @@ const Store: React.FC<StoreProps> = ({
     }
 
     if (isOwned && isItemPermanent(item)) {
-      return "Nu se poate cumpăra din nou";
+      return "Cannot purchase again";
     }
 
     if (isOwned) {
-      return "Deținut";
+      return "Owned";
     }
 
-    return "Cumpără";
+    return "Purchase";
   };
 
   const getItemButtonIcon = (
@@ -368,15 +368,15 @@ const Store: React.FC<StoreProps> = ({
       case STORE_CATEGORIES.DISCOVERY:
         return "Descoperire";
       case STORE_CATEGORIES.MESSAGING:
-        return "Mesaje";
+        return "Messages";
       case STORE_CATEGORIES.MATCHING:
         return "Matching";
       case STORE_CATEGORIES.TOOLS:
-        return "Instrumente";
+        return "Tools";
       case STORE_CATEGORIES.LOCATION:
-        return "Locație";
+        return "Location";
       case STORE_CATEGORIES.MEMBERSHIP:
-        return "Abonamente";
+        return "Membership";
       case STORE_CATEGORIES.PROFILE_ENHANCEMENT:
         return "Profile";
       default:
@@ -394,27 +394,27 @@ const Store: React.FC<StoreProps> = ({
       inventoryItem.usesRemaining !== null &&
       inventoryItem.usesRemaining !== undefined
     ) {
-      if (inventoryItem.usesRemaining <= 0) return "Consumat";
+      if (inventoryItem.usesRemaining <= 0) return "Used up";
 
       switch (item.itemId) {
         case "super-like-5pack":
         case "super-like":
-          return "Folosește";
+          return "Use";
         case "rewind":
           return "Rewind";
         case "profile-boost":
         case "super-boost":
-          return "Activează";
+          return "Activate";
         default:
-          return "Folosește";
+          return "Use";
       }
     }
 
-    // Items permanente sau temporare
+    // Permanent or temporary items
     if (inventoryItem.isActive) {
-      return "Dezactivează";
+      return "Deactivate";
     } else {
-      return "Activează";
+      return "Activate";
     }
   };
 

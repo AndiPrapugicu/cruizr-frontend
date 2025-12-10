@@ -91,12 +91,12 @@ const CarModifications: React.FC<CarModificationsProps> = ({
   return (
     <div>
       <h3 className="text-2xl font-semibold text-gray-800 mb-6">
-        Modificări mașină
+        Car Modifications
       </h3>
 
       <p className="text-gray-600 mb-8">
-        Selectează modificările pe care le are mașina ta. Poți selecta oricare
-        dintre opțiuni sau poți să nu selectezi nimic dacă mașina este stock.
+        Select the modifications your car has. You can select any of the
+        options or leave it empty if your car is stock.
       </p>
 
       {/* Selected count */}
@@ -107,7 +107,7 @@ const CarModifications: React.FC<CarModificationsProps> = ({
           className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl p-4 mb-6"
         >
           <p className="text-sm font-medium text-purple-800">
-            {selectedMods.length} modificări selectate
+            {selectedMods.length} modifications selected
           </p>
           <div className="flex flex-wrap gap-2 mt-2">
             {selectedMods.slice(0, 5).map((mod, index) => (
@@ -120,7 +120,7 @@ const CarModifications: React.FC<CarModificationsProps> = ({
             ))}
             {selectedMods.length > 5 && (
               <span className="bg-purple-200 text-purple-800 text-xs px-2 py-1 rounded-full">
-                +{selectedMods.length - 5} altele
+                +{selectedMods.length - 5} others
               </span>
             )}
           </div>
@@ -173,7 +173,7 @@ const CarModifications: React.FC<CarModificationsProps> = ({
           className="flex-1 py-3 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition duration-300 flex items-center justify-center"
         >
           <FaArrowLeft className="mr-2" />
-          Înapoi
+          Back
         </motion.button>
 
         <motion.button
@@ -182,7 +182,7 @@ const CarModifications: React.FC<CarModificationsProps> = ({
           onClick={onNext}
           className="flex-2 py-3 px-8 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition duration-300 flex items-center justify-center"
         >
-          Continuă
+          Continue
           <FaArrowRight className="ml-2" />
         </motion.button>
       </div>

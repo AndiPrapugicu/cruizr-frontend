@@ -29,7 +29,7 @@ const Step2Birthday: React.FC = () => {
 
   const handleNext = () => {
     if (!birthday) {
-      setError("Data nașterii este obligatorie");
+      setError("Date of birth is required");
       return;
     }
 
@@ -37,12 +37,12 @@ const Step2Birthday: React.FC = () => {
     const age = calculateAge(birthDate);
 
     if (age < 18) {
-      setError("Trebuie să ai cel puțin 18 ani");
+      setError("You must be at least 18 years old");
       return;
     }
 
     if (age > 100) {
-      setError("Vârsta introdusă pare incorectă");
+      setError("The age entered seems incorrect");
       return;
     }
 
@@ -82,17 +82,17 @@ const Step2Birthday: React.FC = () => {
             </motion.div>
 
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              Când te-ai născut?
+              When were you born?
             </h1>
             <p className="text-gray-600">
-              Avem nevoie de vârsta ta pentru a-ți găsi persoane compatibile
+              We need your age to find compatible people for you
             </p>
           </div>
 
           <div className="space-y-6">
             <div>
               <label className="block text-gray-700 font-medium mb-2">
-                Data nașterii
+                Date of birth
               </label>
               <input
                 type="date"
@@ -132,7 +132,7 @@ const Step2Birthday: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   className="text-green-600 text-sm mt-2"
                 >
-                  Ai {calculateAge(new Date(birthday))} ani
+                  You are {calculateAge(new Date(birthday))} years old
                 </motion.p>
               )}
             </div>
@@ -145,7 +145,7 @@ const Step2Birthday: React.FC = () => {
                 className="flex-1 py-4 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition duration-300 flex items-center justify-center"
               >
                 <FaArrowLeft className="mr-2" />
-                Înapoi
+                Back
               </motion.button>
 
               <motion.button
@@ -155,7 +155,7 @@ const Step2Birthday: React.FC = () => {
                 disabled={!birthday}
                 className="flex-1 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
-                Continuă
+                Continue
                 <FaArrowRight className="ml-2" />
               </motion.button>
             </div>

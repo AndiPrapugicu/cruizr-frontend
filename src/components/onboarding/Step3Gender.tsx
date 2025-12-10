@@ -12,7 +12,7 @@ const Step3Gender: React.FC = () => {
 
   const handleNext = () => {
     if (!gender) {
-      setError("Te rugăm să selectezi genul");
+      setError("Please select your gender");
       return;
     }
 
@@ -27,14 +27,14 @@ const Step3Gender: React.FC = () => {
   const genderOptions = [
     {
       value: "male" as const,
-      label: "Bărbat",
+      label: "Male",
       icon: FaMars,
       gradient: "from-blue-500 to-blue-600",
       hoverGradient: "from-blue-600 to-blue-700",
     },
     {
       value: "female" as const,
-      label: "Femeie",
+      label: "Female",
       icon: FaVenus,
       gradient: "from-pink-500 to-pink-600",
       hoverGradient: "from-pink-600 to-pink-700",
@@ -69,8 +69,8 @@ const Step3Gender: React.FC = () => {
               <FaMars className="text-white text-xl" />
             </motion.div>
 
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">Eu sunt</h1>
-            <p className="text-gray-600">Selectează genul tău</p>
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">I am</h1>
+            <p className="text-gray-600">Select your gender</p>
           </div>
 
           <div className="space-y-6">
@@ -125,7 +125,7 @@ const Step3Gender: React.FC = () => {
                 className="flex-1 py-4 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition duration-300 flex items-center justify-center"
               >
                 <FaArrowLeft className="mr-2" />
-                Înapoi
+                Back
               </motion.button>
 
               <motion.button
@@ -135,7 +135,7 @@ const Step3Gender: React.FC = () => {
                 disabled={!gender}
                 className="flex-1 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
-                Continuă
+                Continue
                 <FaArrowRight className="ml-2" />
               </motion.button>
             </div>

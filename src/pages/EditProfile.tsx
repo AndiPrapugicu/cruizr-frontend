@@ -119,7 +119,7 @@ export default function EditProfile() {
       navigate("/profile");
     } catch (error) {
       console.error("Error saving profile:", error);
-      alert("Eroare la salvarea profilului. Încearcă din nou.");
+      alert("Error saving profile. Please try again.");
     } finally {
       setSaving(false);
     }
@@ -180,7 +180,7 @@ export default function EditProfile() {
               <FaArrowLeft className="text-gray-600" />
             </button>
             <h1 className="text-2xl font-bold text-gray-800">
-              Editează profilul
+              Edit profile
             </h1>
           </div>
           <button
@@ -189,7 +189,7 @@ export default function EditProfile() {
             className="bg-pink-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-pink-600 transition-colors disabled:opacity-50 flex items-center space-x-2"
           >
             <FaSave />
-            <span>{saving ? "Se salvează..." : "Salvează"}</span>
+            <span>{saving ? "Saving..." : "Save"}</span>
           </button>
         </div>
 
@@ -202,13 +202,13 @@ export default function EditProfile() {
           >
             <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
               <FaUser className="mr-2 text-pink-500" />
-              Informații de bază
+              Basic Information
             </h2>
 
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nume
+                  Name
                 </label>
                 <input
                   type="text"
@@ -217,13 +217,13 @@ export default function EditProfile() {
                     setProfile((prev) => ({ ...prev, name: e.target.value }))
                   }
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                  placeholder="Numele tău"
+                  placeholder="Your name"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Oraș
+                  City
                 </label>
                 <input
                   type="text"
@@ -232,13 +232,13 @@ export default function EditProfile() {
                     setProfile((prev) => ({ ...prev, city: e.target.value }))
                   }
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                  placeholder="Orașul tău"
+                  placeholder="Your city"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Despre mine
+                  About me
                 </label>
                 <textarea
                   value={profile.bio}
@@ -247,10 +247,10 @@ export default function EditProfile() {
                   }
                   rows={4}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none"
-                  placeholder="Spune-le ceva despre tine..."
+                  placeholder="Tell them something about yourself..."
                 />
                 <p className="text-sm text-gray-500 mt-1">
-                  {profile.bio.length}/500 caractere
+                  {profile.bio.length}/500 characters
                 </p>
               </div>
             </div>
@@ -265,14 +265,14 @@ export default function EditProfile() {
           >
             <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
               <FaHeart className="mr-2 text-pink-500" />
-              Interese
+              Interests
             </h2>
 
             {/* Selected Interests */}
             {profile.interests.length > 0 && (
               <div className="mb-4">
                 <h3 className="text-sm font-medium text-gray-700 mb-2">
-                  Interesele tale ({profile.interests.length}/10)
+                  Your interests ({profile.interests.length}/10)
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {profile.interests.map((interest, index) => (
@@ -303,7 +303,7 @@ export default function EditProfile() {
                     onChange={(e) => setNewInterest(e.target.value)}
                     onKeyPress={(e) => e.key === "Enter" && addCustomInterest()}
                     className="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm"
-                    placeholder="Adaugă un interes personalizat..."
+                    placeholder="Add a custom interest..."
                     maxLength={20}
                   />
                   <button
@@ -321,7 +321,7 @@ export default function EditProfile() {
             {profile.interests.length < 10 && (
               <div>
                 <h3 className="text-sm font-medium text-gray-700 mb-2">
-                  Interese populare
+                  Popular interests
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {commonInterests
@@ -341,8 +341,8 @@ export default function EditProfile() {
 
             {profile.interests.length >= 10 && (
               <p className="text-sm text-orange-600 bg-orange-50 p-3 rounded-lg">
-                Ai atins limita maximă de 10 interese. Șterge unul pentru a
-                adăuga altul.
+                You've reached the maximum limit of 10 interests. Remove one to
+                add another.
               </p>
             )}
           </motion.div>
@@ -356,7 +356,7 @@ export default function EditProfile() {
           >
             <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
               <FaCamera className="mr-2 text-pink-500" />
-              Fotografii
+              Photos
             </h2>
 
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -371,7 +371,7 @@ export default function EditProfile() {
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-3">
-                    <span className="text-white text-sm font-medium">Foto {index + 1}</span>
+                    <span className="text-white text-sm font-medium">Photo {index + 1}</span>
                   </div>
                 </div>
               ))}
@@ -384,7 +384,7 @@ export default function EditProfile() {
                 >
                   <div className="text-center">
                     <FaPlus className="text-gray-400 text-2xl mb-2 mx-auto" />
-                    <p className="text-xs text-gray-500 font-medium">Adaugă foto</p>
+                    <p className="text-xs text-gray-500 font-medium">Add photo</p>
                   </div>
                 </button>
               ))}
@@ -393,9 +393,9 @@ export default function EditProfile() {
             <div className="mt-4 p-4 bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl border border-pink-200">
               <p className="text-sm text-gray-700 flex items-center">
                 <FaCamera className="mr-2 text-pink-500" />
-                Pentru a edita fotografiile, folosește butonul{" "}
-                <span className="font-semibold text-pink-600 mx-1">"Adaugă Fotografii"</span>
-                din pagina de profil.
+                To edit photos, use the{" "}
+                <span className="font-semibold text-pink-600 mx-1">"Add Photos"</span>
+                button on the profile page.
               </p>
             </div>
           </motion.div>

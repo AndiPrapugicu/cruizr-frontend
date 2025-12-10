@@ -90,7 +90,7 @@ export default function Store() {
       }
     } catch (error) {
       console.error("Purchase error:", error);
-      alert("Eroare la cumpărare. Te rog încearcă din nou.");
+      alert("Error purchasing. Please try again.");
     } finally {
       setPurchasing(null);
     }

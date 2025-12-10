@@ -13,6 +13,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { getSocket } from "../services/socket";
 import api from "../services/api";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface Message {
   id: string;
@@ -34,6 +35,7 @@ export default function Chat({
   otherUserName: string;
 }) {
   const navigate = useNavigate();
+  const { theme } = useTheme();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [otherProfile, setOtherProfile] = useState<UserProfile | null>(null);
@@ -114,30 +116,31 @@ export default function Chat({
     setReporting(true);
     try {
       await api.post(`/matches/${matchId}/report`);
-      alert("Utilizatorul a fost raportat și match-ul blocat.");
+      alert("The user has been reported and the match has been blocked.");
       // Poți redirecționa sau închide chat-ul aici, dacă vrei
     } catch (err) {
-      console.error("Eroare la raportare:", err);
-      alert("A apărut o eroare. Te rugăm să încerci din nou.");
+      console.error("Error reporting:", err);
+      alert("An error occurred. Please try again.");
     } finally {
       setReporting(false);
     }
   };
 
   return (
-    <div className="flex flex-col w-full h-screen bg-white text-gray-900 overflow-hidden relative">
+    <div 
+      className={`flex flex-col w-full h-full ${theme === 'dark' ? 'bg-slate-900 text-gray-100' : 'bg-gray-50 text-gray-900'}`}
+    >
       {/* ==== Header-ul cu avatar, nume, mașină și buton Raportează ==== */}
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="fixed top-0 left-0 right-0 z-20 flex items-center justify-between pb-3 sm:pb-4 px-3 sm:px-6 bg-white border-b border-gray-100 shadow-sm"
-        style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 16px)' }}
+        className={`flex-shrink-0 flex items-center justify-between py-3 px-3 sm:px-4 ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100'} border-b shadow-sm`}
       >
         <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
           {/* Back Button */}
           <button
             onClick={() => navigate("/chat")}
-            className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors duration-200 min-w-[44px] min-h-[44px] flex items-center justify-center shrink-0"
+            className={`p-2 ${theme === 'dark' ? 'text-gray-300 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'} rounded-full transition-colors duration-200 min-w-[44px] min-h-[44px] flex items-center justify-center shrink-0`}
           >
             <FaArrowLeft className="text-base sm:text-lg" />
           </button>
@@ -148,11 +151,11 @@ export default function Chat({
               <img
                 src={avatarSrc || ""}
                 alt={`Avatar ${otherUserName}`}
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-pink-200 shadow-sm"
+                className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover border-2 ${theme === 'dark' ? 'border-blue-400' : 'border-pink-200'} shadow-sm`}
               />
             ) : (
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-100 flex items-center justify-center border-2 border-pink-200 shadow-sm">
-                <FaUserCircle className="text-gray-400 text-lg sm:text-xl" />
+              <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full ${theme === 'dark' ? 'bg-slate-700 border-blue-400' : 'bg-gray-100 border-pink-200'} flex items-center justify-center border-2 shadow-sm`}>
+                <FaUserCircle className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-400'} text-lg sm:text-xl`} />
               </div>
             )}
             {/* Online indicator */}
@@ -161,13 +164,13 @@ export default function Chat({
 
           <div className="flex flex-col min-w-0 flex-1">
             {/* Numele userului */}
-            <h1 className="text-base sm:text-lg font-semibold text-gray-800 truncate flex items-center">
+            <h1 className={`text-base sm:text-lg font-semibold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'} truncate flex items-center`}>
               {otherUserName}
-              <FaHeart className="ml-1.5 sm:ml-2 text-pink-400 text-xs sm:text-sm shrink-0" />
+              <FaHeart className={`ml-1.5 sm:ml-2 ${theme === 'dark' ? 'text-blue-400' : 'text-pink-400'} text-xs sm:text-sm shrink-0`} />
             </h1>
             {/* Mașina */}
             {otherProfile?.car && (
-              <div className="flex items-center text-gray-500 text-xs sm:text-sm">
+              <div className={`flex items-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'} text-xs sm:text-sm`}>
                 <FaCar className="mr-1 shrink-0" />
                 <span className="truncate">{otherProfile.car}</span>
               </div>
@@ -180,7 +183,7 @@ export default function Chat({
           {/* Menu Button */}
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors duration-200 relative"
+            className={`p-2 ${theme === 'dark' ? 'text-gray-300 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'} rounded-full transition-colors duration-200 relative`}
           >
             <FaEllipsisV className="text-base" />
 
@@ -190,16 +193,16 @@ export default function Chat({
                 initial={{ opacity: 0, scale: 0.95, y: -10 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-200 z-50"
+                className={`absolute right-0 top-full mt-2 w-48 ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'} rounded-xl shadow-xl border z-50`}
               >
                 <button
                   onClick={handleReport}
                   disabled={reporting}
-                  className="w-full px-4 py-3 text-left text-red-600 hover:bg-red-50 rounded-xl transition-colors duration-200 flex items-center space-x-2 disabled:opacity-50"
+                  className={`w-full px-4 py-3 text-left text-red-500 ${theme === 'dark' ? 'hover:bg-red-900/30' : 'hover:bg-red-50'} rounded-xl transition-colors duration-200 flex items-center space-x-2 disabled:opacity-50`}
                 >
                   <FaFlag className="text-sm" />
                   <span className="font-medium">
-                    {reporting ? "Se raportează..." : "Raportează utilizatorul"}
+                    {reporting ? "Reporting..." : "Report user"}
                   </span>
                 </button>
               </motion.div>
@@ -209,21 +212,27 @@ export default function Chat({
       </motion.div>
 
       {/* ==== Zona de mesaje ==== */}
-      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 bg-gradient-to-b from-gray-50 to-white" style={{ WebkitOverflowScrolling: 'touch', paddingTop: 'calc(env(safe-area-inset-top, 0px) + 80px)', paddingBottom: '140px' }}>
+      <div 
+        className={`flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 ${theme === 'dark' ? 'bg-slate-900' : 'bg-gradient-to-b from-gray-50 to-white'}`} 
+        style={{ 
+          WebkitOverflowScrolling: 'touch',
+          overscrollBehavior: 'contain'
+        }}
+      >
         {messages.length === 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center mt-12"
           >
-            <div className="p-3 bg-pink-100 rounded-full w-12 h-12 mx-auto mb-4 flex items-center justify-center shadow-sm">
-              <FaHeart className="text-pink-500 text-xl" />
+            <div className={`p-3 ${theme === 'dark' ? 'bg-blue-900/50' : 'bg-pink-100'} rounded-full w-12 h-12 mx-auto mb-4 flex items-center justify-center shadow-sm`}>
+              <FaHeart className={`${theme === 'dark' ? 'text-blue-400' : 'text-pink-500'} text-xl`} />
             </div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
-              Începeți conversația!
+            <h3 className={`text-lg font-semibold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'} mb-2`}>
+              Start the conversation!
             </h3>
-            <p className="text-gray-500 italic">
-              Spuneți "Salut!" pentru a porni o conversație frumoasă 💕
+            <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'} italic`}>
+              Say "Hi!" to start a nice conversation 💕
             </p>
           </motion.div>
         )}
@@ -250,13 +259,13 @@ export default function Chat({
                   max-w-[80%] sm:max-w-[60%]
                   ${
                     isMe
-                      ? "bg-pink-500 text-white rounded-2xl rounded-br-md shadow-sm"
-                      : "bg-white text-gray-800 shadow-sm rounded-2xl rounded-bl-md border border-gray-200"
+                      ? `${theme === 'dark' ? 'bg-blue-600' : 'bg-pink-500'} text-white rounded-2xl rounded-br-md shadow-md`
+                      : `${theme === 'dark' ? 'bg-slate-700 text-gray-100 border-slate-600' : 'bg-white text-gray-800 border-gray-200'} shadow-sm rounded-2xl rounded-bl-md border`
                   }
                 `}
                 >
                   {!isMe && (
-                    <div className="font-semibold text-sm mb-1 text-pink-600">
+                    <div className={`font-semibold text-sm mb-1 ${theme === 'dark' ? 'text-blue-400' : 'text-pink-600'}`}>
                       {msg.from}
                     </div>
                   )}
@@ -264,9 +273,9 @@ export default function Chat({
 
                   {/* Message tail */}
                   {isMe ? (
-                    <div className="absolute -right-1 bottom-0 w-0 h-0 border-l-[12px] border-l-pink-500 border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent"></div>
+                    <div className={`absolute -right-1 bottom-0 w-0 h-0 border-l-[12px] ${theme === 'dark' ? 'border-l-blue-600' : 'border-l-pink-500'} border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent`}></div>
                   ) : (
-                    <div className="absolute -left-1 bottom-0 w-0 h-0 border-r-[12px] border-r-white border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent"></div>
+                    <div className={`absolute -left-1 bottom-0 w-0 h-0 border-r-[12px] ${theme === 'dark' ? 'border-r-slate-700' : 'border-r-white'} border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent`}></div>
                   )}
                 </div>
               </motion.div>
@@ -281,18 +290,17 @@ export default function Chat({
       <motion.div
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-gray-200 shadow-lg"
-        style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 16px)', paddingTop: '12px' }}
+        className={`flex-shrink-0 ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'} border-t shadow-lg p-3 sm:p-4`}
       >
-        <div className="flex items-center gap-2 sm:gap-3 max-w-4xl mx-auto px-3 pb-3 sm:px-4">
+        <div className="flex items-center gap-2 sm:gap-3 max-w-4xl mx-auto">
           <div className="flex-1 min-w-0 relative">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="w-full p-3 sm:p-4 pr-10 sm:pr-12 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 text-gray-800 placeholder-gray-500 transition-all duration-200 text-base"
-              placeholder="Scrie un mesaj..."
+              className={`w-full p-3 sm:p-4 pr-10 sm:pr-12 border-2 ${theme === 'dark' ? 'bg-slate-700 border-slate-600 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500/20' : 'border-gray-200 text-gray-800 placeholder-gray-500 focus:border-pink-500 focus:ring-pink-500/20'} rounded-2xl focus:outline-none focus:ring-2 transition-all duration-200 text-base`}
+              placeholder="Write a message..."
             />
             {input.trim() && (
               <motion.div
@@ -300,7 +308,7 @@ export default function Chat({
                 animate={{ scale: 1 }}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
               >
-                <FaHeart className="text-pink-500 text-lg" />
+                <FaHeart className={`${theme === 'dark' ? 'text-blue-400' : 'text-pink-500'} text-lg`} />
               </motion.div>
             )}
           </div>
@@ -310,7 +318,7 @@ export default function Chat({
             whileTap={{ scale: 0.95 }}
             onClick={handleSend}
             disabled={!input.trim()}
-            className="flex-shrink-0 p-3 sm:p-4 bg-pink-500 hover:bg-pink-600 text-white rounded-2xl shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14"
+            className={`flex-shrink-0 p-3 sm:p-4 ${theme === 'dark' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-pink-500 hover:bg-pink-600'} text-white rounded-2xl shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14`}
           >
             <FaPaperPlane className="text-base sm:text-lg" />
           </motion.button>

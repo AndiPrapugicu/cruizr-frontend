@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { FaCheck, FaHeart, FaArrowLeft, FaSpinner, FaMapMarkerAlt, FaTimes } from "react-icons/fa";
 import { useOnboarding } from "./useOnboarding";
@@ -17,9 +17,11 @@ const Step7Complete: React.FC = () => {
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [showLocationPermission, setShowLocationPermission] = useState(false);
   const [locationGranted, setLocationGranted] = useState<boolean | null>(null);
+  // Store coordinates once obtained to avoid asking twice
+  const locationCoordsRef = useRef<{ latitude: number; longitude: number } | null>(null);
 
   const handleComplete = async () => {
-    // First, show location permission dialog
+    // First, show location permission dialog if not yet decided
     if (locationGranted === null) {
       setShowLocationPermission(true);
       return;
@@ -52,39 +54,13 @@ const Step7Complete: React.FC = () => {
       // Add interests as JSON array
       formData.append("interests", JSON.stringify(onboardingData.interests));
 
-      // Try to get user's current location if permission was granted
-      if (locationGranted) {
-        console.log("📍 User granted location permission, attempting to get coordinates...");
-        try {
-          if (navigator.geolocation) {
-            await new Promise<void>((resolve) => {
-              navigator.geolocation.getCurrentPosition(
-                (position) => {
-                  const { latitude, longitude } = position.coords;
-                  formData.append("latitude", String(latitude));
-                  formData.append("longitude", String(longitude));
-                  console.log(`✅ Location obtained: ${latitude}, ${longitude}`);
-                  resolve();
-                },
-                (error) => {
-                  console.warn("⚠️ Could not get location:", error.message);
-                  console.log("📍 Will use default location on backend");
-                  resolve(); // Continue even if location fails
-                },
-                {
-                  timeout: 5000,
-                  maximumAge: 0,
-                  enableHighAccuracy: false,
-                }
-              );
-            });
-          }
-        } catch (locationError) {
-          console.warn("⚠️ Location error:", locationError);
-          console.log("📍 Will use default location on backend");
-        }
+      // Use stored location coordinates if available (already obtained when user clicked "Allow")
+      if (locationGranted && locationCoordsRef.current) {
+        formData.append("latitude", String(locationCoordsRef.current.latitude));
+        formData.append("longitude", String(locationCoordsRef.current.longitude));
+        console.log(`✅ Using stored location: ${locationCoordsRef.current.latitude}, ${locationCoordsRef.current.longitude}`);
       } else {
-        console.log("📍 User declined location permission, will use default location");
+        console.log("📍 No location available, will use default location on backend");
       }
 
       // Add photo files directly
@@ -133,7 +109,7 @@ const Step7Complete: React.FC = () => {
       // Check if user is authenticated
       const token = localStorage.getItem("token");
       if (!token) {
-        setError("Trebuie să fii autentificat pentru a completa onboarding-ul. Te rugăm să te loghezi.");
+        setError("You must be logged in to complete onboarding. Please log in.");
         setTimeout(() => {
           window.location.href = "/login";
         }, 2000);
@@ -185,7 +161,7 @@ const Step7Complete: React.FC = () => {
           console.log("✅ Stored user data:", completeUserData);
         } catch (userError) {
           console.error("❌ Error fetching user data:", userError);
-          throw new Error("Nu am putut actualiza datele profilului. Te rugăm să încerci din nou.");
+          throw new Error("Could not update profile data. Please try again.");
         }
       } catch (fetchError: unknown) {
         clearTimeout(timeoutId);
@@ -215,9 +191,9 @@ const Step7Complete: React.FC = () => {
     } catch (error: unknown) {
       console.error("❌ Error completing onboarding:", error);
       if (error instanceof Error && (error.message.includes("Failed to fetch") || error.message.includes("ERR_CONNECTION_REFUSED"))) {
-        setError("Nu ne putem conecta la server. Te rog verifică conexiunea ta la internet și încearcă din nou.");
+        setError("Cannot connect to server. Please check your internet connection and try again.");
       } else {
-        setError(error instanceof Error ? error.message : "A apărut o eroare. Te rog încearcă din nou.");
+        setError(error instanceof Error ? error.message : "An error occurred. Please try again.");
       }
     } finally {
       setLoading(false);
@@ -269,7 +245,7 @@ const Step7Complete: React.FC = () => {
               transition={{ delay: 0.4 }}
               className="text-4xl font-bold text-gray-800 mb-4"
             >
-              Aproape gata! 🎉
+              Almost done! 🎉
             </motion.h1>
 
             <motion.p
@@ -278,7 +254,7 @@ const Step7Complete: React.FC = () => {
               transition={{ delay: 0.5 }}
               className="text-lg text-gray-600 mb-2"
             >
-              Bun venit în comunitatea CarMatch, {data.firstName}!
+              Welcome to the Cruizr community, {data.firstName}!
             </motion.p>
 
             <motion.p
@@ -287,7 +263,7 @@ const Step7Complete: React.FC = () => {
               transition={{ delay: 0.6 }}
               className="text-gray-500"
             >
-              Să începem să-ți găsim pe cineva special cu aceleași pasiuni
+              Let's start finding someone special with the same passions
             </motion.p>
           </div>
 
@@ -299,48 +275,48 @@ const Step7Complete: React.FC = () => {
             className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 mb-8"
           >
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
-              Rezumatul profilului tău:
+              Your profile summary:
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="font-medium text-gray-700">Nume:</span>
+                <span className="font-medium text-gray-700">Name:</span>
                 <span className="ml-2 text-gray-600">{data.firstName}</span>
               </div>
               <div>
-                <span className="font-medium text-gray-700">Vârsta:</span>
+                <span className="font-medium text-gray-700">Age:</span>
                 <span className="ml-2 text-gray-600">
                   {data.birthday
                     ? new Date().getFullYear() - data.birthday.getFullYear()
                     : "N/A"}{" "}
-                  ani
+                  years old
                 </span>
               </div>
               <div>
-                <span className="font-medium text-gray-700">Gen:</span>
+                <span className="font-medium text-gray-700">Gender:</span>
                 <span className="ml-2 text-gray-600">
                   {data.gender === "male"
-                    ? "Bărbat"
+                    ? "Male"
                     : data.gender === "female"
-                    ? "Femeie"
+                    ? "Female"
                     : "N/A"}
                 </span>
               </div>
               <div>
-                <span className="font-medium text-gray-700">Interese:</span>
+                <span className="font-medium text-gray-700">Interests:</span>
                 <span className="ml-2 text-gray-600">
-                  {data.interests.length} selectate
+                  {data.interests.length} selected
                 </span>
               </div>
               <div>
-                <span className="font-medium text-gray-700">Mașini:</span>
+                <span className="font-medium text-gray-700">Cars:</span>
                 <span className="ml-2 text-gray-600">
-                  {data.cars.length} adăugate
+                  {data.cars.length} added
                 </span>
               </div>
               <div className="md:col-span-2">
-                <span className="font-medium text-gray-700">Poze:</span>
+                <span className="font-medium text-gray-700">Photos:</span>
                 <span className="ml-2 text-gray-600">
-                  {data.photos.length} adăugate
+                  {data.photos.length} added
                 </span>
               </div>
             </div>
@@ -374,7 +350,7 @@ const Step7Complete: React.FC = () => {
                 )}
               </motion.button>
               <label className="text-sm text-gray-700 leading-relaxed cursor-pointer" onClick={() => setAgreed(!agreed)}>
-                Sunt de acord cu{" "}
+                I agree to the{" "}
                 <span
                   onClick={(e) => {
                     e.preventDefault();
@@ -383,9 +359,9 @@ const Step7Complete: React.FC = () => {
                   }}
                   className="text-purple-600 hover:underline cursor-pointer"
                 >
-                  Termenii și Condițiile
+                  Terms and Conditions
                 </span>{" "}
-                și{" "}
+                and{" "}
                 <span
                   onClick={(e) => {
                     e.preventDefault();
@@ -394,9 +370,9 @@ const Step7Complete: React.FC = () => {
                   }}
                   className="text-purple-600 hover:underline cursor-pointer"
                 >
-                  Politica de Confidențialitate
+                  Privacy Policy
                 </span>{" "}
-                Cruizr. Confirm că am cel puțin 18 ani.
+                of Cruizr. I confirm I am at least 18 years old.
               </label>
             </motion.div>
 
@@ -418,7 +394,7 @@ const Step7Complete: React.FC = () => {
               >
                 <FaCheck className="text-green-500 text-3xl mx-auto mb-2" />
                 <p className="text-green-700 font-semibold">
-                  Cont creat cu succes! Te redirectez către dashboard...
+                  Account created successfully! Redirecting to dashboard...
                 </p>
               </motion.div>
             )}
@@ -432,7 +408,7 @@ const Step7Complete: React.FC = () => {
                 className="flex-1 py-4 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition duration-300 disabled:opacity-50 flex items-center justify-center"
               >
                 <FaArrowLeft className="mr-2" />
-                Înapoi
+                Back
               </motion.button>
 
               <motion.button
@@ -445,12 +421,12 @@ const Step7Complete: React.FC = () => {
                 {loading ? (
                   <>
                     <FaSpinner className="animate-spin mr-2" />
-                    Se finalizează...
+                    Finalizing...
                   </>
                 ) : (
                   <>
                     <FaHeart className="mr-2" />
-                    Începe aventura!
+                    Start the adventure!
                   </>
                 )}
               </motion.button>
@@ -507,44 +483,44 @@ const Step7Complete: React.FC = () => {
                 <FaMapMarkerAlt className="text-white text-2xl" />
               </div>
               <h3 className="text-2xl font-bold text-gray-800 mb-2">
-                Permite Accesul la Locație
+                Allow Location Access
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
-                Pentru o experiență mai bună, Cruizr ar dori să știe locația ta aproximativă.
+                For a better experience, Cruizr would like to know your approximate location.
               </p>
             </div>
 
             <div className="bg-purple-50 rounded-xl p-4 mb-6">
               <h4 className="font-semibold text-purple-900 mb-2 text-sm">
-                De ce avem nevoie de locația ta?
+                Why do we need your location?
               </h4>
               <ul className="space-y-2 text-sm text-purple-800">
                 <li className="flex items-start">
                   <span className="text-purple-500 mr-2">•</span>
-                  <span>Îți arătăm utilizatori din apropierea ta</span>
+                  <span>We show you users near you</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-purple-500 mr-2">•</span>
-                  <span>Calculăm distanța exactă față de potențiale match-uri</span>
+                  <span>We calculate the exact distance to potential matches</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-purple-500 mr-2">•</span>
-                  <span>Îmbunătățim recomandările bazate pe proximitate</span>
+                  <span>We improve recommendations based on proximity</span>
                 </li>
               </ul>
             </div>
 
             <div className="bg-blue-50 rounded-xl p-4 mb-6">
               <p className="text-xs text-blue-800">
-                <strong>🔒 Confidențialitate:</strong> Locația ta exactă nu va fi niciodată partajată cu alți utilizatori. 
-                Ei vor vedea doar distanța aproximativă față de tine (ex: "5 km depărtare").
+                <strong>🔒 Privacy:</strong> Your exact location will never be shared with other users. 
+                They will only see the approximate distance from you (e.g., "5 km away").
               </p>
             </div>
 
             <div className="bg-yellow-50 rounded-xl p-4 mb-6">
               <p className="text-xs text-yellow-800">
-                <strong>ℹ️ Notă:</strong> Dacă refuzi, vom folosi o locație aproximativă pentru a-ți arăta utilizatori. 
-                Poți actualiza locația oricând din Setări.
+                <strong>ℹ️ Note:</strong> If you decline, we'll use an approximate location to show you users. 
+                You can update your location anytime from Settings.
               </p>
             </div>
 
@@ -558,23 +534,44 @@ const Step7Complete: React.FC = () => {
                 }}
                 className="flex-1 py-3 px-4 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition"
               >
-                Nu acum
+                Not Now
               </button>
               <button
-                onClick={() => {
+                onClick={async () => {
+                  // Request browser geolocation permission NOW and store coordinates
+                  if (navigator.geolocation) {
+                    try {
+                      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+                        navigator.geolocation.getCurrentPosition(resolve, reject, {
+                          timeout: 10000,
+                          maximumAge: 0,
+                          enableHighAccuracy: false,
+                        });
+                      });
+                      // Store the coordinates so we don't need to ask again
+                      locationCoordsRef.current = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                      };
+                      console.log(`✅ Location obtained and stored: ${position.coords.latitude}, ${position.coords.longitude}`);
+                    } catch (err) {
+                      console.warn("⚠️ Could not get location:", err);
+                      // Continue anyway, backend will use default
+                    }
+                  }
                   setLocationGranted(true);
                   setShowLocationPermission(false);
-                  // Retry handleComplete after permission granted
+                  // Continue with onboarding
                   setTimeout(() => handleComplete(), 100);
                 }}
                 className="flex-1 py-3 px-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl hover:shadow-lg transition"
               >
-                Permite
+                Allow
               </button>
             </div>
 
             <p className="text-xs text-gray-500 text-center mt-4">
-              Poți schimba această setare oricând din setările aplicației
+              You can change this setting anytime from the app settings
             </p>
           </motion.div>
         </motion.div>

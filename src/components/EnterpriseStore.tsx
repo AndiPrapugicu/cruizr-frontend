@@ -36,6 +36,7 @@ import {
   useElements,
 } from "@stripe/react-stripe-js";
 import { useAuth } from "../contexts/AuthContext";
+import { useTheme } from "../contexts/ThemeContext";
 
 // Initialize Stripe
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
@@ -279,6 +280,7 @@ function StoreItemCard({
   onBuyPremium,
   userInventory,
 }: StoreItemCardProps) {
+  const { theme } = useTheme();
   const [quantity, setQuantity] = useState(1);
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
 
@@ -404,7 +406,7 @@ function StoreItemCard({
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
-        className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100"
+        className={`rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100'}`}
       >
         {/* Item Header */}
         <div className="p-6 pb-4">
@@ -412,8 +414,8 @@ function StoreItemCard({
             <div className="flex items-center space-x-3">
               {getItemIcon()}
               <div>
-                <h3 className="text-lg font-bold text-gray-800">{item.name}</h3>
-                <p className="text-sm text-gray-600">{item.category}</p>
+                <h3 className={`text-lg font-bold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>{item.name}</h3>
+                <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>{item.category}</p>
               </div>
             </div>
             {item.isPopular && (
@@ -423,21 +425,21 @@ function StoreItemCard({
             )}
           </div>
 
-          <p className="text-gray-700 text-sm leading-relaxed mb-4">
+          <p className={`text-sm leading-relaxed mb-4 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
             {item.description}
           </p>
 
           {/* Features */}
           {item.features && item.features.length > 0 && (
             <div className="mb-4">
-              <h4 className="text-sm font-semibold text-gray-800 mb-2">
+              <h4 className={`text-sm font-semibold mb-2 ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'}`}>
                 Features:
               </h4>
               <ul className="space-y-1">
                 {item.features.map((feature: string, index: number) => (
                   <li
                     key={index}
-                    className="flex items-center text-sm text-gray-600"
+                    className={`flex items-center text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}
                   >
                     <FaCheck className="text-green-500 mr-2 text-xs" />
                     {feature}
@@ -449,20 +451,20 @@ function StoreItemCard({
 
           {/* Quantity Selector */}
           <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-medium text-gray-700">Quantity:</span>
+            <span className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Quantity:</span>
             <div className="flex items-center space-x-3">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${theme === 'dark' ? 'bg-slate-700 hover:bg-slate-600 text-gray-200' : 'bg-gray-100 hover:bg-gray-200'}`}
               >
                 -
               </button>
-              <span className="font-bold text-lg w-8 text-center">
+              <span className={`font-bold text-lg w-8 text-center ${theme === 'dark' ? 'text-gray-100' : ''}`}>
                 {quantity}
               </span>
               <button
                 onClick={() => setQuantity(quantity + 1)}
-                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${theme === 'dark' ? 'bg-slate-700 hover:bg-slate-600 text-gray-200' : 'bg-gray-100 hover:bg-gray-200'}`}
               >
                 +
               </button>
@@ -568,6 +570,7 @@ function PurchaseModal({
   onClose,
   onPurchase,
 }: PurchaseModalProps) {
+  const { theme } = useTheme();
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<string>("");
@@ -620,34 +623,34 @@ function PurchaseModal({
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+        className={`rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-800">Complete Purchase</h2>
+        <div className={`flex items-center justify-between p-6 border-b ${theme === 'dark' ? 'border-slate-700' : 'border-gray-200'}`}>
+          <h2 className={`text-xl font-bold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>Complete Purchase</h2>
           <button
             onClick={onClose}
-            className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+            className={`p-2 rounded-full transition-colors ${theme === 'dark' ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'}`}
           >
             <FaTimes />
           </button>
         </div>
 
         {/* Purchase Summary */}
-        <div className="p-6 border-b border-gray-200">
+        <div className={`p-6 border-b ${theme === 'dark' ? 'border-slate-700' : 'border-gray-200'}`}>
           <div className="flex items-center space-x-4 mb-4">
             <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-red-500 rounded-xl flex items-center justify-center">
               <FaShoppingCart className="text-white" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-800">{item.name}</h3>
-              <p className="text-sm text-gray-600">Quantity: {quantity}</p>
+              <h3 className={`font-semibold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>{item.name}</h3>
+              <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Quantity: {quantity}</p>
             </div>
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="font-medium text-gray-700">Total:</span>
+            <span className={`font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Total:</span>
             <span className="text-2xl font-bold text-green-600">
               ${totalCost}
             </span>
@@ -779,6 +782,7 @@ function AddCardModal({ onClose, onCardAdded }: AddCardModalProps) {
 }
 
 function AddCardForm({ onClose, onCardAdded }: AddCardModalProps) {
+  const { theme } = useTheme();
   const stripe = useStripe();
   const elements = useElements();
   const [processing, setProcessing] = useState(false);
@@ -831,17 +835,17 @@ function AddCardForm({ onClose, onCardAdded }: AddCardModalProps) {
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white rounded-2xl shadow-2xl max-w-md w-full m-4"
+        className={`rounded-2xl shadow-2xl max-w-md w-full m-4 ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-bold text-gray-800">
+            <h3 className={`text-lg font-bold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>
               Add Payment Method
             </h3>
             <button
               onClick={onClose}
-              className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+              className={`p-2 rounded-full transition-colors ${theme === 'dark' ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'}`}
             >
               <FaTimes />
             </button>
@@ -849,10 +853,10 @@ function AddCardForm({ onClose, onCardAdded }: AddCardModalProps) {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
                 Card Information
               </label>
-              <div className="p-4 border border-gray-300 rounded-xl">
+              <div className={`p-4 border rounded-xl ${theme === 'dark' ? 'border-slate-600 bg-slate-700' : 'border-gray-300'}`}>
                 <CardElement options={cardElementOptions} />
               </div>
             </div>
@@ -865,7 +869,7 @@ function AddCardForm({ onClose, onCardAdded }: AddCardModalProps) {
                 onChange={(e) => setSaveCard(e.target.checked)}
                 className="rounded border-gray-300 text-pink-600 focus:ring-pink-500"
               />
-              <label htmlFor="saveCard" className="text-sm text-gray-700">
+              <label htmlFor="saveCard" className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
                 Save this card for future purchases
               </label>
             </div>
@@ -911,6 +915,7 @@ function AddCardForm({ onClose, onCardAdded }: AddCardModalProps) {
 
 // Premium Purchase Modal
 function PremiumPurchaseModal({ onClose }: { onClose: () => void }) {
+  const { theme } = useTheme();
   const [selectedPackage, setSelectedPackage] = useState(premiumPackages[1]);
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
@@ -967,26 +972,26 @@ function PremiumPurchaseModal({ onClose }: { onClose: () => void }) {
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+        className={`rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-800 flex items-center">
+        <div className={`flex items-center justify-between p-6 border-b ${theme === 'dark' ? 'border-slate-700' : 'border-gray-200'}`}>
+          <h2 className={`text-2xl font-bold flex items-center ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>
             <FaGem className="text-purple-500 mr-3" />
             Buy Premium Points
           </h2>
           <button
             onClick={onClose}
-            className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+            className={`p-2 rounded-full transition-colors ${theme === 'dark' ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'}`}
           >
             <FaTimes />
           </button>
         </div>
 
         {/* Premium Packages */}
-        <div className="p-6 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+        <div className={`p-6 border-b ${theme === 'dark' ? 'border-slate-700' : 'border-gray-200'}`}>
+          <h3 className={`text-lg font-semibold mb-4 ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>
             Choose Your Package:
           </h3>
           <div className="grid grid-cols-2 gap-4">
@@ -1151,6 +1156,7 @@ function InventoryItemCard({
   onDelete,
   loading,
 }: InventoryItemCardProps) {
+  const { theme } = useTheme();
   const [currentTime, setCurrentTime] = useState(new Date());
 
   // Update current time every SECOND for real-time countdown with seconds
@@ -1446,8 +1452,12 @@ function InventoryItemCard({
       layout
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      className={`bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border ${
-        inventoryItem?.isActive ? "border-green-200" : "border-gray-100"
+      className={`rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border ${
+        theme === 'dark' ? 'bg-slate-800' : 'bg-white'
+      } ${
+        inventoryItem?.isActive 
+          ? "border-green-200" 
+          : theme === 'dark' ? "border-slate-700" : "border-gray-100"
       } ${isExpired(currentTime) ? "opacity-60" : ""}`}
     >
       {/* Item Header */}
@@ -1456,10 +1466,10 @@ function InventoryItemCard({
           <div className="flex items-center space-x-3">
             {getItemIcon()}
             <div>
-              <h3 className="text-lg font-bold text-gray-800">
+              <h3 className={`text-lg font-bold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>
                 {storeItem?.name || "Unknown Item"}
               </h3>
-              <p className="text-sm text-gray-600">
+              <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                 {storeItem?.category || "Unknown"}
               </p>
             </div>
@@ -1468,15 +1478,15 @@ function InventoryItemCard({
         </div>
 
         {/* Item Description */}
-        <p className="text-gray-700 text-sm leading-relaxed mb-4">
+        <p className={`text-sm leading-relaxed mb-4 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
           {storeItem?.description || "No description available"}
         </p>
 
         {/* Item Details */}
         <div className="space-y-2 mb-4">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600">Purchased:</span>
-            <span className="font-medium">
+            <span className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>Purchased:</span>
+            <span className={`font-medium ${theme === 'dark' ? 'text-gray-200' : ''}`}>
               {inventoryItem?.purchaseDate
                 ? formatDate(inventoryItem.purchaseDate)
                 : "Unknown"}
@@ -1485,10 +1495,10 @@ function InventoryItemCard({
 
           {inventoryItem?.expiryDate && (
             <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-600">Expires:</span>
+              <span className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>Expires:</span>
               <span
                 className={`font-medium ${
-                  isExpired(currentTime) ? "text-red-600" : "text-gray-800"
+                  isExpired(currentTime) ? "text-red-600" : theme === 'dark' ? "text-gray-200" : "text-gray-800"
                 }`}
               >
                 {formatDate(inventoryItem?.expiryDate)}
@@ -1497,14 +1507,14 @@ function InventoryItemCard({
           )}
 
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600">Uses Remaining:</span>
+            <span className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>Uses Remaining:</span>
             {getRemainingDisplay(currentTime)}
           </div>
 
           {inventoryItem?.metadata?.activatedAt && (
             <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-600">Activated:</span>
-              <span className="font-medium">
+              <span className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>Activated:</span>
+              <span className={`font-medium ${theme === 'dark' ? 'text-gray-200' : ''}`}>
                 {formatDate(inventoryItem?.metadata?.activatedAt)}
               </span>
             </div>
@@ -1702,6 +1712,7 @@ function DeleteConfirmationModal({
 
 export default function EnterpriseStore() {
   const { user } = useAuth();
+  const { theme } = useTheme();
   const {
     storeItems,
     userInventory,
@@ -1858,7 +1869,7 @@ export default function EnterpriseStore() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className={`min-h-screen flex items-center justify-center ${theme === 'dark' ? 'bg-slate-900' : 'bg-gray-50'}`}>
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -1869,23 +1880,23 @@ export default function EnterpriseStore() {
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
             className="w-16 h-16 border-4 border-pink-500 border-t-transparent rounded-full mx-auto mb-4"
           />
-          <p className="text-gray-600 font-medium">Loading store...</p>
+          <p className={`font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>Loading store...</p>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24 md:pb-0">
+    <div className={`min-h-screen pb-24 md:pb-0 ${theme === 'dark' ? 'bg-slate-900' : 'bg-gray-50'}`}>
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
+      <div className={`shadow-sm border-b ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 md:py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
             <div className="flex-1 min-w-0">
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-1">
+              <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold mb-1 ${theme === 'dark' ? 'text-gray-100' : 'text-gray-900'}`}>
                 Cruizr Store
               </h1>
-              <p className="text-xs sm:text-sm md:text-base text-gray-600">
+              <p className={`text-xs sm:text-sm md:text-base ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                 {currentView === "store"
                   ? "Îmbunătățește-ți experiența"
                   : "Gestionează articolele tale"}
@@ -1923,7 +1934,7 @@ export default function EnterpriseStore() {
       </div>
 
       {/* Main Navigation Tabs */}
-      <div className="bg-white border-b border-gray-200 overflow-x-auto scrollbar-hide">
+      <div className={`border-b overflow-x-auto scrollbar-hide ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}`}>
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex space-x-4 sm:space-x-8 min-w-max">
             {mainTabs.map((tab) => (
@@ -1933,7 +1944,7 @@ export default function EnterpriseStore() {
                 className={`flex items-center space-x-2 py-3 sm:py-4 px-2 border-b-2 font-medium text-xs sm:text-sm transition-all whitespace-nowrap ${
                   currentView === tab.id
                     ? `border-${tab.color}-500 text-${tab.color}-600`
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    : `border-transparent ${theme === 'dark' ? 'text-gray-400 hover:text-gray-300 hover:border-gray-600' : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'}`
                 }`}
               >
                 {tab.icon}
@@ -1998,7 +2009,9 @@ export default function EnterpriseStore() {
                   className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-semibold transition-all ${
                     selectedCategory === category.id
                       ? `bg-${category.color}-500 text-white shadow-lg`
-                      : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
+                      : theme === 'dark' 
+                        ? "bg-slate-800 text-gray-300 hover:bg-slate-700 border border-slate-700"
+                        : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
                   }`}
                 >
                   {category.icon}
@@ -2017,7 +2030,9 @@ export default function EnterpriseStore() {
                     className={`px-4 py-2 rounded-lg font-medium transition-all ${
                       selectedSubcategory === subcategory.id
                         ? "bg-pink-500 text-white"
-                        : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
+                        : theme === 'dark'
+                          ? "bg-slate-800 text-gray-300 hover:bg-slate-700 border border-slate-700"
+                          : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
                     }`}
                   >
                     {subcategory.name}
@@ -2040,7 +2055,9 @@ export default function EnterpriseStore() {
                   className={`px-4 py-2 rounded-lg font-medium transition-all ${
                     inventoryFilter === filter.id
                       ? "bg-blue-500 text-white"
-                      : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
+                      : theme === 'dark'
+                        ? "bg-slate-800 text-gray-300 hover:bg-slate-700 border border-slate-700"
+                        : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
                   }`}
                 >
                   {filter.name}
@@ -2050,44 +2067,44 @@ export default function EnterpriseStore() {
 
             {/* Inventory Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-              <div className="bg-white rounded-xl p-4 border border-gray-200">
+              <div className={`rounded-xl p-4 border ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}`}>
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                     <FaBox className="text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-gray-800">
+                    <p className={`text-2xl font-bold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>
                       {(userInventory || []).length}
                     </p>
-                    <p className="text-sm text-gray-600">Total Items</p>
+                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Total Items</p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl p-4 border border-gray-200">
+              <div className={`rounded-xl p-4 border ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}`}>
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
                     <FaToggleOn className="text-green-600" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-gray-800">
+                    <p className={`text-2xl font-bold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>
                       {
                         (userInventory || []).filter((item) => item?.isActive)
                           .length
                       }
                     </p>
-                    <p className="text-sm text-gray-600">Active Items</p>
+                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Active Items</p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl p-4 border border-gray-200">
+              <div className={`rounded-xl p-4 border ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}`}>
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
                     <FaClock className="text-yellow-600" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-gray-800">
+                    <p className={`text-2xl font-bold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>
                       {
                         (userInventory || []).filter(
                           (item) =>
@@ -2096,25 +2113,25 @@ export default function EnterpriseStore() {
                         ).length
                       }
                     </p>
-                    <p className="text-sm text-gray-600">With Uses Left</p>
+                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>With Uses Left</p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl p-4 border border-gray-200">
+              <div className={`rounded-xl p-4 border ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}`}>
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
                     <FaCrown className="text-purple-600" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-gray-800">
+                    <p className={`text-2xl font-bold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>
                       {
                         (userInventory || []).filter(
                           (item) => item?.storeItem?.type === "profile_frame"
                         ).length
                       }
                     </p>
-                    <p className="text-sm text-gray-600">Profile Frames</p>
+                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Profile Frames</p>
                   </div>
                 </div>
               </div>

@@ -16,6 +16,7 @@ import {
 } from "react-icons/fa";
 import api from "../services/api";
 import { usePowerUps } from "../contexts/PowerUpContext";
+import { useTheme } from "../contexts/ThemeContext";
 
 // Helper function to build photo URLs
 const getPhotoUrl = (photo: string | PhotoItem): string => {
@@ -101,6 +102,7 @@ interface PhotoItem {
 }
 
 export default function Nearby() {
+  const { theme } = useTheme();
   const [users, setUsers] = useState<User[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -434,7 +436,7 @@ export default function Nearby() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center w-full h-full bg-white">
+      <div className={`flex items-center justify-center w-full h-full ${theme === 'dark' ? 'bg-slate-900' : 'bg-white'}`}>
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
@@ -447,7 +449,7 @@ export default function Nearby() {
   return (
     <>
       <div
-        className="w-full h-full overflow-hidden bg-white relative"
+        className={`w-full h-full overflow-hidden ${theme === 'dark' ? 'bg-slate-900' : 'bg-white'} relative transition-colors duration-300`}
         style={{
           position: "relative",
           contain: "layout style paint",
@@ -455,11 +457,11 @@ export default function Nearby() {
         }}
       >
         {/* Header */}
-        <div className="px-4 sm:px-6 md:px-8 py-3 sm:py-4 border-b border-gray-200">
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-1">
+        <div className={`px-4 sm:px-6 md:px-8 py-3 sm:py-4 border-b ${theme === 'dark' ? 'border-slate-700' : 'border-gray-200'}`}>
+          <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'} mb-1`}>
             Discover People
           </h1>
-          <p className="text-xs sm:text-sm md:text-base text-gray-600">Find your perfect match nearby</p>
+          <p className={`text-xs sm:text-sm md:text-base ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Find your perfect match nearby</p>
         </div>
 
         {/* Main Swipe Area */}
@@ -502,7 +504,7 @@ export default function Nearby() {
                         animate={{ scale: 1, opacity: 1, y: 0 }}
                         transition={{ duration: 0.4, ease: "easeOut" }}
                         whileHover={{ scale: 1.02 }}
-                        className="relative w-full h-full bg-white rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden cursor-grab active:cursor-grabbing"
+                        className={`relative w-full h-full rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden cursor-grab active:cursor-grabbing ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'}`}
                         style={{
                           position: "relative",
                           width: "100%",
@@ -605,7 +607,7 @@ export default function Nearby() {
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center text-white/90 text-sm">
                                   <FaMapMarkerAlt className="mr-1.5 text-xs" />
-                                  Lives in Timișoara
+                                  Nearby
                                 </div>
                                 {user.badges.length > 0 && (
                                   <div className="flex items-center text-xs text-purple-200 bg-purple-500/30 backdrop-blur-sm px-2 py-1 rounded-full">
@@ -632,7 +634,7 @@ export default function Nearby() {
                 animate={{ opacity: 1, x: 0, scale: 1 }}
                 exit={{ opacity: 0, x: 100, scale: 0.8 }}
                 transition={{ duration: 0.6, ease: "easeInOut" }}
-                className="hidden md:flex md:w-[450px] bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden relative flex-col z-30"
+                className={`hidden md:flex md:w-[450px] rounded-3xl shadow-2xl border overflow-hidden relative flex-col z-30 ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}`}
                 style={{
                   height: "600px",
                   position: "relative",
@@ -867,7 +869,7 @@ export default function Nearby() {
                   }
                 }}
                 disabled={rewindsRemaining === 0 || currentIndex < 0}
-                className="w-12 h-12 sm:w-14 sm:h-14 bg-white rounded-full flex items-center justify-center text-yellow-500 shadow-xl border-2 border-gray-100 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center text-yellow-500 shadow-xl border-2 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100'}`}
               >
                 <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z" />
@@ -880,7 +882,7 @@ export default function Nearby() {
                 whileTap={{ scale: 0.9 }}
                 onClick={() => swipe("left")}
                 disabled={currentIndex < 0}
-                className="w-14 h-14 sm:w-16 sm:h-16 bg-white rounded-full flex items-center justify-center text-red-500 shadow-xl border-2 border-gray-100 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-red-500 shadow-xl border-2 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100'}`}
               >
                 <FaTimes className="text-2xl sm:text-3xl" />
               </motion.button>
@@ -905,7 +907,7 @@ export default function Nearby() {
                   }
                 }}
                 disabled={currentIndex < 0 || superLikesRemaining === 0}
-                className="w-12 h-12 sm:w-14 sm:h-14 bg-white rounded-full flex items-center justify-center text-blue-500 shadow-xl border-2 border-gray-100 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center text-blue-500 shadow-xl border-2 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100'}`}
               >
                 <FaStar className="text-xl sm:text-2xl" />
               </motion.button>
@@ -916,7 +918,7 @@ export default function Nearby() {
                 whileTap={{ scale: 0.9 }}
                 onClick={() => swipe("right")}
                 disabled={currentIndex < 0}
-                className="w-14 h-14 sm:w-16 sm:h-16 bg-white rounded-full flex items-center justify-center text-green-500 shadow-xl border-2 border-gray-100 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-green-500 shadow-xl border-2 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100'}`}
               >
                 <FaHeart className="text-2xl sm:text-3xl" />
               </motion.button>
@@ -935,7 +937,7 @@ export default function Nearby() {
                   }
                 }}
                 disabled={isBoostActive || isSpotlightActive || currentIndex < 0}
-                className="w-12 h-12 sm:w-14 sm:h-14 bg-white rounded-full flex items-center justify-center text-purple-500 shadow-xl border-2 border-gray-100 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center text-purple-500 shadow-xl border-2 hover:shadow-2xl transition-all disabled:opacity-30 disabled:cursor-not-allowed ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100'}`}
               >
                 <FaFire className="text-xl sm:text-2xl" />
               </motion.button>
@@ -944,16 +946,17 @@ export default function Nearby() {
 
           {/* Right Sidebar - Actions & Stats - DESKTOP ONLY */}
           <motion.div
-            className="hidden lg:block h-full overflow-y-auto space-y-6 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 z-20"
+            className={`hidden lg:flex lg:flex-col h-full min-h-0 overflow-y-auto space-y-6 scrollbar-thin ${theme === 'dark' ? 'scrollbar-thumb-slate-600 scrollbar-track-slate-800' : 'scrollbar-thumb-gray-300 scrollbar-track-gray-100'} z-20`}
             animate={{
               width: showDetailModal.show ? 240 : 320,
               transition: { duration: 0.6, ease: "easeInOut" },
             }}
+            style={{ flexShrink: 0, maxHeight: 'calc(100vh - 160px)' }}
           >
             {/* Action Buttons */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+            <div className={`${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100'} rounded-2xl p-6 shadow-lg border`}>
               <h3
-                className={`font-semibold text-gray-800 mb-4 ${
+                className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-800'} mb-4 ${
                   showDetailModal.show ? "text-md" : "text-lg"
                 }`}
               >
@@ -1041,9 +1044,9 @@ export default function Nearby() {
             </div>
 
             {/* Stats */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+            <div className={`${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100'} rounded-2xl p-6 shadow-lg border`}>
               <h3
-                className={`font-semibold text-gray-800 mb-4 ${
+                className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-800'} mb-4 ${
                   showDetailModal.show ? "text-md" : "text-lg"
                 }`}
               >
@@ -1053,14 +1056,14 @@ export default function Nearby() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div
-                      className={`bg-pink-100 rounded-full flex items-center justify-center ${
+                      className={`${theme === 'dark' ? 'bg-pink-900/50' : 'bg-pink-100'} rounded-full flex items-center justify-center ${
                         showDetailModal.show ? "w-8 h-8" : "w-10 h-10"
                       }`}
                     >
                       <FaHeart className="text-pink-500" />
                     </div>
                     <span
-                      className={`text-gray-700 ${
+                      className={`${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} ${
                         showDetailModal.show ? "text-sm" : ""
                       }`}
                     >
@@ -1211,7 +1214,7 @@ export default function Nearby() {
                   className={`rounded-2xl p-6 shadow-lg border ${
                     isSeeWhoLikedActive
                       ? "bg-gradient-to-r from-green-400 to-green-500 text-white border-green-200"
-                      : "bg-white border-gray-100"
+                      : (theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100')
                   }`}
                 >
                   <div className="text-center">
@@ -1222,7 +1225,7 @@ export default function Nearby() {
                     />
                     <h3
                       className={`text-lg font-semibold mb-2 ${
-                        isSeeWhoLikedActive ? "text-white" : "text-gray-800"
+                        isSeeWhoLikedActive ? "text-white" : (theme === 'dark' ? 'text-gray-100' : 'text-gray-800')
                       }`}
                     >
                       {isSeeWhoLikedActive
@@ -1231,7 +1234,7 @@ export default function Nearby() {
                     </h3>
                     <p
                       className={`text-sm mb-4 leading-relaxed ${
-                        isSeeWhoLikedActive ? "text-white/90" : "text-gray-600"
+                        isSeeWhoLikedActive ? "text-white/90" : (theme === 'dark' ? 'text-gray-400' : 'text-gray-600')
                       }`}
                     >
                       {isSeeWhoLikedActive
@@ -1266,13 +1269,13 @@ export default function Nearby() {
                                 powerUpError
                               );
                               alert(
-                                "Nu ai Reveal Likes în inventar! Vizitează Store-ul pentru a cumpăra 'Reveal Likes' și vezi cine ți-a dat like."
+                                "You don't have Reveal Likes in your inventory! Visit the Store to purchase 'Reveal Likes' and see who liked you."
                               );
                             }
                           } catch (error) {
                             console.error("❌ Error revealing likes:", error);
                             alert(
-                              "Nu ai Reveal Likes în inventar! Mergi la Store pentru a cumpăra acest power-up."
+                              "You don't have Reveal Likes in your inventory! Go to Store to purchase this power-up."
                             );
                           }
                         }
@@ -1355,7 +1358,7 @@ export default function Nearby() {
                 </h2>
 
                 <p className="text-gray-600 mb-6">
-                  Tu și {matchNotification.user.name} v-ați plăcut reciproc!
+                  You and {matchNotification.user.name} liked each other!
                 </p>
 
                 <div className="flex space-x-4">
@@ -1363,10 +1366,10 @@ export default function Nearby() {
                     onClick={() => setMatchNotification(null)}
                     className="flex-1 bg-gray-100 text-gray-700 py-3 rounded-full font-semibold"
                   >
-                    Continuă
+                    Continue
                   </button>
                   <button className="flex-1 bg-gradient-to-r from-pink-500 to-red-500 text-white py-3 rounded-full font-semibold">
-                    Trimite mesaj
+                    Send message
                   </button>
                 </div>
               </div>

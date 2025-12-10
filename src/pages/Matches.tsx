@@ -74,7 +74,7 @@ export default function Matches() {
                     {match.user.name}, {match.user.age}
                   </h3>
                   <p className="text-sm text-gray-500">
-                    Mașină: {match.user.carModel}
+                    Car: {match.user.carModel}
                   </p>
                 </div>
               </div>

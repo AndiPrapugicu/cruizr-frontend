@@ -103,14 +103,14 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
               className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center space-x-1"
             >
               <FaCheck className="text-xs" />
-              <span>Marchează toate</span>
+              <span>Mark all read</span>
             </button>
             <button
               onClick={clearAllNotifications}
               className="text-sm text-red-600 hover:text-red-800 font-medium flex items-center space-x-1"
             >
               <FaTrash className="text-xs" />
-              <span>Șterge toate</span>
+              <span>Clear all</span>
             </button>
           </div>
         )}
@@ -120,14 +120,14 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
           {loading ? (
             <div className="p-6 text-center">
               <div className="animate-spin w-6 h-6 border-2 border-pink-500 border-t-transparent rounded-full mx-auto mb-3"></div>
-              <p className="text-gray-500">Se încarcă...</p>
+              <p className="text-gray-500">Loading...</p>
             </div>
           ) : notifications.length === 0 ? (
             <div className="p-6 text-center">
               <FaBell className="text-4xl text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500 font-medium">Nu ai notificări noi</p>
+              <p className="text-gray-500 font-medium">No new notifications</p>
               <p className="text-gray-400 text-sm">
-                Când vei primi like-uri sau mesaje, le vei vedea aici
+                When you receive likes or messages, you'll see them here
               </p>
             </div>
           ) : (

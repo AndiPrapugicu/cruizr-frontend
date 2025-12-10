@@ -434,17 +434,17 @@ const Nearby = () => {
               <FaHeart className="text-3xl text-gray-400" />
             </div>
             <h3 className="text-2xl font-bold text-gray-800 mb-4">
-              Nu mai sunt persoane
+              No more people
             </h3>
             <p className="text-gray-600 mb-6">
-              Ai văzut toate persoanele din zona ta. Revino mai târziu pentru
-              profiluri noi!
+              You've seen all the people in your area. Come back later for
+              new profiles!
             </p>
             <button
               onClick={() => window.location.reload()}
               className="bg-gradient-to-r from-pink-500 to-red-500 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition duration-300"
             >
-              Reîncarcă
+              Refresh
             </button>
           </motion.div>
         )}
@@ -500,7 +500,7 @@ const Nearby = () => {
               </h2>
 
               <p className="text-gray-600 mb-6">
-                Tu și {matchNotification.user.name} v-ați plăcut reciproc!
+                You and {matchNotification.user.name} liked each other!
               </p>
 
               <div className="flex space-x-4">
@@ -508,10 +508,10 @@ const Nearby = () => {
                   onClick={() => setMatchNotification(null)}
                   className="flex-1 bg-gray-100 text-gray-700 py-3 rounded-full font-semibold"
                 >
-                  Continuă
+                  Continue
                 </button>
                 <button className="flex-1 bg-gradient-to-r from-pink-500 to-red-500 text-white py-3 rounded-full font-semibold">
-                  Trimite mesaj
+                  Send message
                 </button>
               </div>
             </div>

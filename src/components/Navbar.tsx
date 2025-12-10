@@ -8,6 +8,8 @@ import {
   FireIcon,
   BellIcon,
   MagnifyingGlassIcon,
+  SunIcon,
+  MoonIcon,
 } from "@heroicons/react/24/outline";
 import {
   HeartIcon as HeartSolid,
@@ -16,6 +18,7 @@ import {
   FireIcon as FireSolid,
 } from "@heroicons/react/24/solid";
 import { useNotifications } from "../contexts/NotificationContext";
+import { useTheme } from "../contexts/ThemeContext";
 import NotificationDropdown from "./NotificationDropdown";
 
 interface NavbarProps {
@@ -27,6 +30,7 @@ export default function Navbar({ className = "" }: NavbarProps) {
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
   const { unreadCount } = useNotifications();
+  const { theme, toggleTheme } = useTheme();
 
   const navItems = [
     {
@@ -69,28 +73,41 @@ export default function Navbar({ className = "" }: NavbarProps) {
   };
 
   return (
-    <div className={`bg-white shadow-lg ${className}`}>
+    <div className={`${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white'} shadow-lg transition-colors duration-300 ${className}`}>
       {/* Top Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+      <div className={`flex items-center justify-between px-4 py-3 border-b ${theme === 'dark' ? 'border-slate-700' : 'border-gray-200'}`}>
         <div className="flex items-center space-x-3">
           <Link to="/" className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-red-500 rounded-full flex items-center justify-center">
               <span className="text-white font-bold text-sm">C</span>
             </div>
-            <span className="text-xl font-bold text-gray-800">Cruizr</span>
+            <span className={`text-xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>Cruizr</span>
           </Link>
         </div>
 
         <div className="flex items-center space-x-4">
           {/* Search */}
-          <button className="p-2 text-gray-600 hover:text-pink-500 transition-colors">
+          <button className={`p-2 ${theme === 'dark' ? 'text-gray-300 hover:text-pink-400' : 'text-gray-600 hover:text-pink-500'} transition-colors`}>
             <MagnifyingGlassIcon className="w-6 h-6" />
+          </button>
+
+          {/* Theme Toggle */}
+          <button
+            className={`p-2 ${theme === 'dark' ? 'text-yellow-400 hover:text-yellow-300' : 'text-gray-600 hover:text-pink-500'} transition-colors`}
+            onClick={toggleTheme}
+            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
+            {theme === 'dark' ? (
+              <SunIcon className="w-6 h-6" />
+            ) : (
+              <MoonIcon className="w-6 h-6" />
+            )}
           </button>
 
           {/* Notifications */}
           <div className="relative">
             <button
-              className="relative p-2 text-gray-600 hover:text-pink-500 transition-colors"
+              className={`relative p-2 ${theme === 'dark' ? 'text-gray-300 hover:text-pink-400' : 'text-gray-600 hover:text-pink-500'} transition-colors`}
               onClick={() => setShowNotifications(!showNotifications)}
             >
               <BellIcon className="w-6 h-6" />
@@ -109,7 +126,7 @@ export default function Navbar({ className = "" }: NavbarProps) {
 
           {/* Settings */}
           <button
-            className="p-2 text-gray-600 hover:text-pink-500 transition-colors"
+            className={`p-2 ${theme === 'dark' ? 'text-gray-300 hover:text-pink-400' : 'text-gray-600 hover:text-pink-500'} transition-colors`}
             onClick={() => navigate("/settings")}
           >
             <Cog6ToothIcon className="w-6 h-6" />
@@ -129,8 +146,8 @@ export default function Navbar({ className = "" }: NavbarProps) {
               to={item.path}
               className={`flex flex-col items-center py-2 px-3 rounded-lg transition-all duration-200 ${
                 active
-                  ? "text-pink-500 bg-pink-50"
-                  : "text-gray-600 hover:text-pink-500 hover:bg-gray-50"
+                  ? `text-pink-500 ${theme === 'dark' ? 'bg-pink-900/30' : 'bg-pink-50'}`
+                  : `${theme === 'dark' ? 'text-gray-300 hover:text-pink-400 hover:bg-slate-700' : 'text-gray-600 hover:text-pink-500 hover:bg-gray-50'}`
               }`}
             >
               <IconComponent className="w-6 h-6" />

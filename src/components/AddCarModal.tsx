@@ -266,7 +266,7 @@ export default function AddCarModal({ onClose, onCarAdded }: AddCarModalProps) {
       onClose(); // Close modal after successful creation
     } catch (error) {
       console.error("Error adding car:", error);
-      alert("Eroare la adăugarea mașinii. Te rog încearcă din nou.");
+      alert("Error adding car. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -581,7 +581,7 @@ export default function AddCarModal({ onClose, onCarAdded }: AddCarModalProps) {
                 htmlFor="sunroof"
                 className="text-sm font-medium text-gray-700"
               >
-                Are trapă de sticlă
+                Has glass sunroof
               </label>
             </div>
           </div>
@@ -591,14 +591,14 @@ export default function AddCarModal({ onClose, onCarAdded }: AddCarModalProps) {
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">
-              Adaugă fotografii
+              Add photos
             </h2>
 
             <div className="space-y-4">
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
                 <FaUpload className="mx-auto text-4xl text-gray-400 mb-4" />
                 <p className="text-gray-600 mb-4">
-                  Selectează până la 5 fotografii cu mașina ta
+                  Select up to 5 photos of your car
                 </p>
                 <input
                   type="file"
@@ -612,7 +612,7 @@ export default function AddCarModal({ onClose, onCarAdded }: AddCarModalProps) {
                   htmlFor="photo-upload"
                   className="bg-pink-500 text-white px-6 py-2 rounded-lg cursor-pointer hover:bg-pink-600 transition"
                 >
-                  Selectează fotografii
+                  Select photos
                 </label>
               </div>
 
@@ -651,7 +651,7 @@ export default function AddCarModal({ onClose, onCarAdded }: AddCarModalProps) {
         <div className="flex items-center space-x-3">
           <FaCar className="text-2xl text-pink-500" />
           <h1 className="text-2xl font-bold text-gray-800">
-            Adaugă mașină nouă
+            Add new car
           </h1>
         </div>
         <button
@@ -665,8 +665,8 @@ export default function AddCarModal({ onClose, onCarAdded }: AddCarModalProps) {
       {/* Progress bar */}
       <div className="mb-8">
         <div className="flex justify-between text-xs text-gray-500 mb-2">
-          <span>Pasul {currentStep} din 4</span>
-          <span>{Math.round((currentStep / 4) * 100)}% completat</span>
+          <span>Step {currentStep} of 4</span>
+          <span>{Math.round((currentStep / 4) * 100)}% complete</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div
@@ -695,7 +695,7 @@ export default function AddCarModal({ onClose, onCarAdded }: AddCarModalProps) {
           }
           className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
         >
-          {currentStep > 1 ? "Înapoi" : "Anulează"}
+          {currentStep > 1 ? "Back" : "Cancel"}
         </button>
 
         {currentStep < 4 ? (
@@ -704,7 +704,7 @@ export default function AddCarModal({ onClose, onCarAdded }: AddCarModalProps) {
             disabled={currentStep === 1 && (!carData.make || !carData.model)}
             className="px-6 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Următorul
+            Next
           </button>
         ) : (
           <button
@@ -712,7 +712,7 @@ export default function AddCarModal({ onClose, onCarAdded }: AddCarModalProps) {
             disabled={loading}
             className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? "Se adaugă..." : "Adaugă mașina"}
+            {loading ? "Adding..." : "Add car"}
           </button>
         )}
       </div>

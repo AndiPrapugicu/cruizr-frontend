@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useFuelWallet } from "../hooks/useFuelWallet";
 import { useNotifications } from "../contexts/NotificationContext";
+import { useTheme } from "../contexts/ThemeContext";
 import {
   FaHome,
   FaFire,
@@ -21,6 +22,8 @@ import {
   FaStar,
   FaChartLine,
   FaBars,
+  FaMoon,
+  FaSun,
 } from "react-icons/fa";
 
 // Helper function to build photo URLs
@@ -45,6 +48,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
   const { user, logout } = useAuth();
   const { wallet } = useFuelWallet();
   const { notifications, unreadCount, markAsRead } = useNotifications();
+  const { theme, toggleTheme } = useTheme();
   const [collapsed, setCollapsed] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMobileMoreMenu, setShowMobileMoreMenu] = useState(false);
@@ -112,16 +116,16 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
   };
 
   return (
-    <div className="flex w-screen h-screen bg-white overflow-hidden">
+    <div className={`flex w-screen h-screen ${theme === 'dark' ? 'bg-slate-900' : 'bg-white'} overflow-hidden transition-colors duration-300`}>
       {/* Desktop Sidebar - Hidden on Mobile */}
       <motion.div
         initial={false}
         animate={{ width: collapsed ? 80 : 280 }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
-        className="hidden md:flex bg-white shadow-xl border-r border-gray-200 flex-col h-full"
+        className={`hidden md:flex ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'} shadow-xl border-r flex-col h-full transition-colors duration-300`}
       >
         {/* Header */}
-        <div className="p-6 border-b border-gray-100">
+        <div className={`p-6 border-b ${theme === 'dark' ? 'border-slate-700' : 'border-gray-100'}`}>
           <div className="flex items-center justify-between">
             {!collapsed && (
               <motion.div
@@ -133,16 +137,16 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                 <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-lg">C</span>
                 </div>
-                <span className="ml-3 text-xl font-bold gradient-text">
+                <span className={`ml-3 text-xl font-bold ${theme === 'dark' ? 'text-white' : 'gradient-text'}`}>
                   Cruizr
                 </span>
               </motion.div>
             )}
             <button
               onClick={() => setCollapsed(!collapsed)}
-              className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              className={`p-2 rounded-lg ${theme === 'dark' ? 'hover:bg-slate-700 text-gray-300' : 'hover:bg-gray-100 text-gray-600'} transition-colors`}
             >
-              <FaBars className="text-gray-600" />
+              <FaBars />
             </button>
           </div>
         </div>
@@ -153,7 +157,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="p-6 border-b border-gray-100"
+            className={`p-6 border-b ${theme === 'dark' ? 'border-slate-700' : 'border-gray-100'}`}
           >
             <div className="flex items-center">
               <div className="w-12 h-12 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full flex items-center justify-center">
@@ -183,7 +187,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                 )}
               </div>
               <div className="ml-3 flex-1">
-                <p className="font-semibold text-gray-800">
+                <p className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
                   {user?.name || "User"}
                 </p>
                 <div className="flex items-center gap-2">
@@ -193,7 +197,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                       VIP
                     </span>
                   )}
-                  <span className="text-gray-500 text-sm">
+                  <span className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
                     Level {wallet?.level || 1}
                   </span>
                 </div>
@@ -202,23 +206,23 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
 
             {/* Wallet Quick View */}
             <div className="grid grid-cols-2 gap-3 mt-4">
-              <div className="bg-orange-50 rounded-lg p-3">
+              <div className={`${theme === 'dark' ? 'bg-orange-900/30' : 'bg-orange-50'} rounded-lg p-3`}>
                 <div className="flex items-center">
                   <FaFire className="text-orange-500 mr-2" />
                   <div>
-                    <p className="text-xs text-gray-600">Fuel</p>
-                    <p className="font-bold text-orange-600">
+                    <p className={`text-xs ${theme === 'dark' ? 'text-orange-300' : 'text-gray-600'}`}>Fuel</p>
+                    <p className="font-bold text-orange-500">
                       {Math.floor(wallet?.balance || 0)}
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="bg-purple-50 rounded-lg p-3">
+              <div className={`${theme === 'dark' ? 'bg-purple-900/30' : 'bg-purple-50'} rounded-lg p-3`}>
                 <div className="flex items-center">
                   <FaGem className="text-purple-500 mr-2" />
                   <div>
-                    <p className="text-xs text-gray-600">Premium</p>
-                    <p className="font-bold text-purple-600">
+                    <p className={`text-xs ${theme === 'dark' ? 'text-purple-300' : 'text-gray-600'}`}>Premium</p>
+                    <p className="font-bold text-purple-500">
                       {Math.floor(wallet?.premiumBalance || 0)}
                     </p>
                   </div>
@@ -236,6 +240,26 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
 
               // Define specific hover classes for each item
               const getHoverClass = (path: string) => {
+                if (theme === 'dark') {
+                  switch (path) {
+                    case "/dashboard":
+                      return "hover:bg-blue-900/30 hover:text-blue-400";
+                    case "/nearby":
+                      return "hover:bg-orange-900/30 hover:text-orange-400";
+                    case "/likes":
+                      return "hover:bg-pink-900/30 hover:text-pink-400";
+                    case "/chat":
+                      return "hover:bg-green-900/30 hover:text-green-400";
+                    case "/profile":
+                      return "hover:bg-purple-900/30 hover:text-purple-400";
+                    case "/store":
+                      return "hover:bg-indigo-900/30 hover:text-indigo-400";
+                    case "/badges":
+                      return "hover:bg-yellow-900/30 hover:text-yellow-400";
+                    default:
+                      return "hover:bg-slate-700";
+                  }
+                }
                 switch (path) {
                   case "/dashboard":
                     return "hover:bg-blue-50 hover:text-blue-600";
@@ -258,6 +282,26 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
 
               // Define active state classes that match hover colors
               const getActiveClass = (path: string) => {
+                if (theme === 'dark') {
+                  switch (path) {
+                    case "/dashboard":
+                      return "bg-blue-900/30 text-blue-400";
+                    case "/nearby":
+                      return "bg-orange-900/30 text-orange-400";
+                    case "/likes":
+                      return "bg-pink-900/30 text-pink-400";
+                    case "/chat":
+                      return "bg-green-900/30 text-green-400";
+                    case "/profile":
+                      return "bg-purple-900/30 text-purple-400";
+                    case "/store":
+                      return "bg-indigo-900/30 text-indigo-400";
+                    case "/badges":
+                      return "bg-yellow-900/30 text-yellow-400";
+                    default:
+                      return "bg-slate-700 text-gray-200";
+                  }
+                }
                 switch (path) {
                   case "/dashboard":
                     return "bg-blue-50 text-blue-600";
@@ -287,7 +331,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                   className={`w-full flex items-center p-3 rounded-xl transition-all duration-200 ${
                     isCurrentActive
                       ? getActiveClass(item.path)
-                      : `text-gray-700 ${getHoverClass(item.path)}`
+                      : `${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} ${getHoverClass(item.path)}`
                   }`}
                 >
                   <item.icon
@@ -302,15 +346,23 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
           </div>
 
           {/* Action Items */}
-          <div className="mt-8 pt-6 border-t border-gray-100">
+          <div className={`mt-8 pt-6 border-t ${theme === 'dark' ? 'border-slate-700' : 'border-gray-100'}`}>
             {!collapsed && (
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+              <p className={`text-xs font-semibold uppercase tracking-wide mb-3 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
                 Quick Actions
               </p>
             )}
             <div className="space-y-2">
               {actionItems.map((item) => {
                 const getActionHoverClass = (id: string) => {
+                  if (theme === 'dark') {
+                    switch (id) {
+                      case "polls":
+                        return "hover:bg-cyan-900/30 hover:text-cyan-400";
+                      default:
+                        return "hover:bg-slate-700";
+                    }
+                  }
                   switch (id) {
                     case "polls":
                       return "hover:bg-cyan-50 hover:text-cyan-600";
@@ -325,7 +377,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                     onClick={item.onClick}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className={`w-full flex items-center p-3 rounded-xl text-gray-700 transition-all duration-200 ${getActionHoverClass(
+                    className={`w-full flex items-center p-3 rounded-xl transition-all duration-200 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} ${getActionHoverClass(
                       item.id
                     )}`}
                   >
@@ -341,15 +393,15 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
         </nav>
 
         {/* Bottom Actions */}
-        <div className="p-4 border-t border-gray-100">
+        <div className={`p-4 border-t ${theme === 'dark' ? 'border-slate-700' : 'border-gray-100'}`}>
           <div className="space-y-2">
             <motion.button
               onClick={() => navigate("/settings")}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full flex items-center p-3 rounded-xl hover:bg-gray-100 text-gray-700 transition-all duration-200"
+              className={`w-full flex items-center p-3 rounded-xl transition-all duration-200 ${theme === 'dark' ? 'hover:bg-slate-700 text-gray-300' : 'hover:bg-gray-100 text-gray-700'}`}
             >
-              <FaCog className="text-lg text-gray-500" />
+              <FaCog className={`text-lg ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
               {!collapsed && <span className="ml-3 font-medium">Settings</span>}
             </motion.button>
 
@@ -357,7 +409,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
               onClick={handleLogout}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full flex items-center p-3 rounded-xl hover:bg-red-50 text-red-600 transition-all duration-200"
+              className={`w-full flex items-center p-3 rounded-xl text-red-500 transition-all duration-200 ${theme === 'dark' ? 'hover:bg-red-900/30' : 'hover:bg-red-50'}`}
             >
               <FaSignOutAlt className="text-lg" />
               {!collapsed && <span className="ml-3 font-medium">Logout</span>}
@@ -369,7 +421,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col h-full overflow-hidden">
         {/* Top Bar - Desktop only, Mobile has logo in bottom nav */}
-        <header className="hidden md:block bg-white shadow-sm border-b border-gray-200 px-4 md:px-8 py-3 md:py-4 shrink-0">
+        <header className={`hidden md:block ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'} shadow-sm border-b px-4 md:px-8 py-3 md:py-4 shrink-0`}>
           <div className="flex items-center justify-between">
             <div className="flex-1">
               {/* Search Bar - Desktop only */}
@@ -382,9 +434,9 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
               <div className="relative">
                 <button
                   onClick={() => setShowNotifications(!showNotifications)}
-                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors relative"
+                  className={`p-2 rounded-lg ${theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-gray-100'} transition-colors relative`}
                 >
-                  <FaBell className="text-gray-600 text-lg" />
+                  <FaBell className={`${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'} text-lg`} />
                   {unreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                       {unreadCount}
@@ -399,16 +451,16 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                       initial={{ opacity: 0, y: 10, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 z-50"
+                      className={`absolute right-0 mt-2 w-80 ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'} rounded-xl shadow-2xl border z-50`}
                     >
-                      <div className="p-4 border-b border-gray-100">
+                      <div className={`p-4 border-b ${theme === 'dark' ? 'border-slate-700' : 'border-gray-100'}`}>
                         <div className="flex items-center justify-between">
-                          <h3 className="font-semibold text-gray-800">
+                          <h3 className={`font-semibold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>
                             Notifications
                           </h3>
                           <button
                             onClick={() => setShowNotifications(false)}
-                            className="text-gray-400 hover:text-gray-600"
+                            className={`${theme === 'dark' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-400 hover:text-gray-600'}`}
                           >
                             <FaTimes />
                           </button>
@@ -416,7 +468,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                       </div>
                       <div className="max-h-96 overflow-y-auto">
                         {notifications.length === 0 ? (
-                          <div className="p-8 text-center text-gray-500">
+                          <div className={`p-8 text-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
                             <FaBell className="mx-auto text-4xl mb-2 text-gray-300" />
                             <p>No notifications yet</p>
                           </div>
@@ -474,8 +526,8 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                                     markAsRead(notif.id);
                                   }
                                 }}
-                                className={`p-4 hover:bg-gray-50 border-b border-gray-100 cursor-pointer transition-colors ${
-                                  !notif.isRead ? 'bg-blue-50' : ''
+                                className={`p-4 ${theme === 'dark' ? 'hover:bg-slate-700 border-slate-700' : 'hover:bg-gray-50 border-gray-100'} border-b cursor-pointer transition-colors ${
+                                  !notif.isRead ? (theme === 'dark' ? 'bg-blue-900/30' : 'bg-blue-50') : ''
                                 }`}
                               >
                                 <div className="flex items-start gap-3">
@@ -483,13 +535,13 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                                     {getIcon()}
                                   </div>
                                   <div className="flex-1 min-w-0">
-                                    <p className={`text-sm font-medium text-gray-800 ${!notif.isRead ? 'font-bold' : ''}`}>
+                                    <p className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'} ${!notif.isRead ? 'font-bold' : ''}`}>
                                       {notif.title}
                                     </p>
-                                    <p className="text-xs text-gray-600 truncate">
+                                    <p className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} truncate`}>
                                       {notif.message}
                                     </p>
-                                    <p className="text-xs text-gray-400 mt-1">
+                                    <p className={`text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'} mt-1`}>
                                       {timeAgo(notif.timestamp)}
                                     </p>
                                   </div>
@@ -508,17 +560,17 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
               </div>
 
               {/* Quick Stats - Hidden on Mobile */}
-              <div className="hidden md:flex items-center gap-4 bg-gray-50 rounded-lg px-4 py-2">
+              <div className={`hidden md:flex items-center gap-4 rounded-lg px-4 py-2 ${theme === 'dark' ? 'bg-slate-700' : 'bg-gray-50'}`}>
                 <div className="flex items-center gap-2">
                   <FaChartLine className="text-green-500" />
-                  <span className="text-sm font-medium text-gray-700">
+                  <span className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}`}>
                     Streak: {wallet?.streakDays || 0}d
                   </span>
                 </div>
-                <div className="w-px h-4 bg-gray-300"></div>
+                <div className={`w-px h-4 ${theme === 'dark' ? 'bg-slate-600' : 'bg-gray-300'}`}></div>
                 <div className="flex items-center gap-2">
                   <FaStar className="text-yellow-500" />
-                  <span className="text-sm font-medium text-gray-700">
+                  <span className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}`}>
                     Level {wallet?.level || 1}
                   </span>
                 </div>
@@ -528,12 +580,12 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 h-full overflow-y-auto">{children}</main>
+        <main className="flex-1 overflow-hidden">{children}</main>
       </div>
 
       {/* Mobile Bottom Navigation - Hidden on Desktop and in individual chat */}
       {!isInIndividualChat && (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 shadow-lg safe-area-pb">
+        <div className={`md:hidden fixed bottom-0 left-0 right-0 border-t z-50 shadow-lg safe-area-pb ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}`}>
         <div className="flex justify-around items-center h-16 px-2">
           {/* Main 4 navigation items */}
           {menuItems.slice(0, 4).map((item) => {

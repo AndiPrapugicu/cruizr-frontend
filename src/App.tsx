@@ -21,17 +21,19 @@ import EnterpriseStore from "./components/EnterpriseStore";
 import { useAuth } from "./contexts/AuthContext";
 import { PowerUpProvider } from "./contexts/PowerUpContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
+import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 
-function App() {
+function AppContent() {
   const { user, loading } = useAuth();
+  const { theme } = useTheme();
 
   // Show loading state while checking authentication
   if (loading) {
     return (
-      <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-red-50 to-orange-50">
+      <div className={`w-screen h-screen flex items-center justify-center ${theme === 'dark' ? 'bg-slate-900' : 'bg-gradient-to-br from-pink-50 via-red-50 to-orange-50'}`}>
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-pink-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Se încarcă...</p>
+          <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}>Loading...</p>
         </div>
       </div>
     );
@@ -45,7 +47,7 @@ function App() {
   const needsOnboarding = user && !user.onboardingCompleted;
 
   return (
-    <div className="w-screen h-screen overflow-auto bg-white">
+    <div className={`w-screen h-screen overflow-auto transition-colors duration-300 ${theme === 'dark' ? 'bg-slate-900' : 'bg-white'}`}>
       <BrowserRouter>
         <PowerUpProvider>
           <NotificationProvider>
@@ -92,6 +94,14 @@ function App() {
         </PowerUpProvider>
       </BrowserRouter>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }
 

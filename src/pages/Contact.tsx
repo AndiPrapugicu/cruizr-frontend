@@ -24,13 +24,13 @@ export default function Contact() {
       )
       .then(
         () => {
-          setStatus("Mesaj trimis cu succes!");
+          setStatus("Message sent successfully!");
           form.current?.reset();
           setLoading(false);
         },
         (error) => {
           console.error(error.text);
-          setStatus("Eroare la trimitere. Încearcă din nou.");
+          setStatus("Error sending. Please try again.");
           setLoading(false);
         }
       );
@@ -44,7 +44,7 @@ export default function Contact() {
       transition={{ duration: 0.5 }}
     >
       <h2 className="text-3xl font-semibold mb-6 text-center text-black">
-        📬 Contactează-ne
+        📬 Contact Us
       </h2>
       <form
         ref={form}
@@ -54,28 +54,28 @@ export default function Contact() {
         <input
           type="text"
           name="name"
-          placeholder="Numele tău"
+          placeholder="Your name"
           required
           className="p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
         />
         <input
           type="email"
           name="email"
-          placeholder="Emailul tău"
+          placeholder="Your email"
           required
           className="p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
         />
         <input
           type="text"
           name="subject"
-          placeholder="Subiect"
+          placeholder="Subject"
           required
           className="p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
         />
         <textarea
           name="message"
           rows={5}
-          placeholder="Mesajul tău"
+          placeholder="Your message"
           required
           className="p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
         />
@@ -84,7 +84,7 @@ export default function Contact() {
           whileTap={{ scale: 0.95 }}
           className="bg-black text-white py-3 rounded-xl hover:bg-gray-800 transition-colors"
         >
-          {loading ? "Se trimite..." : "Trimite"}
+          {loading ? "Sending..." : "Send"}
         </motion.button>
         {status && (
           <motion.p

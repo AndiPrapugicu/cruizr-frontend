@@ -12,17 +12,17 @@ const Step1FirstName: React.FC = () => {
 
   const handleNext = () => {
     if (!firstName.trim()) {
-      setError("Prenumele este obligatoriu");
+      setError("First name is required");
       return;
     }
 
     if (firstName.length < 2) {
-      setError("Prenumele trebuie să aibă cel puțin 2 caractere");
+      setError("First name must be at least 2 characters");
       return;
     }
 
     if (!/^[a-zA-ZăîâșțĂÎÂȘȚ\- ]+$/.test(firstName)) {
-      setError("Doar litere sunt permise");
+      setError("Only letters are allowed");
       return;
     }
 
@@ -64,15 +64,15 @@ const Step1FirstName: React.FC = () => {
             </motion.div>
 
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              Bun venit!
+              Welcome!
             </h1>
-            <p className="text-gray-600">Să începem cu prenumele tău</p>
+            <p className="text-gray-600">Let's start with your first name</p>
           </div>
 
           <div className="space-y-6">
             <div>
               <label className="block text-gray-700 font-medium mb-2">
-                Prenumele meu este
+                My first name is
               </label>
               <input
                 type="text"
@@ -104,7 +104,7 @@ const Step1FirstName: React.FC = () => {
               disabled={!firstName.trim()}
               className="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
-              Continuă
+              Continue
               <FaArrowRight className="ml-2" />
             </motion.button>
           </div>

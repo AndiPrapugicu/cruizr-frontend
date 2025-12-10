@@ -43,7 +43,7 @@ export default function ProfilePreview({
         setProfile(res.data);
       })
       .catch((err) => {
-        console.error("Eroare la încărcarea profilului:", err);
+        console.error("Error loading profile:", err);
         setProfile(null);
       })
       .finally(() => {
@@ -70,7 +70,7 @@ export default function ProfilePreview({
         <button
           onClick={onClose}
           className="absolute top-5 right-5 text-white bg-teal-600 rounded-full p-2 hover:bg-teal-700 transition"
-          aria-label="Închide"
+          aria-label="Close"
         >
           <FaTimes size={24} />
         </button>
@@ -101,7 +101,7 @@ export default function ProfilePreview({
                 </div>
               ) : (
                 <div className="flex items-center justify-center h-full text-gray-400 italic">
-                  Nu există poze.
+                  No photos available.
                 </div>
               )}
             </div>
@@ -123,21 +123,21 @@ export default function ProfilePreview({
               
               <div className="space-y-3 text-teal-700 text-lg">
                 <p>
-                  <span className="font-semibold">Mașină:</span>{" "}
+                  <span className="font-semibold">Car:</span>{" "}
                   {profile.carModel}
                 </p>
                 <p>
-                  <span className="font-semibold">Modificări:</span>{" "}
+                  <span className="font-semibold">Modifications:</span>{" "}
                   {profile.carMods && profile.carMods.length > 0 ? (
                     profile.carMods.join(", ")
                   ) : (
-                    <em>Nu sunt modificări înregistrate</em>
+                    <em>No modifications registered</em>
                   )}
                 </p>
               </div>
 
               <div>
-                <h3 className="font-semibold text-teal-900 mb-2">Interese:</h3>
+                <h3 className="font-semibold text-teal-900 mb-2">Interests:</h3>
                 {profile.interests &&
                 Array.isArray(profile.interests) &&
                 profile.interests.length > 0 ? (
@@ -153,7 +153,7 @@ export default function ProfilePreview({
                   </ul>
                 ) : (
                   <p>
-                    <em>Nu există interese înregistrate</em>
+                    <em>No interests registered</em>
                   </p>
                 )}
               </div>
@@ -171,7 +171,7 @@ export default function ProfilePreview({
             </div>
           </>
         ) : (
-          <div className="p-6 text-red-500">Nu am putut încărca profilul.</div>
+          <div className="p-6 text-red-500">Could not load profile.</div>
         )}
       </div>
     </div>

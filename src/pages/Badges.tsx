@@ -17,8 +17,10 @@ import {
   UserBadge,
   BadgeCategory,
 } from "../services/badgeService";
+import { useTheme } from "../contexts/ThemeContext";
 
 export default function Badges() {
+  const { theme } = useTheme();
   const [allBadges, setAllBadges] = useState<Badge[]>([]);
   const [userBadges, setUserBadges] = useState<UserBadge[]>([]);
   const [categories, setCategories] = useState<BadgeCategory[]>([]);
@@ -112,7 +114,7 @@ export default function Badges() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center w-full h-full bg-white">
+      <div className={`flex items-center justify-center w-full h-full ${theme === 'dark' ? 'bg-slate-900' : 'bg-white'}`}>
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
@@ -123,16 +125,16 @@ export default function Badges() {
   }
 
   return (
-    <div className="w-full h-full bg-gray-50 overflow-y-auto">
+    <div className={`w-full h-full ${theme === 'dark' ? 'bg-slate-900' : 'bg-gray-50'} overflow-y-auto transition-colors duration-300`}>
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
+      <div className={`${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'} shadow-sm border-b`}>
         <div className="px-4 sm:px-6 md:px-8 py-4 sm:py-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 flex items-center">
+          <h1 className={`text-2xl sm:text-3xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'} mb-2 flex items-center`}>
             <FaTrophy className="mr-2 sm:mr-3 text-yellow-500 text-xl sm:text-2xl" />
-            Badge-uri
+            Badges
           </h1>
-          <p className="text-sm sm:text-base text-gray-600">
-            Colecționează badge-uri prin activitățile tale
+          <p className={`text-sm sm:text-base ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+            Collect badges through your activities
           </p>
 
           {/* Stats */}
@@ -165,11 +167,11 @@ export default function Badges() {
             className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
               selectedCategory === "all"
                 ? "bg-yellow-500 text-white"
-                : "bg-white text-gray-600 hover:bg-gray-100"
+                : theme === 'dark' ? "bg-slate-800 text-gray-400 hover:bg-slate-700" : "bg-white text-gray-600 hover:bg-gray-100"
             }`}
           >
             <FaTrophy className="mr-1 inline" />
-            Toate ({allBadges.length})
+            All ({allBadges.length})
           </button>
           {categories.map((category) => {
             const categoryBadges = badgeService.getBadgesByCategory(
@@ -186,7 +188,7 @@ export default function Badges() {
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center ${
                   selectedCategory === category.id
                     ? "bg-yellow-500 text-white"
-                    : "bg-white text-gray-600 hover:bg-gray-50 hover:shadow-sm"
+                    : theme === 'dark' ? "bg-slate-800 text-gray-400 hover:bg-slate-700" : "bg-white text-gray-600 hover:bg-gray-50 hover:shadow-sm"
                 }`}
               >
                 <span className="mr-1">{category.icon}</span>
@@ -217,10 +219,12 @@ export default function Badges() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.05 }}
                 onClick={() => setSelectedBadge(badge)}
-                className={`relative bg-white rounded-xl shadow-lg p-4 cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 ${
+                className={`relative rounded-xl shadow-lg p-4 cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 ${
                   earned
                     ? "border-2 border-yellow-400 bg-gradient-to-br from-yellow-50 to-orange-50"
-                    : "border-2 border-gray-200 grayscale opacity-75 hover:opacity-100 hover:grayscale-0"
+                    : theme === 'dark' 
+                      ? "border-2 border-slate-700 bg-slate-800 grayscale opacity-75 hover:opacity-100 hover:grayscale-0"
+                      : "border-2 border-gray-200 bg-white grayscale opacity-75 hover:opacity-100 hover:grayscale-0"
                 } ${
                   badge.isRare ? "ring-2 ring-purple-300 ring-opacity-50" : ""
                 }`}
@@ -245,7 +249,7 @@ export default function Badges() {
                 <div className="flex justify-center mb-3">
                   <div
                     className={`w-16 h-16 rounded-full flex items-center justify-center ${
-                      earned ? "bg-yellow-100" : "bg-gray-100"
+                      earned ? "bg-yellow-100" : (theme === 'dark' ? 'bg-slate-700' : 'bg-gray-100')
                     }`}
                   >
                     {getBadgeIcon(badge)}
@@ -256,14 +260,14 @@ export default function Badges() {
                 <div className="text-center">
                   <h3
                     className={`font-bold text-sm mb-1 ${
-                      earned ? "text-gray-900" : "text-gray-500"
+                      earned ? "text-gray-900" : (theme === 'dark' ? 'text-gray-300' : 'text-gray-500')
                     }`}
                   >
                     {badge.name}
                   </h3>
                   <p
                     className={`text-xs mb-2 line-clamp-2 ${
-                      earned ? "text-gray-600" : "text-gray-400"
+                      earned ? "text-gray-600" : (theme === 'dark' ? 'text-gray-400' : 'text-gray-400')
                     }`}
                   >
                     {badge.description}
@@ -281,7 +285,7 @@ export default function Badges() {
                   {/* Progress Bar (for unearned badges with progress) */}
                   {!earned && progress > 0 && (
                     <div className="mt-2">
-                      <div className="w-full bg-gray-200 rounded-full h-1.5">
+                      <div className={`w-full ${theme === 'dark' ? 'bg-slate-600' : 'bg-gray-200'} rounded-full h-1.5`}>
                         <div
                           className="bg-yellow-500 h-1.5 rounded-full transition-all duration-300"
                           style={{ width: `${progress}%` }}
@@ -303,8 +307,8 @@ export default function Badges() {
 
                 {/* Lock overlay for unearned badges */}
                 {!earned && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-white/20 backdrop-blur-[2px] rounded-xl opacity-0 hover:opacity-100 transition-opacity">
-                    <FaLock className="text-gray-600 text-lg drop-shadow-md" />
+                  <div className={`absolute inset-0 flex items-center justify-center ${theme === 'dark' ? 'bg-slate-900/20' : 'bg-white/20'} backdrop-blur-[2px] rounded-xl opacity-0 hover:opacity-100 transition-opacity`}>
+                    <FaLock className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} text-lg drop-shadow-md`} />
                   </div>
                 )}
               </motion.div>
@@ -344,7 +348,7 @@ export default function Badges() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-3xl shadow-xl max-w-md w-full"
+              className={`${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} rounded-3xl shadow-xl max-w-md w-full`}
               onClick={(e) => e.stopPropagation()}
             >
               <div
@@ -400,8 +404,8 @@ export default function Badges() {
                     )}
 
                   <div className="pt-3 border-t">
-                    <div className="text-sm text-gray-600 mb-2">Descriere:</div>
-                    <div className="text-sm bg-gray-50 p-3 rounded-lg">
+                    <div className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'} mb-2`}>Descriere:</div>
+                    <div className={`text-sm ${theme === 'dark' ? 'bg-slate-700 text-gray-200' : 'bg-gray-50'} p-3 rounded-lg`}>
                       {selectedBadge.description}
                     </div>
                   </div>
@@ -409,7 +413,7 @@ export default function Badges() {
 
                 <button
                   onClick={() => setSelectedBadge(null)}
-                  className="w-full mt-6 bg-gray-100 text-gray-800 py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+                  className={`w-full mt-6 ${theme === 'dark' ? 'bg-slate-700 text-gray-200 hover:bg-slate-600' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'} py-3 rounded-lg font-semibold transition-colors`}
                 >
                   Închide
                 </button>

@@ -79,35 +79,35 @@ const bodyTypes = [
 ];
 
 const carColors = [
-  "Alb",
-  "Negru",
-  "Gri",
-  "Argintiu",
-  "Roșu",
-  "Albastru",
-  "Verde",
-  "Galben",
-  "Portocaliu",
-  "Maro",
-  "Violet",
-  "Roz",
-  "Bej",
+  "White",
+  "Black",
+  "Gray",
+  "Silver",
+  "Red",
+  "Blue",
+  "Green",
+  "Yellow",
+  "Orange",
+  "Brown",
+  "Purple",
+  "Pink",
+  "Beige",
   "Burgundy",
 ];
 
 const fuelTypes = [
-  "Benzină",
+  "Gasoline",
   "Diesel",
-  "Hibrid",
+  "Hybrid",
   "Electric",
-  "GPL",
-  "Benzină + GPL",
-  "Hidrogen",
+  "LPG",
+  "Gasoline + LPG",
+  "Hydrogen",
 ];
 
 const transmissionTypes = [
-  "Manuală",
-  "Automată",
+  "Manual",
+  "Automatic",
   "CVT",
   "DSG",
   "Tiptronic",
@@ -115,22 +115,22 @@ const transmissionTypes = [
 ];
 
 const drivetrainTypes = [
-  "FWD (Tracțiune față)",
-  "RWD (Tracțiune spate)",
-  "AWD (Tracțiune integrală)",
+  "FWD (Front-wheel drive)",
+  "RWD (Rear-wheel drive)",
+  "AWD (All-wheel drive)",
   "4WD",
 ];
 
 const upholsteryTypes = [
-  "Textil",
-  "Piele",
-  "Piele ecologică",
+  "Fabric",
+  "Leather",
+  "Eco-leather",
   "Alcantara",
-  "Velur",
-  "Combinat",
+  "Velour",
+  "Combined",
 ];
 
-const interiorColors = ["Negru", "Gri", "Bej", "Maro", "Roșu", "Alb", "Crem"];
+const interiorColors = ["Black", "Gray", "Beige", "Brown", "Red", "White", "Cream"];
 
 const doorOptions = [2, 3, 4, 5];
 const seatOptions = [2, 4, 5, 7, 8, 9];
@@ -152,7 +152,7 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({
   const handleNext = () => {
     if (!car.brand || !car.model || !car.year) {
       alert(
-        "Te rog să completezi toate câmpurile obligatorii (Marcă, Model, An)!"
+        "Please fill in all required fields (Brand, Model, Year)!"
       );
       return;
     }
@@ -214,17 +214,17 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({
   return (
     <div>
       <h3 className="text-2xl font-semibold text-gray-800 mb-6">
-        Detalii mașină
+        Car Details
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Brand */}
         <div className="md:col-span-2">
           {renderDropdown(
-            "Marca",
+            "Brand",
             "brand",
             carBrands,
-            "Selectează marca",
+            "Select brand",
             true
           )}
         </div>
@@ -246,23 +246,23 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({
         {/* Year */}
         <div>
           {renderDropdown(
-            "An fabricație",
+            "Manufacturing year",
             "year",
             years,
-            "Selectează anul",
+            "Select year",
             true
           )}
         </div>
 
         {/* Color */}
         <div>
-          {renderDropdown("Culoare", "color", carColors, "Selectează culoarea")}
+          {renderDropdown("Color", "color", carColors, "Select color")}
         </div>
 
         {/* Engine Size */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Capacitate motor (L)
+            Engine capacity (L)
           </label>
           <input
             type="text"
@@ -276,17 +276,17 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({
         {/* Body Type */}
         <div>
           {renderDropdown(
-            "Tip caroserie",
+            "Body type",
             "bodyType",
             bodyTypes,
-            "Selectează tipul"
+            "Select type"
           )}
         </div>
 
         {/* Horsepower */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Putere (CP)
+            Power (HP)
           </label>
           <input
             type="number"
@@ -305,7 +305,7 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({
         {/* Torque */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Cuplu (Nm)
+            Torque (Nm)
           </label>
           <input
             type="number"
@@ -321,37 +321,37 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({
         {/* Fuel Type */}
         <div>
           {renderDropdown(
-            "Combustibil",
+            "Fuel",
             "fuelType",
             fuelTypes,
-            "Selectează combustibilul"
+            "Select fuel type"
           )}
         </div>
 
         {/* Transmission */}
         <div>
           {renderDropdown(
-            "Transmisie",
+            "Transmission",
             "transmission",
             transmissionTypes,
-            "Selectează transmisia"
+            "Select transmission"
           )}
         </div>
 
         {/* Drivetrain */}
         <div>
           {renderDropdown(
-            "Tracțiune",
+            "Drivetrain",
             "drivetrain",
             drivetrainTypes,
-            "Selectează tracțiunea"
+            "Select drivetrain"
           )}
         </div>
 
         {/* Mileage */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Kilometraj
+            Mileage
           </label>
           <input
             type="number"
@@ -370,40 +370,40 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({
         {/* Upholstery Type */}
         <div>
           {renderDropdown(
-            "Tapițerie",
+            "Upholstery",
             "upholsteryType",
             upholsteryTypes,
-            "Selectează tapițeria"
+            "Select upholstery"
           )}
         </div>
 
         {/* Interior Color */}
         <div>
           {renderDropdown(
-            "Culoare interior",
+            "Interior color",
             "interiorColor",
             interiorColors,
-            "Selectează culoarea"
+            "Select color"
           )}
         </div>
 
         {/* Doors */}
         <div>
           {renderDropdown(
-            "Număr uși",
+            "Number of doors",
             "doors",
             doorOptions,
-            "Selectează numărul"
+            "Select number"
           )}
         </div>
 
         {/* Seats */}
         <div>
           {renderDropdown(
-            "Număr locuri",
+            "Number of seats",
             "seats",
             seatOptions,
-            "Selectează numărul"
+            "Select number"
           )}
         </div>
 
@@ -419,7 +419,7 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({
               className="w-5 h-5 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 focus:ring-2"
             />
             <span className="text-sm font-medium text-gray-700">
-              Are trapă/plafon panoramic
+              Has sunroof/panoramic roof
             </span>
           </label>
         </div>
@@ -433,7 +433,7 @@ const CarDetailsForm: React.FC<CarDetailsFormProps> = ({
           onClick={handleNext}
           className="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition duration-300 flex items-center"
         >
-          Continuă
+          Continue
           <FaArrowRight className="ml-2" />
         </motion.button>
       </div>

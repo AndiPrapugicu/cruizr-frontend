@@ -3,8 +3,10 @@ import { motion } from "framer-motion";
 import { FaVoteYea, FaPlus, FaUser, FaClock, FaCheck } from "react-icons/fa";
 import { usePolls } from "../hooks/usePolls";
 import { PollCategory } from "../types";
+import { useTheme } from "../contexts/ThemeContext";
 
 const Polls: React.FC = () => {
+  const { theme } = useTheme();
   const {
     polls,
     myVotes,
@@ -93,17 +95,17 @@ const Polls: React.FC = () => {
   }
 
   return (
-    <div className="h-full bg-gray-50 overflow-y-auto">
+    <div className={`h-full ${theme === 'dark' ? 'bg-slate-900' : 'bg-gray-50'} overflow-y-auto transition-colors duration-300`}>
       <div className="p-4 sm:p-6 pb-24 md:pb-6">
       {/* Header */}
       <div className="mb-6 sm:mb-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 flex items-center">
+            <h1 className={`text-2xl sm:text-3xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-800'} flex items-center`}>
               <FaVoteYea className="mr-2 sm:mr-3 text-blue-500 text-xl sm:text-2xl" />
               Community Polls
             </h1>
-            <p className="text-sm sm:text-base text-gray-600 mt-1 sm:mt-2">
+            <p className={`text-sm sm:text-base ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} mt-1 sm:mt-2`}>
               Participate in community surveys and create your own questions
             </p>
           </div>
@@ -119,10 +121,10 @@ const Polls: React.FC = () => {
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-        <div className="bg-white rounded-xl p-6 shadow-sm">
+        <div className={`${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} rounded-xl p-6 shadow-sm`}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm">Active Polls</p>
+              <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} text-sm`}>Active Polls</p>
               <p className="text-2xl font-bold text-blue-600">
                 {polls?.filter((p) => p.isActive).length || 0}
               </p>
@@ -130,10 +132,10 @@ const Polls: React.FC = () => {
             <FaVoteYea className="text-blue-500 text-2xl" />
           </div>
         </div>
-        <div className="bg-white rounded-xl p-6 shadow-sm">
+        <div className={`${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} rounded-xl p-6 shadow-sm`}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm">Your Votes</p>
+              <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} text-sm`}>Your Votes</p>
               <p className="text-2xl font-bold text-green-600">
                 {myVotes?.length || 0}
               </p>
@@ -141,10 +143,10 @@ const Polls: React.FC = () => {
             <FaCheck className="text-green-500 text-2xl" />
           </div>
         </div>
-        <div className="bg-white rounded-xl p-6 shadow-sm">
+        <div className={`${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} rounded-xl p-6 shadow-sm`}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm">Total Polls</p>
+              <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} text-sm`}>Total Polls</p>
               <p className="text-2xl font-bold text-purple-600">
                 {polls?.length || 0}
               </p>
@@ -162,14 +164,14 @@ const Polls: React.FC = () => {
               key={poll.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow"
+              className={`${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow`}
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                  <h3 className={`text-lg font-semibold mb-2 ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>
                     {poll.question}
                   </h3>
-                  <div className="flex items-center gap-4 text-sm text-gray-600">
+                  <div className={`flex items-center gap-4 text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                     <span className="flex items-center gap-1">
                       <FaUser />
                       {poll.user?.name || "CarMatch"}
@@ -184,8 +186,8 @@ const Polls: React.FC = () => {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-gray-600">Total Votes</p>
-                  <p className="text-xl font-bold text-gray-800">
+                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Total Votes</p>
+                  <p className={`text-xl font-bold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>
                     {poll.totalVotes || 0}
                   </p>
                 </div>
@@ -211,20 +213,20 @@ const Polls: React.FC = () => {
                             userHasVoted
                               ? option.isSelected
                                 ? "border-blue-500 bg-blue-50"
-                                : "border-gray-200 bg-gray-50"
+                                : (theme === 'dark' ? 'border-slate-600 bg-slate-700' : 'border-gray-200 bg-gray-50')
                               : poll.isActive
-                              ? "border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer"
-                              : "border-gray-200 bg-gray-100 cursor-not-allowed"
+                              ? (theme === 'dark' ? 'border-slate-600 hover:border-blue-400 hover:bg-slate-700 cursor-pointer' : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer')
+                              : (theme === 'dark' ? 'border-slate-600 bg-slate-600 cursor-not-allowed' : 'border-gray-200 bg-gray-100 cursor-not-allowed')
                           }`}
                         >
                           <div className="flex items-center justify-between">
-                            <span className="font-medium">{option.text}</span>
-                            <span className="text-sm text-gray-600">
+                            <span className={`font-medium ${theme === 'dark' ? 'text-gray-100' : ''}`}>{option.text}</span>
+                            <span className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                               {option.percentage}% ({option.votes})
                             </span>
                           </div>
                           {userHasVoted && (
-                            <div className="mt-2 bg-gray-200 rounded-full h-2">
+                            <div className={`mt-2 ${theme === 'dark' ? 'bg-slate-600' : 'bg-gray-200'} rounded-full h-2`}>
                               <div
                                 className={`h-2 rounded-full transition-all ${
                                   option.isSelected
@@ -240,7 +242,7 @@ const Polls: React.FC = () => {
                     );
                   })
                 ) : (
-                  <div className="text-center text-gray-500 py-4">
+                  <div className={`text-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'} py-4`}>
                     <p>No options available for this poll</p>
                   </div>
                 )}
@@ -250,10 +252,10 @@ const Polls: React.FC = () => {
         ) : (
           <div className="text-center py-12">
             <FaVoteYea className="mx-auto text-6xl text-gray-300 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">
+            <h3 className={`text-xl font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'} mb-2`}>
               No polls available
             </h3>
-            <p className="text-gray-500">
+            <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
               Be the first to create a community poll!
             </p>
           </div>
@@ -266,16 +268,16 @@ const Polls: React.FC = () => {
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="bg-white rounded-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto"
+            className={`${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} rounded-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto`}
           >
-            <div className="p-6 border-b border-gray-200">
+            <div className={`p-6 border-b ${theme === 'dark' ? 'border-slate-700' : 'border-gray-200'}`}>
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-800">
+                <h2 className={`text-xl font-bold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>
                   Create New Poll
                 </h2>
                 <button
                   onClick={() => setShowCreateModal(false)}
-                  className="p-2 rounded-full hover:bg-gray-100"
+                  className={`p-2 rounded-full ${theme === 'dark' ? 'hover:bg-slate-700 text-gray-400' : 'hover:bg-gray-100'}`}
                 >
                   ✕
                 </button>
@@ -285,7 +287,7 @@ const Polls: React.FC = () => {
             <div className="p-6 space-y-6">
               {/* Question */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                   Poll Question
                 </label>
                 <textarea
@@ -297,14 +299,14 @@ const Polls: React.FC = () => {
                     }))
                   }
                   placeholder="What would you like to ask the community?"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className={`w-full p-3 border ${theme === 'dark' ? 'bg-slate-700 border-slate-600 text-white placeholder-gray-400' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                   rows={3}
                 />
               </div>
 
               {/* Options */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                   Poll Options
                 </label>
                 <div className="space-y-2">
@@ -314,12 +316,12 @@ const Polls: React.FC = () => {
                         value={option}
                         onChange={(e) => updateOption(index, e.target.value)}
                         placeholder={`Option ${index + 1}`}
-                        className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className={`flex-1 p-3 border ${theme === 'dark' ? 'bg-slate-700 border-slate-600 text-white placeholder-gray-400' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                       />
                       {newPoll.options.length > 2 && (
                         <button
                           onClick={() => removeOption(index)}
-                          className="px-3 py-2 text-red-500 hover:bg-red-50 rounded-lg"
+                          className={`px-3 py-2 text-red-500 ${theme === 'dark' ? 'hover:bg-red-900/30' : 'hover:bg-red-50'} rounded-lg`}
                         >
                           ✕
                         </button>
@@ -329,7 +331,7 @@ const Polls: React.FC = () => {
                   {newPoll.options.length < 6 && (
                     <button
                       onClick={addOption}
-                      className="w-full p-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-blue-300 hover:text-blue-500"
+                      className={`w-full p-3 border-2 border-dashed ${theme === 'dark' ? 'border-slate-600 text-gray-400 hover:border-blue-400 hover:text-blue-400' : 'border-gray-300 text-gray-500 hover:border-blue-300 hover:text-blue-500'} rounded-lg`}
                     >
                       + Add Option
                     </button>
@@ -340,7 +342,7 @@ const Polls: React.FC = () => {
               {/* Category & Duration */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                     Category
                   </label>
                   <select
@@ -351,7 +353,7 @@ const Polls: React.FC = () => {
                         category: e.target.value as PollCategory,
                       }))
                     }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className={`w-full p-3 border ${theme === 'dark' ? 'bg-slate-700 border-slate-600 text-white' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                   >
                     <option value="general">General</option>
                     <option value="cars">Cars</option>
@@ -360,7 +362,7 @@ const Polls: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                     Duration (hours)
                   </label>
                   <select
@@ -371,7 +373,7 @@ const Polls: React.FC = () => {
                         duration: parseInt(e.target.value),
                       }))
                     }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className={`w-full p-3 border ${theme === 'dark' ? 'bg-slate-700 border-slate-600 text-white' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                   >
                     <option value={6}>6 hours</option>
                     <option value={12}>12 hours</option>
@@ -383,10 +385,10 @@ const Polls: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-6 border-t border-gray-200 flex gap-3">
+            <div className={`p-6 border-t ${theme === 'dark' ? 'border-slate-700' : 'border-gray-200'} flex gap-3`}>
               <button
                 onClick={() => setShowCreateModal(false)}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                className={`flex-1 px-4 py-2 border ${theme === 'dark' ? 'border-slate-600 text-gray-300 hover:bg-slate-700' : 'border-gray-300 text-gray-700 hover:bg-gray-50'} rounded-lg`}
               >
                 Cancel
               </button>

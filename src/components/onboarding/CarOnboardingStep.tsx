@@ -93,7 +93,7 @@ const CarOnboardingStep: React.FC = () => {
   };
 
   const handleDeleteCar = (index: number) => {
-    if (window.confirm("Ești sigur că vrei să ștergi această mașină?")) {
+    if (window.confirm("Are you sure you want to delete this car?")) {
       const updatedCars = savedCars.filter((_, i) => i !== index);
       // If we deleted the primary car, make the first remaining car primary
       if (updatedCars.length > 0 && savedCars[index].isPrimary) {
@@ -113,7 +113,7 @@ const CarOnboardingStep: React.FC = () => {
 
   const handleNext = () => {
     if (savedCars.length === 0) {
-      alert("Te rog să adaugi cel puțin o mașină!");
+      alert("Please add at least one car!");
       return;
     }
     setCurrentStep(6); // Go to Step6 (bio)
@@ -188,7 +188,7 @@ const CarOnboardingStep: React.FC = () => {
               transition={{ delay: 0.4 }}
               className="text-4xl font-bold text-gray-800 mb-4"
             >
-              Mașinile tale
+              Your Cars
             </motion.h1>
 
             <motion.p
@@ -197,8 +197,7 @@ const CarOnboardingStep: React.FC = () => {
               transition={{ delay: 0.5 }}
               className="text-lg text-gray-600"
             >
-              Spune-ne despre mașinile tale pentru a te conecta cu alți
-              pasionați!
+              Tell us about your cars to connect with other enthusiasts!
             </motion.p>
           </div>
 
@@ -211,7 +210,7 @@ const CarOnboardingStep: React.FC = () => {
               className="mb-8"
             >
               <h3 className="text-xl font-semibold text-gray-800 mb-4">
-                Mașinile tale ({savedCars.length})
+                Your cars ({savedCars.length})
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {savedCars.map((car, index) => (
@@ -225,11 +224,11 @@ const CarOnboardingStep: React.FC = () => {
                           {car.brand} {car.model}
                         </h4>
                         <p className="text-sm text-gray-600">
-                          {car.year} • {car.color || "Necunoscută"}
+                          {car.year} • {car.color || "Unknown"}
                         </p>
                         {car.isPrimary && (
                           <span className="inline-block bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded-full mt-1">
-                            Principală
+                            Primary
                           </span>
                         )}
                       </div>
@@ -241,7 +240,7 @@ const CarOnboardingStep: React.FC = () => {
                       </button>
                     </div>
                     <div className="text-xs text-gray-500">
-                      {car.mods.length} modificări • {car.photos.length} poze
+                      {car.mods.length} modifications • {car.photos.length} photos
                     </div>
                   </div>
                 ))}
@@ -270,7 +269,7 @@ const CarOnboardingStep: React.FC = () => {
                 className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition duration-300"
               >
                 <FaPlus className="mr-2" />
-                Adaugă o mașină
+                Add a car
               </button>
             </motion.div>
           )}
@@ -285,7 +284,7 @@ const CarOnboardingStep: React.FC = () => {
                 className="flex-1 py-4 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition duration-300 flex items-center justify-center"
               >
                 <FaArrowLeft className="mr-2" />
-                Înapoi
+                Back
               </motion.button>
 
               <motion.button
@@ -295,7 +294,7 @@ const CarOnboardingStep: React.FC = () => {
                 disabled={savedCars.length === 0}
                 className="flex-2 py-4 px-8 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
-                Continuă
+                Continue
                 <FaArrowRight className="ml-2" />
               </motion.button>
             </div>

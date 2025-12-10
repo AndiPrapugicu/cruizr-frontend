@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 import { Flame } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
+import { useTheme } from "../contexts/ThemeContext";
 import { useFuelWallet } from "../hooks/useFuelWallet";
 import { useBadges } from "../hooks/useBadges";
 import MiniPremium from "../components/MiniPremium";
@@ -22,6 +23,7 @@ import MiniPolls from "../components/MiniPolls";
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
+  const { theme } = useTheme();
   const { 
     wallet, 
     transactions,
@@ -67,7 +69,7 @@ const Dashboard: React.FC = () => {
 
   if (walletLoading || badgesLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className={`flex items-center justify-center h-full ${theme === 'dark' ? 'bg-slate-900' : 'bg-gray-50'}`}>
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
@@ -78,7 +80,7 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="w-full h-full overflow-auto bg-gray-50 p-4 sm:p-6 pb-24 md:pb-6">
+    <div className={`w-full h-full overflow-auto ${theme === 'dark' ? 'bg-slate-900' : 'bg-gray-50'} p-4 sm:p-6 pb-24 md:pb-6 transition-colors duration-300`}>
       {/* Daily Login Success Notification */}
       {dailyLoginClaimed && (
         <motion.div
@@ -107,15 +109,15 @@ const Dashboard: React.FC = () => {
           className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
         >
           <div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-1 sm:mb-2">
+            <h1 className={`text-2xl sm:text-3xl md:text-4xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'} mb-1 sm:mb-2`}>
               Welcome back, {user?.name}! 👋
             </h1>
-            <p className="text-gray-600 text-sm sm:text-base md:text-lg">
+            <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} text-sm sm:text-base md:text-lg`}>
               Here's what's happening with your profile today
             </p>
           </div>
           <div className="text-left sm:text-right">
-            <p className="text-xs sm:text-sm text-gray-500">
+            <p className={`text-xs sm:text-sm ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>
               {new Date().toLocaleDateString("ro-RO", {
                 weekday: "long",
                 year: "numeric",
@@ -134,24 +136,24 @@ const Dashboard: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all border border-gray-100"
+          className={`${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100'} rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all border`}
         >
           <div className="flex items-center justify-between mb-3 sm:mb-4">
             <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-orange-400 to-orange-600 rounded-xl flex items-center justify-center">
               <FaFire className="text-white text-lg sm:text-xl" />
             </div>
           </div>
-          <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-1">
+          <h3 className={`text-base sm:text-lg font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-800'} mb-1`}>
             Fuel Points
           </h3>
           <div className="text-2xl sm:text-3xl font-bold text-orange-600 mb-2">
             {Math.floor(wallet?.balance || 0)}
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-gray-500 text-xs sm:text-sm">
+            <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'} text-xs sm:text-sm`}>
               Level {wallet?.level || 1}
             </span>
-            <span className="text-gray-500 text-xs sm:text-sm">
+            <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'} text-xs sm:text-sm`}>
               {wallet?.experience || 0} XP
             </span>
           </div>
@@ -162,7 +164,7 @@ const Dashboard: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all border border-gray-100"
+          className={`${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100'} rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all border`}
         >
           <div className="flex items-center justify-between mb-3 sm:mb-4">
             <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-purple-400 to-purple-600 rounded-xl flex items-center justify-center">
@@ -175,11 +177,11 @@ const Dashboard: React.FC = () => {
               </div>
             )}
           </div>
-          <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-1">Premium</h3>
+          <h3 className={`text-base sm:text-lg font-semibold mb-1 ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>Premium</h3>
           <div className="text-2xl sm:text-3xl font-bold text-purple-600 mb-2">
             {Math.floor(wallet?.premiumBalance || 0)}
           </div>
-          <div className="text-gray-500 text-xs sm:text-sm">Premium Points</div>
+          <div className={`text-xs sm:text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Premium Points</div>
         </motion.div>
 
         {/* Badges Card */}
@@ -187,18 +189,18 @@ const Dashboard: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all border border-gray-100"
+          className={`${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100'} rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all border`}
         >
           <div className="flex items-center justify-between mb-3 sm:mb-4">
             <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-xl flex items-center justify-center">
               <FaStar className="text-white text-lg sm:text-xl" />
             </div>
           </div>
-          <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-1">Badges</h3>
+          <h3 className={`text-base sm:text-lg font-semibold mb-1 ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>Badges</h3>
           <div className="text-2xl sm:text-3xl font-bold text-yellow-600 mb-2">
             {userBadges.length}
           </div>
-          <div className="text-gray-500 text-xs sm:text-sm">Achievements Unlocked</div>
+          <div className={`text-xs sm:text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Achievements Unlocked</div>
         </motion.div>
 
         {/* Activity Streak Card */}
@@ -206,20 +208,20 @@ const Dashboard: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all border border-gray-100"
+          className={`${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100'} rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all border`}
         >
           <div className="flex items-center justify-between mb-3 sm:mb-4">
             <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-green-400 to-green-600 rounded-xl flex items-center justify-center">
               <FaChartLine className="text-white text-lg sm:text-xl" />
             </div>
           </div>
-          <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-1">
+          <h3 className={`text-base sm:text-lg font-semibold mb-1 ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>
             Daily Streak
           </h3>
           <div className="text-2xl sm:text-3xl font-bold text-green-600 mb-2">
             {wallet?.streakDays || 0}
           </div>
-          <div className="text-gray-500 text-xs sm:text-sm">Consecutive days</div>
+          <div className={`text-xs sm:text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Consecutive days</div>
         </motion.div>
       </div>
 
@@ -230,7 +232,7 @@ const Dashboard: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
           onClick={() => setShowStore(true)}
-          className="bg-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-xl hover:bg-pink-50 hover:border-pink-200 transition-all text-left group border border-gray-100"
+          className={`${theme === 'dark' ? 'bg-slate-800 border-slate-700 hover:bg-slate-700' : 'bg-white border-gray-100 hover:bg-pink-50 hover:border-pink-200'} rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all text-left group border`}
         >
           <div className="flex items-center justify-between mb-4 sm:mb-6">
             <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-pink-400 to-pink-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -238,10 +240,10 @@ const Dashboard: React.FC = () => {
             </div>
             <FaRocket className="text-pink-500 opacity-0 group-hover:opacity-100 transition-opacity text-lg sm:text-xl" />
           </div>
-          <h3 className="text-xl sm:text-2xl font-bold text-gray-800 group-hover:text-pink-600 transition-colors mb-2 sm:mb-3">
+          <h3 className={`text-xl sm:text-2xl font-bold group-hover:text-pink-600 transition-colors mb-2 sm:mb-3 ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>
             Store
           </h3>
-          <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+          <p className={`text-sm sm:text-base leading-relaxed ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
             Purchase power-ups, premium badges, and special features with your
             points.
           </p>
@@ -252,7 +254,7 @@ const Dashboard: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
           onClick={() => setShowPolls(true)}
-          className="bg-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-xl hover:bg-blue-50 hover:border-blue-200 transition-all text-left group border border-gray-100"
+          className={`${theme === 'dark' ? 'bg-slate-800 border-slate-700 hover:bg-slate-700' : 'bg-white border-gray-100 hover:bg-blue-50 hover:border-blue-200'} rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all text-left group border`}
         >
           <div className="flex items-center justify-between mb-4 sm:mb-6">
             <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -260,10 +262,10 @@ const Dashboard: React.FC = () => {
             </div>
             <FaBolt className="text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity text-lg sm:text-xl" />
           </div>
-          <h3 className="text-xl sm:text-2xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors mb-2 sm:mb-3">
+          <h3 className={`text-xl sm:text-2xl font-bold group-hover:text-blue-600 transition-colors mb-2 sm:mb-3 ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>
             Community Polls
           </h3>
-          <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+          <p className={`text-sm sm:text-base leading-relaxed ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
             Participate in community surveys and create your own questions.
           </p>
         </motion.button>
@@ -272,7 +274,7 @@ const Dashboard: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all text-white"
+          className={`${theme === 'dark' ? 'bg-gradient-to-r from-blue-600 to-indigo-600' : 'bg-gradient-to-r from-blue-500 to-indigo-500'} rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all text-white`}
         >
           <div className="flex items-center justify-between mb-4 sm:mb-6">
             <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center">
@@ -286,7 +288,7 @@ const Dashboard: React.FC = () => {
             Unlock exclusive benefits and advanced features.
           </p>
           <button
-            className="w-full bg-white bg-opacity-20 backdrop-blur-sm text-purple-600 py-2.5 sm:py-3 px-4 sm:px-6 rounded-xl font-semibold hover:bg-opacity-30 transition-all text-sm sm:text-base"
+            className="w-full bg-white bg-opacity-20 backdrop-blur-sm text-white py-2.5 sm:py-3 px-4 sm:px-6 rounded-xl font-semibold hover:bg-opacity-30 transition-all text-sm sm:text-base"
             onClick={() => setShowPremium(true)}
           >
             Upgrade Now
@@ -309,9 +311,9 @@ const Dashboard: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.9 }}
-        className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100"
+        className={`${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100'} rounded-2xl p-6 shadow-lg border`}
       >
-        <h3 className="text-xl font-bold text-gray-800 mb-4">
+        <h3 className={`text-xl font-bold mb-4 ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>
           Recent Activity
         </h3>
         <div className="space-y-3">

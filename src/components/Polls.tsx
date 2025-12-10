@@ -11,6 +11,7 @@ import {
 } from "react-icons/fa";
 import { usePolls } from "../hooks/usePolls";
 import { PollCategory } from "../types";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface PollsProps {
   visible: boolean;
@@ -32,6 +33,7 @@ const CreatePollModal: React.FC<CreatePollModalProps> = ({
   onClose,
   onSubmit,
 }) => {
+  const { theme } = useTheme();
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", ""]);
   const [category, setCategory] = useState<PollCategory>("general");
@@ -78,11 +80,11 @@ const CreatePollModal: React.FC<CreatePollModalProps> = ({
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white rounded-3xl max-w-lg w-full shadow-2xl"
+        className={`${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} rounded-3xl max-w-lg w-full shadow-2xl`}
       >
         <div className="bg-gradient-to-r from-pink-500 to-purple-600 text-white p-6 rounded-t-3xl">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold">Creează Poll</h2>
+            <h2 className="text-xl font-bold">Create Poll</h2>
             <button
               onClick={onClose}
               className="p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-colors"
@@ -154,7 +156,7 @@ const CreatePollModal: React.FC<CreatePollModalProps> = ({
                 className="w-full p-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-pink-500 hover:text-pink-500 transition-colors"
               >
                 <FaPlus className="inline mr-2" />
-                Adaugă opțiune
+                Add option
               </button>
             )}
           </div>
@@ -164,7 +166,7 @@ const CreatePollModal: React.FC<CreatePollModalProps> = ({
               onClick={onClose}
               className="flex-1 py-3 px-4 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
             >
-              Anulează
+              Cancel
             </button>
             <button
               onClick={handleSubmit}
@@ -174,7 +176,7 @@ const CreatePollModal: React.FC<CreatePollModalProps> = ({
               }
               className="flex-1 py-3 px-4 bg-pink-500 text-white rounded-lg font-semibold hover:bg-pink-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
             >
-              Creează
+              Create
             </button>
           </div>
         </div>

@@ -3,6 +3,7 @@ import React, { useEffect, useState, KeyboardEvent } from "react";
 import api from "../services/api";
 import { FaPlus, FaTimes, FaSave, FaChevronLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface User {
   name: string;
@@ -96,6 +97,7 @@ export default function Edits() {
   const [customModInput, setCustomModInput] = useState("");
 
   const navigate = useNavigate();
+  const { theme } = useTheme();
 
   // === FETCH profil + populare stări existente ===
   useEffect(() => {
@@ -127,7 +129,7 @@ export default function Edits() {
         setCarModel(u.carModel || "");
         setCarMods(u.carMods || []);
       } catch (e) {
-        console.error("Eroare la fetch user:", e);
+        console.error("Error fetching user:", e);
       } finally {
         setLoading(false);
       }
@@ -167,7 +169,7 @@ export default function Edits() {
     if (!e.target.files) return;
     const files = Array.from(e.target.files);
     if (photos.length + files.length > MAX_PHOTOS) {
-      alert(`Poți avea maxim ${MAX_PHOTOS} poze.`);
+      alert(`You can have a maximum of ${MAX_PHOTOS} photos.`);
       return;
     }
     setUploading(true);
@@ -188,7 +190,7 @@ export default function Edits() {
         setImageUrl(newPhotos[0]);
       }
     } catch {
-      alert("Eroare la upload.");
+      alert("Error uploading.");
     } finally {
       setUploading(false);
       if (e.target) e.target.value = ""; // resetează input-ul
@@ -217,50 +219,50 @@ export default function Edits() {
 
     try {
       await api.patch("/users/me", payload);
-      alert("Profil actualizat cu succes!");
+      alert("Profile updated successfully!");
       navigate("/profile");
     } catch (e) {
-      console.error("Eroare la salvare:", e);
-      alert("A apărut o eroare la salvarea profilului.");
+      console.error("Error saving:", e);
+      alert("An error occurred while saving the profile.");
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center text-gray-700">
-        Se încarcă editarea profilului...
+      <div className={`min-h-screen ${theme === 'dark' ? 'bg-slate-900 text-gray-300' : 'bg-gray-50 text-gray-700'} flex items-center justify-center`}>
+        Loading profile editor...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 p-6">
+    <div className={`min-h-screen ${theme === 'dark' ? 'bg-slate-900 text-gray-100' : 'bg-gray-50 text-gray-900'} p-6`}>
       {/* Buton Înapoi */}
       <button
         onClick={() => navigate(-1)}
-        className="flex items-center text-gray-600 hover:text-gray-800 mb-4"
+        className={`flex items-center ${theme === 'dark' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-800'} mb-4`}
       >
-        <FaChevronLeft className="mr-2" /> Înapoi
+        <FaChevronLeft className="mr-2" /> Back
       </button>
 
-      <h2 className="text-2xl font-bold mb-4">Editează Profil</h2>
+      <h2 className={`text-2xl font-bold mb-4 ${theme === 'dark' ? 'text-white' : ''}`}>Edit Profile</h2>
 
-      <div className="bg-white rounded-2xl shadow px-6 py-8 max-w-xl mx-auto">
+      <div className={`${theme === 'dark' ? 'bg-slate-800 border border-slate-700' : 'bg-white'} rounded-2xl shadow px-6 py-8 max-w-xl mx-auto`}>
         {/* Nume */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-1">Nume</label>
+          <label className={`block ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} font-medium mb-1`}>Name</label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
+            className={`w-full border ${theme === 'dark' ? 'bg-slate-700 border-slate-600 text-white placeholder-gray-400' : 'border-gray-300'} rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400`}
           />
         </div>
 
         {/* Data Nașterii */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-1">
-            Data nașterii
+          <label className={`block ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} font-medium mb-1`}>
+            Date of birth
           </label>
           <input
             type="date"
@@ -269,31 +271,31 @@ export default function Edits() {
             disabled={Boolean(user?.birthdate)}
             className={`w-full border ${
               user?.birthdate
-                ? "bg-gray-100 cursor-not-allowed"
-                : "border-gray-300 focus:ring-pink-400"
+                ? (theme === 'dark' ? 'bg-slate-600 cursor-not-allowed text-gray-400' : 'bg-gray-100 cursor-not-allowed')
+                : (theme === 'dark' ? 'bg-slate-700 border-slate-600 text-white' : 'border-gray-300 focus:ring-pink-400')
             } rounded-md px-3 py-2 focus:outline-none`}
           />
           {user?.birthdate && (
-            <p className="mt-1 text-sm text-gray-500">
-              Data nașterii a fost setată și nu poate fi modificată.
+            <p className={`mt-1 text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+              Date of birth has been set and cannot be changed.
             </p>
           )}
         </div>
 
-        {/* Oraș */}
+        {/* City */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-1">Oraș</label>
+          <label className={`block ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} font-medium mb-1`}>City</label>
           <input
             type="text"
             value={city}
             onChange={(e) => setCity(e.target.value)}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
+            className={`w-full border ${theme === 'dark' ? 'bg-slate-700 border-slate-600 text-white placeholder-gray-400' : 'border-gray-300'} rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400`}
           />
         </div>
 
         {/* Model Mașină */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-1">
+          <label className={`block ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} font-medium mb-1`}>
             Car Model
           </label>
           <input
@@ -301,13 +303,13 @@ export default function Edits() {
             value={carModel}
             onChange={(e) => setCarModel(e.target.value)}
             placeholder="ex: BMW E46, VW Golf Mk4, etc."
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
+            className={`w-full border ${theme === 'dark' ? 'bg-slate-700 border-slate-600 text-white placeholder-gray-400' : 'border-gray-300'} rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400`}
           />
         </div>
 
         {/* Modificări aduse mașinii */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-1">
+          <label className={`block ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} font-medium mb-1`}>
             Car Modifications
           </label>
 
@@ -320,7 +322,7 @@ export default function Edits() {
                 onClick={() => {
                   if (!carMods.includes(mod)) setCarMods([...carMods, mod]);
                 }}
-                className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-sm rounded-full border border-gray-300 transition-colors"
+                className={`px-3 py-1 ${theme === 'dark' ? 'bg-slate-700 hover:bg-slate-600 border-slate-600 text-gray-200' : 'bg-gray-100 hover:bg-gray-200 border-gray-300 text-gray-800'} text-sm rounded-full border transition-colors`}
               >
                 {mod}
               </button>
@@ -344,7 +346,7 @@ export default function Edits() {
                 }
               }}
               placeholder="Add your own modification and press Enter"
-              className="flex-grow border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
+              className={`flex-grow border ${theme === 'dark' ? 'bg-slate-700 border-slate-600 text-white placeholder-gray-400' : 'border-gray-300'} rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400`}
             />
           </div>
 
@@ -353,14 +355,14 @@ export default function Edits() {
             {carMods.map((mod, idx) => (
               <span
                 key={idx}
-                className="flex items-center bg-pink-100 text-pink-800 text-sm rounded-full px-3 py-1"
+                className={`flex items-center ${theme === 'dark' ? 'bg-pink-900/50 text-pink-300' : 'bg-pink-100 text-pink-800'} text-sm rounded-full px-3 py-1`}
               >
                 {mod}
                 <button
                   onClick={() =>
                     setCarMods(carMods.filter((_, i) => i !== idx))
                   }
-                  className="ml-2 text-pink-700 hover:text-pink-900"
+                  className={`ml-2 ${theme === 'dark' ? 'text-pink-400 hover:text-pink-200' : 'text-pink-700 hover:text-pink-900'}`}
                 >
                   <FaTimes />
                 </button>
@@ -371,26 +373,26 @@ export default function Edits() {
 
         {/* Interese */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-1">
-            Interese
+          <label className={`block ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} font-medium mb-1`}>
+            Interests
           </label>
           <input
             type="text"
             value={interestInput}
             onChange={(e) => setInterestInput(e.target.value)}
             onKeyDown={handleInterestKey}
-            placeholder="Scrie un interest și apasă Enter"
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
+            placeholder="Type an interest and press Enter"
+            className={`w-full border ${theme === 'dark' ? 'bg-slate-700 border-slate-600 text-white placeholder-gray-400' : 'border-gray-300'} rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400`}
           />
           <div className="flex flex-wrap mt-2 gap-2">
             {interests.map((int, idx) => (
               <div
                 key={idx}
-                className="flex items-center bg-pink-100 text-pink-800 rounded-full px-3 py-1 text-sm"
+                className={`flex items-center ${theme === 'dark' ? 'bg-pink-900/50 text-pink-300' : 'bg-pink-100 text-pink-800'} rounded-full px-3 py-1 text-sm`}
               >
                 <span>{int}</span>
                 <FaTimes
-                  className="ml-2 cursor-pointer"
+                  className={`ml-2 cursor-pointer ${theme === 'dark' ? 'hover:text-pink-100' : ''}`}
                   onClick={() => removeInterest(idx)}
                 />
               </div>
@@ -400,8 +402,8 @@ export default function Edits() {
 
         {/* Lista de interese predefinite */}
         <div className="mb-6">
-          <label className="block text-gray-700 font-medium mb-1">
-            Alegeri rapide
+          <label className={`block ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} font-medium mb-1`}>
+            Quick picks
           </label>
           <div className="flex flex-wrap gap-2">
             {allInterests.map((int, idx) => (
@@ -415,7 +417,7 @@ export default function Edits() {
                 className={`px-3 py-1 rounded-full text-sm ${
                   interests.includes(int)
                     ? "bg-pink-500 text-white"
-                    : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                    : (theme === 'dark' ? 'bg-slate-700 text-gray-200 hover:bg-slate-600' : 'bg-gray-200 text-gray-800 hover:bg-gray-300')
                 } transition`}
               >
                 {int}
@@ -426,8 +428,8 @@ export default function Edits() {
 
         {/* Galerie poze */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-1">
-            Poze Profil
+          <label className={`block ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} font-medium mb-1`}>
+            Profile Photos
           </label>
           <div className="flex flex-wrap gap-2 mb-2">
             {photos.map((photo, idx) => (
@@ -447,10 +449,10 @@ export default function Edits() {
                 >
                   &times;
                 </button>
-                {/* Dacă e principală */}
+                {/* If primary */}
                 {photo === imageUrl && (
                   <span className="absolute bottom-0 left-0 bg-pink-500 text-white text-xs px-1 rounded-tr-lg">
-                    Principală
+                    Primary
                   </span>
                 )}
                 {photo !== imageUrl && (
@@ -458,16 +460,16 @@ export default function Edits() {
                     onClick={() => setImageUrl(photo)}
                     className="absolute bottom-0 left-0 bg-gray-700/70 text-white text-xs px-1 rounded-tr-lg hover:bg-gray-800"
                   >
-                    Setare ca primară
+                    Set as primary
                   </button>
                 )}
               </div>
             ))}
           </div>
-          <label className="flex items-center gap-1 cursor-pointer text-indigo-600 hover:text-indigo-800">
+          <label className={`flex items-center gap-1 cursor-pointer ${theme === 'dark' ? 'text-indigo-400 hover:text-indigo-300' : 'text-indigo-600 hover:text-indigo-800'}`}>
             <FaPlus />
             <span className="text-sm">
-              {uploading ? "Se încarcă..." : "Încarcă poze"}
+              {uploading ? "Uploading..." : "Upload photos"}
             </span>
             <input
               type="file"
@@ -486,7 +488,7 @@ export default function Edits() {
           className="mt-6 w-full bg-pink-500 text-white py-2 rounded-md flex items-center justify-center hover:bg-pink-600 transition"
         >
           <FaSave className="mr-2" />
-          Salvează Modificările
+          Save Changes
         </button>
       </div>
     </div>

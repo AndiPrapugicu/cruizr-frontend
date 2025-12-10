@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import { FaHeart, FaStar, FaCrown, FaCar } from "react-icons/fa";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface User {
   id: number;
@@ -13,6 +14,7 @@ interface User {
 }
 
 export default function Likes() {
+  const { theme } = useTheme();
   const [likes, setLikes] = useState<User[]>([]);
   const [superLikes, setSuperLikes] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -53,7 +55,7 @@ export default function Likes() {
       });
 
       if (res.data?.match) {
-        alert("Ați făcut Match! 🎉");
+        alert("It's a Match! 🎉");
       }
 
       // Remove user from appropriate list
@@ -63,7 +65,7 @@ export default function Likes() {
         setLikes(likes.filter((u) => u.id !== userId));
       }
     } catch (error) {
-      alert("Eroare la trimiterea like-ului înapoi.");
+      alert("Error sending like back.");
     }
   };
 
@@ -72,7 +74,7 @@ export default function Likes() {
       <div className="p-8 bg-gradient-to-b from-purple-50 to-pink-100 min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-purple-700 font-medium">Se încarcă...</p>
+          <p className="text-purple-700 font-medium">Loading...</p>
         </div>
       </div>
     );
@@ -81,19 +83,19 @@ export default function Likes() {
   const currentUsers = activeTab === "likes" ? likes : superLikes;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className={`p-6 ${theme === 'dark' ? 'bg-slate-900' : 'bg-gray-50'} min-h-screen transition-colors duration-300`}>
       {/* Header */}
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
-          💖 Cine ți-a dat like
+          💖 Who Liked You
         </h1>
-        <p className="text-gray-600">
-          Descoperă persoanele care te-au apreciat
+        <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+          Discover people who have shown interest in you
         </p>
       </div>
 
       {/* Tabs */}
-      <div className="flex mb-6 bg-white rounded-full p-1 shadow-lg max-w-md mx-auto">
+      <div className={`flex mb-6 ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} rounded-full p-1 shadow-lg max-w-md mx-auto`}>
         <button
           onClick={() => setActiveTab("likes")}
           className={`flex-1 py-3 px-6 rounded-full font-medium transition-all duration-300 flex items-center justify-center space-x-2 ${
@@ -151,13 +153,13 @@ export default function Likes() {
           </div>
           <h3 className="text-xl font-semibold text-gray-700 mb-2">
             {activeTab === "likes"
-              ? "Nu ai like-uri noi"
-              : "Nu ai super like-uri noi"}
+              ? "No new likes"
+              : "No new super likes"}
           </h3>
           <p className="text-gray-500">
             {activeTab === "likes"
-              ? "Când cineva îți va da like, vei vedea aici"
-              : "Super like-urile speciale vor apărea aici"}
+              ? "When someone likes you, they'll appear here"
+              : "Special super likes will appear here"}
           </p>
         </div>
       ) : (
@@ -168,7 +170,7 @@ export default function Likes() {
               className={`relative overflow-hidden rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 ${
                 user.type === "super-like"
                   ? "bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200"
-                  : "bg-white border border-gray-100"
+                  : theme === 'dark' ? "bg-slate-800 border border-slate-700" : "bg-white border border-gray-100"
               }`}
             >
               {/* Super Like Badge */}
@@ -210,7 +212,7 @@ export default function Likes() {
                       {user.name}
                       {user.age && (
                         <span className="text-gray-600 font-normal ml-2">
-                          {user.age} ani
+                          {user.age} years old
                         </span>
                       )}
                     </h3>
@@ -222,7 +224,7 @@ export default function Likes() {
                     )}
                     {user.type === "super-like" && (
                       <p className="text-orange-600 text-xs font-medium mt-1">
-                        Ți-a trimis un Super Like special!
+                        Sent you a special Super Like!
                         <FaStar className="inline ml-1 text-yellow-500" />
                       </p>
                     )}
@@ -241,8 +243,8 @@ export default function Likes() {
                   }
                   title={
                     user.type === "super-like"
-                      ? "Răspunde la Super Like"
-                      : "Dă like înapoi"
+                      ? "Respond to Super Like"
+                      : "Like back"
                   }
                 >
                   {user.type === "super-like" ? (

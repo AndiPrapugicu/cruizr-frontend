@@ -13,6 +13,7 @@ import {
 import * as LucideIcons from "lucide-react";
 import { useBadges } from "../hooks/useBadges";
 import { useAuth } from "../contexts/AuthContext";
+import { useTheme } from "../contexts/ThemeContext";
 import { Badge } from "../types";
 
 interface BadgeDisplayProps {
@@ -33,6 +34,7 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
   showAll = false,
 }) => {
   const { user } = useAuth();
+  const { theme } = useTheme();
   const { userBadges, loading, getBadgesWithProgress, countBadgesByRarity } =
     useBadges(userId || user?.userId);
 
@@ -94,6 +96,20 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
   };
 
   const getRarityColor = (rarity: string) => {
+    if (theme === 'dark') {
+      switch (rarity) {
+        case "common":
+          return "border-slate-600 bg-slate-700";
+        case "rare":
+          return "border-blue-500 bg-blue-900/40";
+        case "epic":
+          return "border-purple-500 bg-purple-900/40";
+        case "legendary":
+          return "border-yellow-500 bg-yellow-900/40";
+        default:
+          return "border-slate-600 bg-slate-700";
+      }
+    }
     switch (rarity) {
       case "common":
         return "border-gray-300 bg-gray-50";
@@ -134,14 +150,14 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
   }
 
   return (
-    <div className="bg-white rounded-xl p-6 shadow-lg">
+    <div className={`${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white'} rounded-xl p-6 shadow-lg`}>
       {showTitle && (
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-bold text-gray-800">Badge-uri</h3>
+          <h3 className={`text-xl font-bold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>Badge-uri</h3>
           {filteredBadges.length > maxBadges && !showAll && (
             <button
               onClick={() => setShowAllModal(true)}
-              className="text-yellow-500 font-medium hover:text-yellow-600 hover:bg-yellow-50 px-3 py-1 rounded-lg transition-all"
+              className={`text-yellow-500 font-medium hover:text-yellow-600 ${theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-yellow-50'} px-3 py-1 rounded-lg transition-all`}
             >
               See all ({sortedBadges.length})
             </button>
@@ -152,34 +168,34 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
       {/* Badge Stats */}
       <div className="grid grid-cols-4 gap-2 mb-6">
         <div className="text-center">
-          <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-1">
-            <span className="text-sm font-bold">{userBadges.length}</span>
+          <div className={`w-8 h-8 ${theme === 'dark' ? 'bg-slate-700' : 'bg-gray-100'} rounded-full flex items-center justify-center mx-auto mb-1`}>
+            <span className={`text-sm font-bold ${theme === 'dark' ? 'text-gray-100' : ''}`}>{userBadges.length}</span>
           </div>
-          <span className="text-xs text-gray-600">Total</span>
+          <span className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Total</span>
         </div>
         <div className="text-center">
-          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-1">
-            <span className="text-sm font-bold text-blue-600">
+          <div className={`w-8 h-8 ${theme === 'dark' ? 'bg-blue-900/50' : 'bg-blue-100'} rounded-full flex items-center justify-center mx-auto mb-1`}>
+            <span className={`text-sm font-bold ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`}>
               {rarityCounts.rare}
             </span>
           </div>
-          <span className="text-xs text-gray-600">Rare</span>
+          <span className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Rare</span>
         </div>
         <div className="text-center">
-          <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-1">
-            <span className="text-sm font-bold text-purple-600">
+          <div className={`w-8 h-8 ${theme === 'dark' ? 'bg-purple-900/50' : 'bg-purple-100'} rounded-full flex items-center justify-center mx-auto mb-1`}>
+            <span className={`text-sm font-bold ${theme === 'dark' ? 'text-purple-400' : 'text-purple-600'}`}>
               {rarityCounts.epic}
             </span>
           </div>
-          <span className="text-xs text-gray-600">Epic</span>
+          <span className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Epic</span>
         </div>
         <div className="text-center">
-          <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-1">
-            <span className="text-sm font-bold text-yellow-600">
+          <div className={`w-8 h-8 ${theme === 'dark' ? 'bg-yellow-900/50' : 'bg-yellow-100'} rounded-full flex items-center justify-center mx-auto mb-1`}>
+            <span className={`text-sm font-bold ${theme === 'dark' ? 'text-yellow-400' : 'text-yellow-600'}`}>
               {rarityCounts.legendary}
             </span>
           </div>
-          <span className="text-xs text-gray-600">Legendary</span>
+          <span className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Legendary</span>
         </div>
       </div>
 
@@ -196,12 +212,12 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
             className={`relative p-3 rounded-lg border-2 cursor-pointer transition-all ${
               badge.isUnlocked
                 ? getRarityColor(badge.rarity) + " shadow-sm hover:shadow-md"
-                : "border-gray-300 bg-gray-50 grayscale opacity-60"
+                : (theme === 'dark' ? "border-slate-600 bg-slate-700 grayscale opacity-60" : "border-gray-300 bg-gray-50 grayscale opacity-60")
             }`}
           >
             {/* Rarity indicator */}
             {badge.isUnlocked && badge.rarity !== "common" && (
-              <div className="absolute -top-2 -right-2 bg-white rounded-full p-1.5 shadow-md border-2 border-white">
+              <div className={`absolute -top-2 -right-2 ${theme === 'dark' ? 'bg-slate-700 border-slate-700' : 'bg-white border-white'} rounded-full p-1.5 shadow-md border-2`}>
                 {getRarityIcon(badge.rarity)}
               </div>
             )}
@@ -216,7 +232,7 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
               </div>
               <h4
                 className={`font-semibold text-xs line-clamp-2 ${
-                  badge.isUnlocked ? "text-gray-800" : "text-gray-500"
+                  badge.isUnlocked ? (theme === 'dark' ? 'text-gray-100' : 'text-gray-800') : 'text-gray-500'
                 }`}
               >
                 {badge.name}
@@ -252,7 +268,7 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
       {displayBadges.length === 0 && (
         <div className="text-center py-8">
           <FaStar className="text-4xl text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-600">Nu există badge-uri disponibile.</p>
+          <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Nu există badge-uri disponibile.</p>
         </div>
       )}
 
@@ -270,7 +286,7 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-3xl max-w-5xl w-full max-h-[85vh] overflow-hidden shadow-2xl"
+              className={`${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} rounded-3xl max-w-5xl w-full max-h-[85vh] overflow-hidden shadow-2xl`}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
@@ -305,12 +321,12 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
                         badge.isUnlocked
                           ? getRarityColor(badge.rarity) +
                             " shadow-md hover:shadow-lg"
-                          : "border-gray-200 bg-gray-50 grayscale opacity-60"
+                          : (theme === 'dark' ? "border-slate-600 bg-slate-700 grayscale opacity-60" : "border-gray-200 bg-gray-50 grayscale opacity-60")
                       }`}
                     >
                       {/* Rarity indicator badge */}
                       {badge.isUnlocked && badge.rarity !== "common" && (
-                        <div className="absolute -top-2 -right-2 bg-white rounded-full p-1.5 shadow-lg border-2 border-white animate-pulse">
+                        <div className={`absolute -top-2 -right-2 ${theme === 'dark' ? 'bg-slate-700 border-slate-700' : 'bg-white border-white'} rounded-full p-1.5 shadow-lg border-2 animate-pulse`}>
                           {getRarityIcon(badge.rarity)}
                         </div>
                       )}
@@ -325,12 +341,12 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
                         </div>
                         <h4
                           className={`font-semibold text-sm mb-1 ${
-                            badge.isUnlocked ? "text-gray-800" : "text-gray-500"
+                            badge.isUnlocked ? (theme === 'dark' ? 'text-gray-100' : 'text-gray-800') : 'text-gray-500'
                           }`}
                         >
                           {badge.name}
                         </h4>
-                        <p className="text-xs text-gray-600 line-clamp-2 leading-tight">
+                        <p className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} line-clamp-2 leading-tight`}>
                           {badge.description}
                         </p>
 
@@ -371,7 +387,7 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
                 {sortedBadges.length === 0 && (
                   <div className="text-center py-12">
                     <FaStar className="text-4xl text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-600">
+                    <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                       Nu există badge-uri disponibile.
                     </p>
                   </div>

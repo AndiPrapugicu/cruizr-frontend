@@ -43,17 +43,17 @@ const Step5Photos: React.FC = () => {
       const file = files[i];
 
       if (!allowedTypes.includes(file.type)) {
-        errorMessage = "Doar imagini JPG, PNG sau WebP sunt permise";
+        errorMessage = "Only JPG, PNG or WebP images are allowed";
         continue;
       }
 
       if (file.size > maxSize) {
-        errorMessage = "Imaginile trebuie să fie mai mici de 10MB";
+        errorMessage = "Images must be smaller than 10MB";
         continue;
       }
 
       if (photos.length + validFiles.length >= maxPhotos) {
-        errorMessage = `Poți adăuga maxim ${maxPhotos} poze`;
+        errorMessage = `You can add up to ${maxPhotos} photos`;
         break;
       }
 
@@ -92,7 +92,7 @@ const Step5Photos: React.FC = () => {
 
   const handleNext = () => {
     if (photos.length === 0) {
-      setError("Adaugă cel puțin o poză");
+      setError("Add at least one photo");
       return;
     }
 
@@ -132,14 +132,14 @@ const Step5Photos: React.FC = () => {
             </motion.div>
 
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              Adaugă fotografii
+              Add Photos
             </h1>
             <p className="text-gray-600">
-              Adaugă cel puțin o poză cu tine. Pozele de calitate îți vor crește
-              șansele!
+              Add at least one photo of yourself. Quality photos will increase
+              your chances!
             </p>
             <p className="text-sm text-purple-600 mt-2">
-              {photos.length}/6 poze adăugate
+              {photos.length}/6 photos added
             </p>
           </div>
 
@@ -168,10 +168,10 @@ const Step5Photos: React.FC = () => {
               <label htmlFor="photo-upload" className="cursor-pointer block">
                 <FaPlus className="text-4xl text-gray-400 mx-auto mb-4" />
                 <p className="text-lg font-semibold text-gray-700 mb-2">
-                  Trage pozele aici sau click pentru a selecta
+                  Drag photos here or click to select
                 </p>
                 <p className="text-sm text-gray-500">
-                  JPG, PNG sau WebP (max 10MB per poză)
+                  JPG, PNG or WebP (max 10MB per photo)
                 </p>
               </label>
             </div>
@@ -199,7 +199,7 @@ const Step5Photos: React.FC = () => {
                     </button>
                     {index === 0 && (
                       <div className="absolute bottom-2 left-2 bg-purple-500 text-white text-xs px-2 py-1 rounded-full">
-                        Principală
+                        Main
                       </div>
                     )}
                   </motion.div>
@@ -225,7 +225,7 @@ const Step5Photos: React.FC = () => {
                 className="flex-1 py-4 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition duration-300 flex items-center justify-center"
               >
                 <FaArrowLeft className="mr-2" />
-                Înapoi
+                Back
               </motion.button>
 
               <motion.button
@@ -235,7 +235,7 @@ const Step5Photos: React.FC = () => {
                 disabled={photos.length === 0}
                 className="flex-1 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
-                Continuă
+                Continue
                 <FaArrowRight className="ml-2" />
               </motion.button>
             </div>

@@ -5,6 +5,7 @@ import api from "../services/api";
 import AddCarModal from "../components/AddCarModal";
 import AddPhotosModal from "../components/AddPhotosModal";
 import { usePowerUps } from "../hooks/usePowerUps";
+import { useTheme } from "../contexts/ThemeContext";
 import {
   FaEdit,
   FaCar,
@@ -141,6 +142,7 @@ interface UserProfile {
 
 export default function Profile() {
   const navigate = useNavigate();
+  const { theme } = useTheme();
   const { powerUpState, updateProfileFrameColor } = usePowerUps();
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -482,7 +484,7 @@ export default function Profile() {
   };
 
   const handleDeleteCar = async (carId: string) => {
-    if (window.confirm("Ești sigur că vrei să ștergi această mașină?")) {
+    if (window.confirm("Are you sure you want to delete this car?")) {
       try {
         await api.delete(`/cars/${carId}`);
 
@@ -495,7 +497,7 @@ export default function Profile() {
         console.log("Car deleted successfully");
       } catch (error) {
         console.error("Error deleting car:", error);
-        alert("Eroare la ștergerea mașinii. Te rog încearcă din nou.");
+        alert("Error deleting car. Please try again.");
       }
     }
   };
@@ -522,7 +524,7 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center w-full h-full bg-white">
+      <div className={`flex items-center justify-center w-full h-full ${theme === 'dark' ? 'bg-slate-900' : 'bg-white'}`}>
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
@@ -535,21 +537,21 @@ export default function Profile() {
   if (!user) return null;
 
   return (
-    <div className="w-full h-full bg-white overflow-y-auto">
+    <div className={`w-full h-full ${theme === 'dark' ? 'bg-slate-900' : 'bg-white'} overflow-y-auto transition-colors duration-300`}>
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
+      <div className={`${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'} shadow-sm border-b`}>
         <div className="px-4 sm:px-6 md:px-8 py-4 sm:py-6 flex items-center justify-between">
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Profilul meu</h1>
+          <h1 className={`text-xl sm:text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>My Profile</h1>
           <div className="flex space-x-2 sm:space-x-3">
             <button
               onClick={() => navigate("/settings")}
-              className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition min-w-[44px] min-h-[44px] flex items-center justify-center"
+              className={`p-2 ${theme === 'dark' ? 'text-gray-300 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'} rounded-full transition min-w-[44px] min-h-[44px] flex items-center justify-center`}
             >
               <FaCog className="text-lg sm:text-xl" />
             </button>
             <button
               onClick={handleLogout}
-              className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition min-w-[44px] min-h-[44px] flex items-center justify-center"
+              className={`p-2 ${theme === 'dark' ? 'text-gray-300 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'} rounded-full transition min-w-[44px] min-h-[44px] flex items-center justify-center`}
             >
               <FaSignOutAlt className="text-lg sm:text-xl" />
             </button>
@@ -562,7 +564,7 @@ export default function Profile() {
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="bg-white rounded-2xl sm:rounded-3xl shadow-xl overflow-hidden"
+          className={`${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} rounded-2xl sm:rounded-3xl shadow-xl overflow-hidden`}
         >
           {/* Cover Photo */}
           <div className="h-32 sm:h-48 bg-gradient-to-r from-pink-500 to-red-500 relative">
@@ -656,7 +658,7 @@ export default function Profile() {
             <div className="mt-6">
               {/* Name and Age with Edit Button */}
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-3xl font-bold text-gray-800">
+                <h2 className={`text-3xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
                   {user.name}, {user.age}
                 </h2>
                 <button
@@ -680,8 +682,8 @@ export default function Profile() {
                   </button>
 
                   {showColorPicker && (
-                    <div className="mt-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                      <p className="text-sm text-gray-600 mb-3">
+                    <div className={`mt-3 p-4 ${theme === 'dark' ? 'bg-slate-700 border-slate-600' : 'bg-gray-50 border-gray-200'} rounded-lg border`}>
+                      <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'} mb-3`}>
                         Select a color for your profile frame:
                       </p>
                       <div className="grid grid-cols-4 gap-3">
@@ -705,27 +707,27 @@ export default function Profile() {
               )}
 
               {/* Location */}
-              <div className="flex items-center text-gray-600 mb-4">
+              <div className={`flex items-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} mb-4`}>
                 <FaMapMarkerAlt className="mr-2" />
                 <span>{user.location}</span>
               </div>
 
               {/* Bio */}
-              <p className="text-gray-700 leading-relaxed mb-4">
+              <p className={`${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} leading-relaxed mb-4`}>
                 {user.bio || "Nicio descriere încă..."}
               </p>
 
               {/* Interests */}
               {user.interests && user.interests.length > 0 && (
-                <div className="pt-4 border-t border-gray-100">
-                  <h4 className="text-sm font-semibold text-gray-800 mb-3">
+                <div className={`pt-4 border-t ${theme === 'dark' ? 'border-slate-700' : 'border-gray-100'}`}>
+                  <h4 className={`text-sm font-semibold ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'} mb-3`}>
                     Interese
                   </h4>
                   <div className="flex flex-wrap gap-2">
                     {user.interests.map((interest, index) => (
                       <span
                         key={index}
-                        className="bg-pink-100 text-pink-700 px-3 py-1 rounded-full text-sm font-medium"
+                        className={`${theme === 'dark' ? 'bg-slate-700 text-gray-200' : 'bg-pink-100 text-pink-700'} px-3 py-1 rounded-full text-sm font-medium`}
                       >
                         {interest}
                       </span>
@@ -760,11 +762,11 @@ export default function Profile() {
         </motion.div>
 
         {/* Tabs */}
-        <div className="flex space-x-1 bg-white rounded-2xl p-1 shadow-lg mt-8">
+        <div className={`flex space-x-1 rounded-2xl p-1 shadow-lg mt-8 ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'}`}>
           {[
-            { id: "overview", label: "Prezentare", icon: <FaCamera /> },
-            { id: "cars", label: "Mașinile mele", icon: <FaCar /> },
-            { id: "badges", label: "Badge-uri", icon: <FaTrophy /> },
+            { id: "overview", label: "Overview", icon: <FaCamera /> },
+            { id: "cars", label: "My Cars", icon: <FaCar /> },
+            { id: "badges", label: "Badges", icon: <FaTrophy /> },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -774,7 +776,7 @@ export default function Profile() {
               className={`flex-1 flex items-center justify-center space-x-2 py-3 px-4 rounded-xl font-semibold transition ${
                 activeTab === tab.id
                   ? "bg-gradient-to-r from-pink-500 to-red-500 text-white shadow-lg"
-                  : "text-gray-600 hover:bg-gray-50"
+                  : theme === 'dark' ? "text-gray-400 hover:bg-slate-700" : "text-gray-600 hover:bg-gray-50"
               }`}
             >
               {tab.icon}
@@ -799,7 +801,7 @@ export default function Profile() {
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: index * 0.1 }}
-                  className="relative aspect-square bg-white rounded-2xl shadow-lg overflow-hidden group"
+                  className={`relative aspect-square rounded-2xl shadow-lg overflow-hidden group ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'}`}
                 >
                   <img
                     src={photo}
@@ -839,10 +841,10 @@ export default function Profile() {
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: user.photos.length * 0.1 }}
                 onClick={handleAddPhotos}
-                className="aspect-square bg-gray-100 rounded-2xl shadow-lg flex flex-col items-center justify-center text-gray-500 hover:bg-gray-200 transition border-2 border-dashed border-gray-300"
+                className={`aspect-square ${theme === 'dark' ? 'bg-slate-700 text-gray-300 hover:bg-slate-600 border-slate-600' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 border-gray-300'} rounded-2xl shadow-lg flex flex-col items-center justify-center transition border-2 border-dashed`}
               >
                 <FaPlus className="text-2xl mb-2" />
-                <span className="text-sm font-medium">Adaugă foto</span>
+                <span className="text-sm font-medium">Add photo</span>
               </motion.button>
             </motion.div>
           )}
@@ -861,57 +863,57 @@ export default function Profile() {
                   initial={{ x: -20, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-white rounded-2xl shadow-lg p-6"
+                  className={`${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} rounded-2xl shadow-lg p-6`}
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div>
-                      <h3 className="text-xl font-bold text-gray-800 flex items-center">
+                      <h3 className={`text-xl font-bold flex items-center ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>
                         {car.make} {car.model}
                         {car.isMain && (
                           <span className="ml-2 bg-gradient-to-r from-pink-500 to-red-500 text-white text-xs px-2 py-1 rounded-full">
-                            PRINCIPALĂ
+                            PRIMARY
                           </span>
                         )}
                       </h3>
-                      <p className="text-gray-600 mb-2">
+                      <p className={`mb-2 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                         {car.year} • {car.color}
                       </p>
 
                       {/* Car Details */}
-                      <div className="grid grid-cols-2 gap-2 text-sm text-gray-500 mb-3">
+                      <div className={`grid grid-cols-2 gap-2 text-sm mb-3 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
                         {car.engineSize && (
                           <div>
-                            <span className="font-medium">Motor:</span>{" "}
+                            <span className="font-medium">Engine:</span>{" "}
                             {car.engineSize}
                           </div>
                         )}
                         {car.horsepower && (
                           <div>
-                            <span className="font-medium">Putere:</span>{" "}
-                            {car.horsepower} CP
+                            <span className="font-medium">Power:</span>{" "}
+                            {car.horsepower} HP
                           </div>
                         )}
                         {car.doors && (
                           <div>
-                            <span className="font-medium">Uși:</span>{" "}
+                            <span className="font-medium">Doors:</span>{" "}
                             {car.doors}
                           </div>
                         )}
                         {car.seats && (
                           <div>
-                            <span className="font-medium">Locuri:</span>{" "}
+                            <span className="font-medium">Seats:</span>{" "}
                             {car.seats}
                           </div>
                         )}
                         {car.transmission && (
                           <div>
-                            <span className="font-medium">Transmisie:</span>{" "}
+                            <span className="font-medium">Transmission:</span>{" "}
                             {car.transmission}
                           </div>
                         )}
                         {car.fuelType && (
                           <div>
-                            <span className="font-medium">Combustibil:</span>{" "}
+                            <span className="font-medium">Fuel:</span>{" "}
                             {car.fuelType}
                           </div>
                         )}
@@ -921,7 +923,7 @@ export default function Profile() {
                       {car.mods && car.mods.length > 0 && (
                         <div className="mb-3">
                           <span className="text-sm font-medium text-gray-700">
-                            Modificări:
+                            Modifications:
                           </span>
                           <div className="flex flex-wrap gap-1 mt-1">
                             {car.mods.slice(0, 3).map((mod, modIndex) => (
@@ -934,7 +936,7 @@ export default function Profile() {
                             ))}
                             {car.mods.length > 3 && (
                               <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">
-                                +{car.mods.length - 3} altele
+                                +{car.mods.length - 3} others
                               </span>
                             )}
                           </div>
@@ -972,10 +974,10 @@ export default function Profile() {
               >
                 <FaPlus className="text-3xl mb-3" />
                 <span className="text-lg font-medium">
-                  Adaugă o mașină nouă
+                  Add a new car
                 </span>
                 <span className="text-sm text-gray-400 mt-1">
-                  Arată-ți colecția auto
+                  Show off your car collection
                 </span>
               </motion.button>
             </motion.div>
@@ -995,7 +997,7 @@ export default function Profile() {
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: index * 0.1 }}
-                  className={`bg-white rounded-2xl shadow-lg p-6 ${
+                  className={`${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} rounded-2xl shadow-lg p-6 ${
                     badge.earned
                       ? "border-l-4 border-green-500"
                       : "border-l-4 border-gray-300"
@@ -1006,12 +1008,12 @@ export default function Profile() {
                     <div className="flex-1">
                       <h3
                         className={`font-bold ${
-                          badge.earned ? "text-green-600" : "text-gray-500"
+                          badge.earned ? "text-green-600" : theme === 'dark' ? "text-gray-400" : "text-gray-500"
                         }`}
                       >
                         {badge.name}
                       </h3>
-                      <p className="text-gray-600 text-sm mt-1">
+                      <p className={`text-sm mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                         {badge.description}
                       </p>
 
@@ -1052,7 +1054,7 @@ export default function Profile() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-3xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              className={`${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} rounded-3xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto`}
               onClick={(e) => e.stopPropagation()}
             >
               <AddCarModal
@@ -1082,7 +1084,7 @@ export default function Profile() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-3xl shadow-xl max-w-lg w-full max-h-[80vh] overflow-y-auto"
+              className={`${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} rounded-3xl shadow-xl max-w-lg w-full max-h-[80vh] overflow-y-auto`}
               onClick={(e) => e.stopPropagation()}
             >
               <AddPhotosModal

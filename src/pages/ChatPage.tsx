@@ -1,11 +1,12 @@
 // src/components/ChatPage.tsx
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FaHeart, FaSearch, FaUsers, FaComments } from "react-icons/fa";
+import { FaHeart, FaSearch, FaUsers, FaComments, FaSync } from "react-icons/fa";
 import api from "../services/api";
-import { getSocket } from "../services/socket";
+import { getSocket, reconnectSocket } from "../services/socket";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface Match {
   matchId: string;
@@ -14,7 +15,7 @@ interface Match {
     name: string;
     age: number;
     carModel: string;
-    imageUrl: string; // poate fi relativ ("/uploads/photos/abc.jpg") sau complet ("http://…")
+    imageUrl: string; // can be relative ("/uploads/photos/abc.jpg") or absolute ("http://…")
   };
 }
 
@@ -26,8 +27,10 @@ interface Message {
 }
 
 export default function ChatPage() {
+  const { theme } = useTheme();
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
+  const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected'>('connecting');
 
   // unreadMessages: { [matchId]: lastMessageText }
   const [unreadMessages, setUnreadMessages] = useState<Record<string, string>>(
@@ -37,66 +40,98 @@ export default function ChatPage() {
   const navigate = useNavigate();
   const { matchId } = useParams<{ matchId?: string }>();
 
-  // Vom păstra socket într-un state pentru a-l folosi după ce știm matches
+  // Socket state
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [socket, setSocket] = useState<any>(null);
 
-  // 1. Când componenta montează, luăm socket-ul și așteptăm evenimentul "connect"
+  // Function to load matches
+  const loadMatches = useCallback(async () => {
+    try {
+      const res = await api.get<Match[]>("/matches");
+      setMatches(res.data);
+    } catch (err) {
+      console.error("Error loading matches:", err);
+      setMatches([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Function to handle manual reconnect
+  const handleReconnect = useCallback(() => {
+    setConnectionStatus('connecting');
+    setLoading(true);
+    const newSocket = reconnectSocket();
+    setSocket(newSocket);
+  }, []);
+
+  // 1. Initialize socket and handle connection events
   useEffect(() => {
     const s = getSocket();
     setSocket(s);
 
-    // Așteptăm să se conecteze înainte să încărcăm match-urile
-    s.on("connect", () => {
-      console.log("✅ Socket conectat cu id-ul:", s.id);
+    const handleConnect = () => {
+      console.log("✅ Socket connected:", s.id);
+      setConnectionStatus('connected');
+      loadMatches();
+    };
 
-      // După ce s-a conectat, încărcăm lista de match-uri
-      api
-        .get<Match[]>("/matches")
-        .then((res) => {
-          setMatches(res.data);
-        })
-        .catch((err) => {
-          console.error("Eroare la încărcarea match-urilor:", err);
-          setMatches([]);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    });
+    const handleDisconnect = (reason: string) => {
+      console.log("⚠️ Socket disconnected:", reason);
+      setConnectionStatus('disconnected');
+    };
 
-    s.on("disconnect", (reason: string) => {
-      console.log("⚠️ Socket deconectat:", reason);
-    });
+    const handleReconnectAttempt = () => {
+      console.log("🔄 Attempting to reconnect...");
+      setConnectionStatus('connecting');
+    };
+
+    const handleReconnectSuccess = () => {
+      console.log("✅ Socket reconnected successfully");
+      setConnectionStatus('connected');
+      loadMatches(); // Reload matches after reconnection
+    };
+
+    // If already connected, load matches immediately
+    if (s.connected) {
+      handleConnect();
+    }
+
+    s.on("connect", handleConnect);
+    s.on("disconnect", handleDisconnect);
+    s.on("reconnect_attempt", handleReconnectAttempt);
+    s.on("reconnect", handleReconnectSuccess);
 
     return () => {
-      s.off("connect");
-      s.off("disconnect");
+      s.off("connect", handleConnect);
+      s.off("disconnect", handleDisconnect);
+      s.off("reconnect_attempt", handleReconnectAttempt);
+      s.off("reconnect", handleReconnectSuccess);
     };
-  }, []);
+  }, [loadMatches]);
 
-  // 2. După ce matches sunt încărcate și socket e conectat, dăm joinRoom pentru fiecare matchId
+  // 2. Join rooms for each match when socket is connected
   useEffect(() => {
     if (!socket || !socket.connected) return;
     if (matches.length === 0) return;
 
     matches.forEach((match) => {
-      console.log("🔷 Emit joinRoom pentru:", match.matchId);
+      console.log("🔷 Joining room:", match.matchId);
       socket.emit("joinRoom", match.matchId);
     });
   }, [socket, matches]);
 
-  // 3. Ascultăm mesajele primite și actualizăm unreadMessages
+  // 3. Listen for incoming messages
   useEffect(() => {
     if (!socket) return;
 
     const handleReceive = (msg: Message) => {
-      console.log("🔴 receiveMessage primit:", msg);
-      // Dacă mesajul nu e în chat-ul curent, îl marcăm unread
+      console.log("🔴 Message received:", msg);
+      // Mark as unread if not in current chat
       if (msg.matchId !== matchId) {
         setUnreadMessages((prev) => {
           const updated = { ...prev, [msg.matchId]: msg.text };
-          console.log("📝 unreadMessages actualizat:", updated);
+          console.log("📝 Unread messages updated:", updated);
           return updated;
         });
       }
@@ -109,15 +144,16 @@ export default function ChatPage() {
     };
   }, [socket, matchId]);
 
-  // 4. Helper pentru a construi URL-ul absolut al pozei
+  // 4. Helper to build absolute photo URL
   const getPhotoUrl = (photo: string) => {
+    if (!photo) return "";
     if (photo.startsWith("http")) {
       return photo;
     }
     return `${import.meta.env.VITE_API_URL}${photo}`;
   };
 
-  // 5. Dacă suntem în loading, afișăm un spinner
+  // 5. Show loading spinner
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-pink-50 to-red-50">
@@ -132,7 +168,7 @@ export default function ChatPage() {
             className="w-16 h-16 border-4 border-pink-500 border-t-transparent rounded-full mx-auto mb-4"
           />
           <p className="text-gray-600 font-medium">
-            Se încarcă conversațiile...
+            Loading conversations...
           </p>
         </motion.div>
       </div>
@@ -140,13 +176,48 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className={`flex h-screen ${theme === 'dark' ? 'bg-slate-900' : 'bg-gray-50'} transition-colors duration-300`}>
+      {/* Connection status indicator */}
+      {connectionStatus === 'disconnected' && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="fixed top-0 left-0 right-0 bg-yellow-500 text-white px-4 py-2 text-center z-50 flex items-center justify-center gap-2"
+        >
+          <span>Connection lost.</span>
+          <button
+            onClick={handleReconnect}
+            className="bg-white text-yellow-600 px-3 py-1 rounded-full text-sm font-medium hover:bg-yellow-50 flex items-center gap-1"
+          >
+            <FaSync className="text-xs" />
+            Reconnect
+          </button>
+        </motion.div>
+      )}
+
+      {connectionStatus === 'connecting' && !loading && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="fixed top-0 left-0 right-0 bg-blue-500 text-white px-4 py-2 text-center z-50"
+        >
+          <span className="flex items-center justify-center gap-2">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+              className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
+            />
+            Connecting...
+          </span>
+        </motion.div>
+      )}
+
       {/* ┌──────────────┬──────────────────────────────────────────────┐ */}
       {/* │   SIDEBAR    │                    CHAT AREA                │ */}
       {/* └──────────────┴──────────────────────────────────────────────┘ */}
 
       {/* ===== Coloana stângă: lista de match-uri ===== */}
-      <div className={`w-full md:w-1/3 bg-white border-r border-gray-200 overflow-y-auto shadow-sm pb-24 md:pb-0 ${
+      <div className={`w-full md:w-1/3 border-r overflow-y-auto shadow-sm pb-24 md:pb-0 ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'} ${
         matchId ? 'hidden md:block' : 'block'
       }`}>
         <div className="p-4 sm:p-6">
@@ -156,9 +227,9 @@ export default function ChatPage() {
               <FaComments className="text-pink-500 text-lg sm:text-xl" />
             </div>
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Conversații</h2>
-              <p className="text-gray-600 text-xs sm:text-sm">
-                {matches.length} match-uri active
+              <h2 className={`text-xl sm:text-2xl font-bold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>Conversations</h2>
+              <p className={`text-xs sm:text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                {matches.length} active matches
               </p>
             </div>
           </div>
@@ -169,21 +240,21 @@ export default function ChatPage() {
               animate={{ opacity: 1, y: 0 }}
               className="text-center py-8 sm:py-12 px-4"
             >
-              <div className="p-3 sm:p-4 bg-gray-100 rounded-full w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 flex items-center justify-center">
+              <div className={`p-3 sm:p-4 ${theme === 'dark' ? 'bg-slate-700' : 'bg-gray-100'} rounded-full w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 flex items-center justify-center`}>
                 <FaHeart className="text-gray-400 text-xl sm:text-2xl" />
               </div>
-              <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-2">
-                Niciun match încă
+              <h3 className={`text-base sm:text-lg font-semibold ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'} mb-2`}>
+                No matches yet
               </h3>
-              <p className="text-sm sm:text-base text-gray-500 mb-4">
-                Începe să explorezi și să dai like pentru a găsi match-uri!
+              <p className={`text-sm sm:text-base ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'} mb-4`}>
+                Start exploring and liking to find matches!
               </p>
               <button
                 onClick={() => navigate("/nearby")}
                 className="bg-pink-500 hover:bg-pink-600 text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-full font-semibold shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
               >
                 <FaSearch className="inline mr-2" />
-                Descoperă persoane
+                Discover people
               </button>
             </motion.div>
           ) : (
@@ -201,7 +272,7 @@ export default function ChatPage() {
                       ${
                         match.matchId === matchId
                           ? "bg-pink-50 border-2 border-pink-200 text-gray-800 shadow-md"
-                          : "bg-white hover:bg-gray-50 shadow-sm hover:shadow-md"
+                          : theme === 'dark' ? "bg-slate-700 hover:bg-slate-600 shadow-sm hover:shadow-md" : "bg-white hover:bg-gray-50 shadow-sm hover:shadow-md"
                       }
                     `}
                     onClick={() => {
@@ -311,8 +382,8 @@ export default function ChatPage() {
         </div>
       </div>
 
-      {/* ===== Coloana dreaptă: chat-ul efectiv sau mesaj placeholder ===== */}
-      <div className={`flex-1 flex flex-col bg-white ${
+      {/* ===== Right column: chat or placeholder ===== */}
+      <div className={`flex-1 flex flex-col ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} ${
         !matchId ? 'hidden md:flex' : 'flex'
       }`}>
         {matchId ? (
@@ -321,16 +392,16 @@ export default function ChatPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex-1 flex flex-col items-center justify-center bg-gray-50 px-4"
+            className={`flex-1 flex flex-col items-center justify-center px-4 ${theme === 'dark' ? 'bg-slate-900' : 'bg-gray-50'}`}
           >
             <div className="text-center max-w-md mx-auto p-4 sm:p-8">
               <div className="p-4 sm:p-6 bg-pink-100 rounded-full w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 flex items-center justify-center shadow-sm">
                 <FaComments className="text-pink-500 text-xl sm:text-2xl" />
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 sm:mb-3">
+              <h3 className={`text-xl sm:text-2xl font-bold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'} mb-2 sm:mb-3`}>
                 Selectează o conversație
               </h3>
-              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+              <p className={`text-sm sm:text-base ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} leading-relaxed`}>
                 Alege un match din lista din stânga pentru a începe să vorbești
                 și să vă cunoașteți mai bine!
               </p>
@@ -339,7 +410,7 @@ export default function ChatPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5 }}
-                  className="mt-6 p-4 bg-white rounded-xl shadow-lg border border-pink-200"
+                  className={`mt-6 p-4 ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-pink-200'} rounded-xl shadow-lg border`}
                 >
                   <div className="flex items-center justify-center space-x-2 text-pink-600">
                     <FaUsers className="text-lg" />

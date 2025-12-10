@@ -15,8 +15,11 @@ import {
   FaMapMarkerAlt,
   FaCar,
   FaUserSlash,
+  FaMoon,
+  FaSun,
 } from "react-icons/fa";
 import { Globe, Crown } from "lucide-react";
+import { useTheme } from "../contexts/ThemeContext";
 
 // Tipurile pentru datele din server
 interface UserData {
@@ -45,6 +48,7 @@ interface ApiError {
 
 export default function Settings() {
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
 
   // ===== 1. STATE PENTRU DATELE UTILIZATORULUI CURR. =====
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -242,7 +246,7 @@ export default function Settings() {
     
     // Check if user is VIP when trying to enable worldwide
     if (prefWorldwide && !userData?.isVip) {
-      setPrefsError("Funcția Worldwide este disponibilă doar pentru utilizatorii VIP!");
+      setPrefsError("The Worldwide feature is only available for VIP users!");
       return;
     }
     
@@ -308,7 +312,7 @@ export default function Settings() {
   // ===== RENDER PRINCIPAL =====
   if (loadingUser) {
     return (
-      <div className="flex items-center justify-center w-full h-full bg-gray-50">
+      <div className={`flex items-center justify-center w-full h-full ${theme === 'dark' ? 'bg-slate-900' : 'bg-gray-50'}`}>
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
@@ -319,12 +323,12 @@ export default function Settings() {
   }
 
   return (
-    <div className="w-full h-full bg-gray-50 overflow-y-auto">
+    <div className={`w-full h-full ${theme === 'dark' ? 'bg-slate-900' : 'bg-gray-50'} overflow-y-auto transition-colors duration-300`}>
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
+      <div className={`${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'} shadow-sm border-b`}>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Setări</h1>
-          <p className="text-sm sm:text-base text-gray-600 mt-1">Gestionează-ți contul și preferințele</p>
+          <h1 className={`text-2xl sm:text-3xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Settings</h1>
+          <p className={`text-sm sm:text-base ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} mt-1`}>Manage your account and preferences</p>
         </div>
       </div>
 
@@ -333,23 +337,23 @@ export default function Settings() {
         <motion.section
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="bg-white p-4 sm:p-6 shadow-lg rounded-lg"
+          className={`${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} p-4 sm:p-6 shadow-lg rounded-lg`}
         >
-          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-900 flex items-center">
+          <h2 className={`text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center ${theme === 'dark' ? 'text-gray-100' : 'text-gray-900'}`}>
             <FaUser className="mr-2 sm:mr-3 text-pink-500 text-lg sm:text-xl" />
-            Informații Cont
+            Account Information
           </h2>
 
           {/* Change Email */}
           <form onSubmit={handleEmailChange} className="mb-4 sm:mb-6">
             <label className="block mb-2 text-sm font-medium text-gray-700 flex items-center flex-wrap">
               <FaEnvelope className="mr-2 text-gray-400" />
-              Email curent: <span className="ml-2 text-pink-600 font-semibold break-all">{userData?.email}</span>
+              Current email: <span className="ml-2 text-pink-600 font-semibold break-all">{userData?.email}</span>
             </label>
             <div className="flex flex-col sm:flex-row gap-3">
               <input
                 type="email"
-                placeholder="Email nou"
+                placeholder="New email"
                 value={newEmail}
                 onChange={(e) => setNewEmail(e.target.value)}
                 className="flex-1 p-2.5 sm:p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm sm:text-base"
@@ -359,7 +363,7 @@ export default function Settings() {
                 className="px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 flex items-center justify-center space-x-2 text-sm sm:text-base whitespace-nowrap"
               >
                 <FaSave />
-                <span>Salvează</span>
+                <span>Save</span>
               </button>
             </div>
           </form>
@@ -368,26 +372,26 @@ export default function Settings() {
           <form onSubmit={handlePasswordChange} className="mb-4 sm:mb-6">
             <label className="block mb-3 text-sm font-medium text-gray-700 flex items-center">
               <FaLock className="mr-2 text-gray-400" />
-              Schimbă parola
+              Change password
             </label>
             <div className="space-y-3">
               <input
                 type="password"
-                placeholder="Parola curentă"
+                placeholder="Current password"
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
               />
               <input
                 type="password"
-                placeholder="Parolă nouă"
+                placeholder="New password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
               />
               <input
                 type="password"
-                placeholder="Confirmă parola"
+                placeholder="Confirm password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
@@ -397,7 +401,7 @@ export default function Settings() {
                 className="px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 flex items-center space-x-2"
               >
                 <FaLock />
-                <span>Schimbă Parola</span>
+                <span>Change Password</span>
               </button>
             </div>
           </form>
@@ -415,10 +419,10 @@ export default function Settings() {
               className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 flex items-center space-x-2"
             >
               <FaTrash />
-              <span>Șterge Cont</span>
+              <span>Delete Account</span>
             </button>
             <p className="text-sm text-gray-500 mt-2">
-              Atenție: Această acțiune este permanentă și nu poate fi anulată.
+              Warning: This action is permanent and cannot be undone.
             </p>
           </div>
         </motion.section>
@@ -428,17 +432,17 @@ export default function Settings() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.1 }}
-          className="bg-white p-6 shadow-lg"
+          className={`${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} p-6 shadow-lg rounded-lg`}
         >
-          <h2 className="text-2xl font-bold mb-6 text-gray-900 flex items-center">
+          <h2 className={`text-2xl font-bold mb-6 flex items-center ${theme === 'dark' ? 'text-gray-100' : 'text-gray-900'}`}>
             <FaHeart className="mr-3 text-pink-500" />
-            Preferințe Partener
+            Partner Preferences
           </h2>
           <form onSubmit={handleSavePreferences} className="space-y-5">
             <div>
               <label className="block mb-2 text-sm font-medium text-gray-700 flex items-center">
                 <FaUser className="mr-2 text-gray-400" />
-                Interval vârstă
+                Age range
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <input
@@ -448,7 +452,7 @@ export default function Settings() {
                   value={prefMinAge}
                   onChange={(e) => setPrefMinAge(Number(e.target.value))}
                   className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                  placeholder="Minim"
+                  placeholder="Min"
                 />
                 <input
                   type="number"
@@ -457,17 +461,17 @@ export default function Settings() {
                   value={prefMaxAge}
                   onChange={(e) => setPrefMaxAge(Number(e.target.value))}
                   className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                  placeholder="Maxim"
+                  placeholder="Max"
                 />
               </div>
               <p className="text-sm text-gray-500 mt-1">
-                {prefMinAge} - {prefMaxAge} ani
+                {prefMinAge} - {prefMaxAge} years old
               </p>
             </div>
             <div>
               <label className="block mb-2 text-sm font-medium text-gray-700 flex items-center">
                 <FaMapMarkerAlt className="mr-2 text-gray-400" />
-                Distanță maximă: <span className="ml-2 text-pink-600 font-semibold flex items-center gap-1">
+                Maximum distance: <span className="ml-2 text-pink-600 font-semibold flex items-center gap-1">
                   {prefWorldwide ? (
                     <>
                       <Globe className="w-4 h-4" />
@@ -494,7 +498,7 @@ export default function Settings() {
                     checked={prefWorldwide}
                     onChange={(e) => {
                       if (!userData?.isVip && e.target.checked) {
-                        alert("Feature-ul Worldwide este disponibil doar pentru utilizatorii VIP!");
+                        alert("The Worldwide feature is only available for VIP users!");
                         return;
                       }
                       setPrefWorldwide(e.target.checked);
@@ -516,8 +520,8 @@ export default function Settings() {
                     </p>
                     <p className="text-sm text-gray-500 mt-1">
                       {userData?.isVip 
-                        ? "Vezi utilizatori din toată lumea, fără limitări de distanță"
-                        : "Upgrade la VIP pentru a vedea utilizatori din toată lumea"}
+                        ? "See users from all over the world, without distance limitations"
+                        : "Upgrade to VIP to see users from all over the world"}
                     </p>
                   </div>
                 </label>
@@ -526,7 +530,7 @@ export default function Settings() {
             <div>
               <label className="block mb-2 text-sm font-medium text-gray-700 flex items-center">
                 <FaCar className="mr-2 text-gray-400" />
-                Brand auto preferat
+                Preferred car brand
               </label>
               <input
                 type="text"
@@ -541,7 +545,7 @@ export default function Settings() {
               className="px-6 py-3 bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 flex items-center space-x-2"
             >
               <FaSave />
-              <span>Salvează Preferințe</span>
+              <span>Save Preferences</span>
             </button>
           </form>
           {prefsError && (
@@ -551,16 +555,16 @@ export default function Settings() {
           )}
         </motion.section>
 
-        {/* ─────────── 3. NOTIFICĂRI ─────────── */}
+        {/* ─────────── 3. NOTIFICATIONS ─────────── */}
         <motion.section
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="bg-white p-6 shadow-lg"
+          className={`${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} p-6 shadow-lg rounded-lg`}
         >
-          <h2 className="text-2xl font-bold mb-6 text-gray-900 flex items-center">
+          <h2 className={`text-2xl font-bold mb-6 flex items-center ${theme === 'dark' ? 'text-gray-100' : 'text-gray-900'}`}>
             <FaBell className="mr-3 text-pink-500" />
-            Notificări
+            Notifications
           </h2>
           {loadingNotif ? (
             <div className="flex justify-center py-8">
@@ -572,7 +576,7 @@ export default function Settings() {
             </div>
           ) : (
             <form onSubmit={handleSaveNotifications} className="space-y-4">
-              <label className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer">
+              <label className={`flex items-center p-4 ${theme === 'dark' ? 'bg-slate-700 hover:bg-slate-600' : 'bg-gray-50 hover:bg-gray-100'} rounded-lg transition cursor-pointer`}>
                 <input
                   type="checkbox"
                   checked={notifySwipe}
@@ -580,11 +584,11 @@ export default function Settings() {
                   className="w-5 h-5 text-pink-500 border-gray-300 rounded focus:ring-pink-500 mr-3"
                 />
                 <div className="flex-1">
-                  <p className="font-medium text-gray-900">Notificări swipe</p>
-                  <p className="text-sm text-gray-500">Primește notificări când cineva dă swipe</p>
+                  <p className={`font-medium ${theme === 'dark' ? 'text-gray-100' : 'text-gray-900'}`}>Swipe notifications</p>
+                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Receive notifications when someone swipes</p>
                 </div>
               </label>
-              <label className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer">
+              <label className={`flex items-center p-4 ${theme === 'dark' ? 'bg-slate-700 hover:bg-slate-600' : 'bg-gray-50 hover:bg-gray-100'} rounded-lg transition cursor-pointer`}>
                 <input
                   type="checkbox"
                   checked={notifyLikes}
@@ -592,11 +596,11 @@ export default function Settings() {
                   className="w-5 h-5 text-pink-500 border-gray-300 rounded focus:ring-pink-500 mr-3"
                 />
                 <div className="flex-1">
-                  <p className="font-medium text-gray-900">Notificări like-uri</p>
-                  <p className="text-sm text-gray-500">Primește notificări când cineva îți dă like</p>
+                  <p className={`font-medium ${theme === 'dark' ? 'text-gray-100' : 'text-gray-900'}`}>Like notifications</p>
+                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Receive notifications when someone likes you</p>
                 </div>
               </label>
-              <label className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer">
+              <label className={`flex items-center p-4 ${theme === 'dark' ? 'bg-slate-700 hover:bg-slate-600' : 'bg-gray-50 hover:bg-gray-100'} rounded-lg transition cursor-pointer`}>
                 <input
                   type="checkbox"
                   checked={notifyMessages}
@@ -604,8 +608,8 @@ export default function Settings() {
                   className="w-5 h-5 text-pink-500 border-gray-300 rounded focus:ring-pink-500 mr-3"
                 />
                 <div className="flex-1">
-                  <p className="font-medium text-gray-900">Notificări mesaje</p>
-                  <p className="text-sm text-gray-500">Primește notificări pentru mesaje noi</p>
+                  <p className={`font-medium ${theme === 'dark' ? 'text-gray-100' : 'text-gray-900'}`}>Message notifications</p>
+                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Receive notifications for new messages</p>
                 </div>
               </label>
               <button
@@ -613,7 +617,7 @@ export default function Settings() {
                 className="px-6 py-3 bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white font-semibold rounded-lg shadow-lg transition-all duration-300 flex items-center space-x-2 mt-4"
               >
                 <FaSave />
-                <span>Salvează Notificări</span>
+                <span>Save Notifications</span>
               </button>
             </form>
           )}
@@ -624,16 +628,64 @@ export default function Settings() {
           )}
         </motion.section>
 
-        {/* ─────────── 4. UTILIZATORI BLOCAȚI ─────────── */}
+        {/* ─────────── APPEARANCE / THEME ─────────── */}
+        <motion.section
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.25 }}
+          className={`${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} p-6 shadow-lg rounded-lg`}
+        >
+          <h2 className={`text-2xl font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'} flex items-center`}>
+            {theme === 'dark' ? (
+              <FaMoon className="mr-3 text-purple-400" />
+            ) : (
+              <FaSun className="mr-3 text-yellow-500" />
+            )}
+            Appearance
+          </h2>
+          
+          <div className="flex items-center justify-between">
+            <div>
+              <p className={`font-medium ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}`}>
+                Dark Mode
+              </p>
+              <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                {theme === 'dark' ? 'Currently using dark theme' : 'Currently using light theme'}
+              </p>
+            </div>
+            <button
+              onClick={toggleTheme}
+              className={`relative w-14 h-7 rounded-full transition-colors duration-300 overflow-hidden ${
+                theme === 'dark' 
+                  ? 'bg-purple-600' 
+                  : 'bg-gray-300'
+              }`}
+            >
+              <motion.div
+                animate={{ x: theme === 'dark' ? 26 : 2 }}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                className="absolute top-1 left-0 w-5 h-5 bg-white rounded-full shadow-md flex items-center justify-center"
+              >
+                {theme === 'dark' ? (
+                  <FaMoon className="text-purple-600 text-[10px]" />
+                ) : (
+                  <FaSun className="text-yellow-500 text-[10px]" />
+                )}
+              </motion.div>
+            </button>
+          </div>
+        </motion.section>
+
+        {/* ─────────── 4. BLOCKED USERS ─────────── */}
         <motion.section
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="bg-white p-6 shadow-lg"
+          className={`${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} p-6 shadow-lg`}
         >
-          <h2 className="text-2xl font-bold mb-6 text-gray-900 flex items-center">
+          <h2 className={`text-2xl font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'} flex items-center`}>
             <FaBan className="mr-3 text-pink-500" />
-            Utilizatori blocați
+            Blocked Users
           </h2>
           {loadingBlocked ? (
             <div className="flex justify-center py-8">
@@ -644,23 +696,23 @@ export default function Settings() {
               />
             </div>
           ) : blockedUsers.length === 0 ? (
-            <div className="text-center py-8 bg-gray-50 rounded-lg">
+            <div className={`text-center py-8 ${theme === 'dark' ? 'bg-slate-700' : 'bg-gray-50'} rounded-lg`}>
               <FaUserSlash className="text-4xl text-gray-400 mx-auto mb-3" />
-              <p className="text-gray-600">Nu ai blocat niciun utilizator.</p>
+              <p className={`${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>You haven't blocked any users.</p>
             </div>
           ) : (
             <ul className="space-y-3">
               {blockedUsers.map((u) => (
                 <li
                   key={u.id}
-                  className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition"
+                  className={`flex items-center justify-between p-4 ${theme === 'dark' ? 'bg-slate-700 hover:bg-slate-600' : 'bg-gray-50 hover:bg-gray-100'} rounded-lg transition`}
                 >
                   <div className="flex items-center space-x-4">
                     {u.imageUrl ? (
                       <img
                         src={u.imageUrl}
                         alt={u.name}
-                        className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
+                        className={`w-12 h-12 rounded-full object-cover border-2 ${theme === 'dark' ? 'border-slate-600' : 'border-gray-200'}`}
                       />
                     ) : (
                       <div className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-red-500 flex items-center justify-center text-white font-bold text-lg">
@@ -668,8 +720,8 @@ export default function Settings() {
                       </div>
                     )}
                     <div>
-                      <p className="font-semibold text-gray-900">{u.name}</p>
-                      <p className="text-sm text-gray-600 flex items-center">
+                      <p className={`font-semibold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-900'}`}>{u.name}</p>
+                      <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} flex items-center`}>
                         <FaCar className="mr-1" />
                         {u.carModel}
                       </p>
@@ -679,7 +731,7 @@ export default function Settings() {
                     onClick={() => handleUnblock(u.id)}
                     className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition shadow-md hover:shadow-lg"
                   >
-                    Deblochează
+                    Unblock
                   </button>
                 </li>
               ))}
@@ -692,14 +744,14 @@ export default function Settings() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="bg-white p-6 shadow-lg"
+          className={`${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} p-6 shadow-lg rounded-lg`}
         >
           <button
             onClick={handleLogout}
             className="w-full px-6 py-4 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-bold text-lg rounded-lg shadow-lg transition-all duration-300 flex items-center justify-center space-x-3"
           >
             <FaSignOutAlt className="text-xl" />
-            <span>Deconectează-te</span>
+            <span>Log Out</span>
           </button>
         </motion.section>
       </div>

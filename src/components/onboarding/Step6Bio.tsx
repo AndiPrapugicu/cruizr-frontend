@@ -14,7 +14,7 @@ const Step6Bio: React.FC = () => {
 
   const handleNext = () => {
     if (bio.trim().length < 10) {
-      setError("Biografia trebuie să aibă cel puțin 10 caractere");
+      setError("Bio must have at least 10 characters");
       return;
     }
 
@@ -27,11 +27,11 @@ const Step6Bio: React.FC = () => {
   };
 
   const bioSuggestions = [
-    "🚗 Pasionat de mașini și călătorii",
-    "🏁 Iubitor de viteză și adrenalină",
-    "🔧 Îmi place să lucrez la motoare",
-    "🌟 Căutând pe cineva cu aceeași pasiune",
-    "🛣️ Road trips sunt viața mea",
+    "🚗 Passionate about cars and travel",
+    "🏁 Speed and adrenaline lover",
+    "🔧 I love working on engines",
+    "🌟 Looking for someone with the same passion",
+    "🛣️ Road trips are my life",
     "⚡ Electric vehicle enthusiast",
   ];
 
@@ -69,10 +69,10 @@ const Step6Bio: React.FC = () => {
             </motion.div>
 
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              Spune-ne despre tine
+              Tell us about yourself
             </h1>
             <p className="text-gray-600">
-              Scrie o scurtă descriere care să te reprezinte. Ce te face
+              Write a short description that represents you. What makes you
               special?
             </p>
           </div>
@@ -80,7 +80,7 @@ const Step6Bio: React.FC = () => {
           <div className="space-y-6">
             <div>
               <label className="block text-gray-700 font-medium mb-2">
-                Biografia ta
+                Your bio
               </label>
               <textarea
                 value={bio}
@@ -90,18 +90,18 @@ const Step6Bio: React.FC = () => {
                     setError("");
                   }
                 }}
-                placeholder="Spune-ne ceva despre tine, pasiunile tale pentru mașini, ce îți place să faci în timpul liber..."
+                placeholder="Tell us about yourself, your passion for cars, what you like to do in your free time..."
                 className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition duration-200 bg-gray-50 resize-none"
                 rows={6}
                 style={{ minHeight: "150px" }}
               />
               <div className="flex justify-between items-center mt-2">
                 <span className="text-sm text-gray-500">
-                  {bio.length}/{maxLength} caractere
+                  {bio.length}/{maxLength} characters
                 </span>
                 {bio.length < 10 && (
                   <span className="text-sm text-red-500">
-                    Minim 10 caractere
+                    Minimum 10 characters
                   </span>
                 )}
               </div>
@@ -110,7 +110,7 @@ const Step6Bio: React.FC = () => {
             {/* Suggestion chips */}
             <div>
               <p className="text-sm font-medium text-gray-700 mb-3">
-                Sugestii (click pentru a adăuga):
+                Suggestions (click to add):
               </p>
               <div className="flex flex-wrap gap-2">
                 {bioSuggestions.map((suggestion, index) => (
@@ -146,7 +146,7 @@ const Step6Bio: React.FC = () => {
                 className="flex-1 py-4 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition duration-300 flex items-center justify-center"
               >
                 <FaArrowLeft className="mr-2" />
-                Înapoi
+                Back
               </motion.button>
 
               <motion.button
@@ -156,7 +156,7 @@ const Step6Bio: React.FC = () => {
                 disabled={bio.trim().length < 10}
                 className="flex-1 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
-                Continuă
+                Continue
                 <FaArrowRight className="ml-2" />
               </motion.button>
             </div>

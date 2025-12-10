@@ -1,6 +1,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaTimes, FaCrown, FaGem } from "react-icons/fa";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface MiniPremiumProps {
   visible: boolean;
@@ -35,6 +36,8 @@ const premiumOptions = [
 ];
 
 const MiniPremium: React.FC<MiniPremiumProps> = ({ visible, onClose }) => {
+  const { theme } = useTheme();
+  
   if (!visible) return null;
 
   const handleBuy = () => {
@@ -54,15 +57,15 @@ const MiniPremium: React.FC<MiniPremiumProps> = ({ visible, onClose }) => {
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
-          className="bg-white rounded-3xl max-w-md w-full max-h-[80vh] overflow-hidden shadow-2xl"
+          className={`${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} rounded-3xl max-w-md w-full max-h-[80vh] overflow-hidden shadow-2xl`}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white p-6">
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-2xl font-bold">Upgrade to Premium</h2>
-                <p className="text-pink-100 text-sm mt-1">
+                <p className="text-blue-100 text-sm mt-1">
                   Choose your Premium or VIP option
                 </p>
               </div>
@@ -77,7 +80,7 @@ const MiniPremium: React.FC<MiniPremiumProps> = ({ visible, onClose }) => {
 
           {/* Premium Options */}
           <div className="p-6">
-            <h3 className="text-lg font-bold text-gray-800 mb-4">
+            <h3 className={`text-lg font-bold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'} mb-4`}>
               Available Options
             </h3>
             <div className="space-y-4 mb-6">
@@ -86,17 +89,17 @@ const MiniPremium: React.FC<MiniPremiumProps> = ({ visible, onClose }) => {
                   key={option.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all"
+                  className={`flex items-center justify-between p-4 ${theme === 'dark' ? 'bg-slate-700 hover:bg-slate-600' : 'bg-gray-50 hover:bg-gray-100'} rounded-xl transition-all`}
                 >
                   <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                    <div className={`w-12 h-12 ${theme === 'dark' ? 'bg-slate-600' : 'bg-white'} rounded-xl flex items-center justify-center shadow-sm`}>
                       {option.icon}
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-800">
+                      <h4 className={`font-semibold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>
                         {option.name}
                       </h4>
-                      <p className="text-sm text-gray-600 line-clamp-1">
+                      <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} line-clamp-1`}>
                         {option.description}
                       </p>
                     </div>

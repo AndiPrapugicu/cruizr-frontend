@@ -42,7 +42,7 @@ export default function AddPhotosModal({
 
   const handleUpload = async () => {
     if (selectedFiles.length === 0) {
-      alert("Te rog selectează cel puțin o fotografie.");
+      alert("Please select at least one photo.");
       return;
     }
 
@@ -72,7 +72,7 @@ export default function AddPhotosModal({
       onClose();
     } catch (error) {
       console.error("❌ Error uploading photos:", error);
-      alert("Eroare la încărcarea fotografiilor. Te rog încearcă din nou.");
+      alert("Error uploading photos. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -85,7 +85,7 @@ export default function AddPhotosModal({
         <div className="flex items-center space-x-3">
           <FaCamera className="text-2xl text-pink-500" />
           <h1 className="text-2xl font-bold text-gray-800">
-            Adaugă fotografii
+            Add photos
           </h1>
         </div>
         <button
@@ -99,17 +99,17 @@ export default function AddPhotosModal({
       {/* Instructions */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
         <h3 className="font-semibold text-blue-800 mb-2">
-          Sfaturi pentru fotografii de calitate:
+          Tips for quality photos:
         </h3>
         <ul className="text-sm text-blue-700 space-y-1">
-          <li>• Folosește lumină naturală pentru cele mai bune rezultate</li>
+          <li>• Use natural light for the best results</li>
           <li>
-            • Fotografiază din unghiuri diferite pentru a-ți arăta
-            personalitatea
+            • Photograph from different angles to show your
+            personality
           </li>
-          <li>• Include cel puțin o fotografie cu fața ta clară</li>
-          <li>• Evită fotografiile întunecate sau blurate</li>
-          <li>• Poți încărca până la 6 fotografii</li>
+          <li>• Include at least one photo with your face clearly visible</li>
+          <li>• Avoid dark or blurry photos</li>
+          <li>• You can upload up to 6 photos</li>
         </ul>
       </div>
 
@@ -117,10 +117,10 @@ export default function AddPhotosModal({
       <div className="space-y-6">
         <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-pink-400 transition-colors">
           <FaUpload className="mx-auto text-4xl text-gray-400 mb-4" />
-          <p className="text-gray-600 mb-4">Selectează fotografiile tale</p>
+          <p className="text-gray-600 mb-4">Select your photos</p>
           <p className="text-sm text-gray-500 mb-4">
-            Poți selecta până la {6 - selectedFiles.length} fotografii
-            {selectedFiles.length > 0 ? " în plus" : ""}
+            You can select up to {6 - selectedFiles.length} photos
+            {selectedFiles.length > 0 ? " more" : ""}
           </p>
           <input
             type="file"
@@ -140,8 +140,8 @@ export default function AddPhotosModal({
             }`}
           >
             {selectedFiles.length >= 6
-              ? "Maximum 6 fotografii"
-              : "Selectează fotografii"}
+              ? "Maximum 6 photos"
+              : "Select photos"}
           </label>
         </div>
 
@@ -153,7 +153,7 @@ export default function AddPhotosModal({
             className="space-y-4"
           >
             <h3 className="font-semibold text-gray-800">
-              Fotografii selectate ({photoPreview.length}/6)
+              Selected photos ({photoPreview.length}/6)
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {photoPreview.map((preview, index) => (
@@ -179,7 +179,7 @@ export default function AddPhotosModal({
                   </div>
                   {index === 0 && (
                     <div className="absolute top-2 left-2 bg-pink-500 text-white px-2 py-1 rounded text-xs font-medium">
-                      Principală
+                      Primary
                     </div>
                   )}
                 </motion.div>
@@ -195,7 +195,7 @@ export default function AddPhotosModal({
           onClick={onClose}
           className="px-6 py-3 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
         >
-          Anulează
+          Cancel
         </button>
 
         <button
@@ -210,12 +210,12 @@ export default function AddPhotosModal({
                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                 className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
               />
-              <span>Se încarcă...</span>
+              <span>Loading...</span>
             </>
           ) : (
             <>
               <FaCheck />
-              <span>Încarcă fotografiile ({selectedFiles.length})</span>
+              <span>Upload photos ({selectedFiles.length})</span>
             </>
           )}
         </button>

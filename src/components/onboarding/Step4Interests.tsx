@@ -46,7 +46,7 @@ const Step4Interests: React.FC = () => {
 
   const handleNext = () => {
     if (interests.length < 3) {
-      setError("Selectează cel puțin 3 interese");
+      setError("Select at least 3 interests");
       return;
     }
 
@@ -86,14 +86,13 @@ const Step4Interests: React.FC = () => {
             </motion.div>
 
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              Ce te pasionează?
+              What are you passionate about?
             </h1>
             <p className="text-gray-600">
-              Selectează cel puțin 3 interese pentru a-ți găsi persoane
-              compatibile
+              Select at least 3 interests to find compatible people
             </p>
             <p className="text-sm text-purple-600 mt-2">
-              {interests.length}/12 selectate (minim 3)
+              {interests.length}/12 selected (minimum 3)
             </p>
           </div>
 
@@ -146,7 +145,7 @@ const Step4Interests: React.FC = () => {
                 className="flex-1 py-4 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition duration-300 flex items-center justify-center"
               >
                 <FaArrowLeft className="mr-2" />
-                Înapoi
+                Back
               </motion.button>
 
               <motion.button
@@ -156,7 +155,7 @@ const Step4Interests: React.FC = () => {
                 disabled={interests.length < 3}
                 className="flex-1 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
-                Continuă
+                Continue
                 <FaArrowRight className="ml-2" />
               </motion.button>
             </div>
