@@ -40,141 +40,66 @@ class PollsService {
     try {
       // Try to get actual polls first
       const response = await api.get("/polls/my-polls");
-      const polls = response.data || [];
+      const rawPolls = response.data || [];
 
-      // If no polls exist, return mock data for testing
-      if (!polls || polls.length === 0) {
-        const mockPolls: Poll[] = [
-          {
-            id: 1,
-            userId: 1,
-            question: "Sedan sau SUV?",
-            options: [
-              {
-                id: 1,
-                text: "Sedan",
-                votes: 15,
-                percentage: 60,
-                isSelected: false,
-              },
-              {
-                id: 2,
-                text: "SUV",
-                votes: 10,
-                percentage: 40,
-                isSelected: false,
-              },
-            ],
-            totalVotes: 25,
-            createdAt: new Date().toISOString(),
-            isActive: true,
-            category: "cars",
-            user: { id: 1, name: "CarMatch", imageUrl: "" },
-          },
-          {
-            id: 2,
-            userId: 1,
-            question: "Benzină sau Diesel?",
-            options: [
-              {
-                id: 1,
-                text: "Benzină",
-                votes: 20,
-                percentage: 67,
-                isSelected: false,
-              },
-              {
-                id: 2,
-                text: "Diesel",
-                votes: 10,
-                percentage: 33,
-                isSelected: false,
-              },
-            ],
-            totalVotes: 30,
-            createdAt: new Date().toISOString(),
-            isActive: true,
-            category: "automotive",
-            user: { id: 1, name: "CarMatch", imageUrl: "" },
-          },
-          {
-            id: 3,
-            userId: 1,
-            question: "Mașină nouă sau second-hand?",
-            options: [
-              {
-                id: 1,
-                text: "Nouă",
-                votes: 8,
-                percentage: 40,
-                isSelected: false,
-              },
-              {
-                id: 2,
-                text: "Second-hand",
-                votes: 12,
-                percentage: 60,
-                isSelected: false,
-              },
-            ],
-            totalVotes: 20,
-            createdAt: new Date().toISOString(),
-            isActive: true,
-            category: "cars",
-            user: { id: 1, name: "CarMatch", imageUrl: "" },
-          },
-        ];
+      // Transform backend data to frontend format
+      const polls: Poll[] = rawPolls.map((poll: any) => {
+        const totalVotes = poll.votes?.length || 0;
+        
+        // Calculate votes per option
+        const optionVotes = poll.options.map((_: any, index: number) => {
+          return poll.votes?.filter((vote: any) => vote.optionIndex === index).length || 0;
+        });
 
         return {
-          polls: mockPolls,
-          total: mockPolls.length,
-          hasMore: false,
+          id: poll.id,
+          userId: poll.createdByUserId,
+          question: poll.question,
+          options: poll.options.map((text: string, index: number) => ({
+            id: index + 1,
+            text,
+            votes: optionVotes[index],
+            percentage: totalVotes > 0 ? Math.round((optionVotes[index] / totalVotes) * 100) : 0,
+            isSelected: false, // Will be set by the component based on user's votes
+          })),
+          totalVotes,
+          createdAt: poll.createdAt,
+          expiresAt: poll.expiresAt,
+          isActive: poll.isActive && new Date(poll.expiresAt) > new Date(),
+          category: poll.matchId === "general" ? "general" : "cars",
+          user: {
+            id: poll.createdBy?.id || poll.createdByUserId,
+            name: poll.createdBy?.name || "CarMatch",
+            imageUrl: poll.createdBy?.imageUrl || "",
+          },
         };
-      }
+      });
 
       return {
-        polls: polls,
+        polls,
         total: polls.length,
-        hasMore: false, // Since we're getting all at once
+        hasMore: false,
       };
     } catch (error) {
       console.error("❌ [Polls Service] Error fetching polls:", error);
 
-      // Return mock data as fallback
-      const mockPolls: Poll[] = [
-        {
-          id: 1,
-          userId: 1,
-          question: "Sedan sau SUV?",
-          options: [
-            {
-              id: 1,
-              text: "Sedan",
-              votes: 15,
-              percentage: 60,
-              isSelected: false,
-            },
-            {
-              id: 2,
-              text: "SUV",
-              votes: 10,
-              percentage: 40,
-              isSelected: false,
-            },
-          ],
-          totalVotes: 25,
-          createdAt: new Date().toISOString(),
-          isActive: true,
-          category: "cars",
-          user: { id: 1, name: "CarMatch", imageUrl: "" },
-        },
-      ];
-
+      // Return empty array instead of mock data
       return {
-        polls: mockPolls,
-        total: mockPolls.length,
+        polls: [],
+        total: 0,
         hasMore: false,
       };
+    }
+  }
+
+  // Get my polls with proper error handling
+  async getMyPolls(): Promise<Poll[]> {
+    try {
+      const result = await this.getPolls();
+      return result.polls;
+    } catch (error) {
+      console.error("❌ [Polls Service] Error fetching my polls:", error);
+      return [];
     }
   }
 
@@ -197,34 +122,45 @@ class PollsService {
   async createPoll(pollData: CreatePollData): Promise<Poll> {
     try {
       const response = await api.post("/polls/create", {
-        ...pollData,
+        question: pollData.question,
+        options: pollData.options,
         matchId: "general", // For community polls
         durationMinutes: (pollData.duration || 24) * 60, // Convert hours to minutes
+        allowMultipleChoices: false,
       });
-      return response.data;
-    } catch (error) {
-      console.error("❌ [Polls Service] Error creating poll:", error);
 
-      // Mock successful creation for testing
-      const mockPoll: Poll = {
-        id: Date.now(),
-        userId: 1,
-        question: pollData.question,
-        options: pollData.options.map((text, index) => ({
+      const rawPoll = response.data;
+      const totalVotes = rawPoll.votes?.length || 0;
+
+      // Transform backend response to frontend format
+      const poll: Poll = {
+        id: rawPoll.id,
+        userId: rawPoll.createdByUserId,
+        question: rawPoll.question,
+        options: rawPoll.options.map((text: string, index: number) => ({
           id: index + 1,
           text,
           votes: 0,
           percentage: 0,
           isSelected: false,
         })),
-        totalVotes: 0,
-        createdAt: new Date().toISOString(),
-        isActive: true,
+        totalVotes,
+        createdAt: rawPoll.createdAt,
+        expiresAt: rawPoll.expiresAt,
+        isActive: rawPoll.isActive,
         category: pollData.category,
-        user: { id: 1, name: "You", imageUrl: "" },
+        user: {
+          id: rawPoll.createdBy?.id || rawPoll.createdByUserId,
+          name: rawPoll.createdBy?.name || "You",
+          imageUrl: rawPoll.createdBy?.imageUrl || "",
+        },
       };
 
-      return mockPoll;
+      console.log("✅ [Polls Service] Poll created successfully:", poll);
+      return poll;
+    } catch (error) {
+      console.error("❌ [Polls Service] Error creating poll:", error);
+      throw error;
     }
   }
 
@@ -238,70 +174,86 @@ class PollsService {
     vote: PollVote;
   }> {
     try {
+      // Backend expects 0-indexed optionIndex, frontend uses 1-indexed optionId
       const response = await api.post("/polls/vote", {
         pollId,
-        optionIndex: optionId, // Backend expects optionIndex
+        optionIndex: optionId - 1, // Convert to 0-indexed for backend
       });
+
+      const rawPoll = response.data;
+      const totalVotes = rawPoll.votes?.length || 0;
+      
+      // Calculate votes per option
+      const optionVotes = rawPoll.options.map((_: any, index: number) => {
+        return rawPoll.votes?.filter((vote: any) => vote.optionIndex === index).length || 0;
+      });
+
+      // Transform poll data
+      const poll: Poll = {
+        id: rawPoll.id,
+        userId: rawPoll.createdByUserId,
+        question: rawPoll.question,
+        options: rawPoll.options.map((text: string, index: number) => ({
+          id: index + 1,
+          text,
+          votes: optionVotes[index],
+          percentage: totalVotes > 0 ? Math.round((optionVotes[index] / totalVotes) * 100) : 0,
+          isSelected: false,
+        })),
+        totalVotes,
+        createdAt: rawPoll.createdAt,
+        expiresAt: rawPoll.expiresAt,
+        isActive: rawPoll.isActive,
+        category: rawPoll.matchId === "general" ? "general" : "cars",
+        user: {
+          id: rawPoll.createdBy?.id || rawPoll.createdByUserId,
+          name: rawPoll.createdBy?.name || "CarMatch",
+          imageUrl: rawPoll.createdBy?.imageUrl || "",
+        },
+      };
+
+      // Find the user's vote from the response
+      const userVote = rawPoll.votes?.find((v: any) => v.optionIndex === optionId - 1);
+      
+      const vote: PollVote = {
+        id: userVote?.id || Date.now(),
+        pollId: pollId,
+        optionId: optionId,
+        userId: userVote?.userId || 0,
+        createdAt: userVote?.createdAt || new Date().toISOString(),
+      };
+
+      console.log("✅ [Polls Service] Vote successful:", { poll, vote });
 
       return {
         success: true,
-        poll: response.data.poll,
-        vote: response.data.vote,
+        poll,
+        vote,
       };
     } catch (error) {
       console.error("❌ [Polls Service] Error voting on poll:", error);
-
-      // Mock successful vote for testing
-      const mockVote: PollVote = {
-        id: Date.now(),
-        pollId: pollId,
-        optionId: optionId,
-        userId: 1,
-        createdAt: new Date().toISOString(),
-      };
-
-      // Get current polls to update the voted poll
-      const currentPolls = await this.getPolls();
-      const poll = currentPolls.polls.find((p) => p.id === pollId);
-
-      if (poll) {
-        // Update the poll with the new vote
-        poll.options.forEach((option) => {
-          if (option.id === optionId) {
-            option.votes += 1;
-            option.isSelected = true;
-          }
-        });
-
-        poll.totalVotes += 1;
-
-        // Recalculate percentages
-        poll.options.forEach((option) => {
-          option.percentage =
-            poll.totalVotes > 0
-              ? Math.round((option.votes / poll.totalVotes) * 100)
-              : 0;
-        });
-      }
-
-      return {
-        success: true,
-        poll: poll || currentPolls.polls[0],
-        vote: mockVote,
-      };
+      throw error;
     }
   }
 
   // Get user's votes
   async getMyVotes(): Promise<PollVote[]> {
-    const response = await api.get("/polls/my-votes");
-    return response.data;
-  }
-
-  // Get user's polls
-  async getMyPolls(): Promise<Poll[]> {
-    const response = await api.get("/polls/my-polls");
-    return response.data;
+    try {
+      const response = await api.get("/polls/my-votes");
+      const votes = response.data || [];
+      
+      // Transform backend votes to frontend format
+      return votes.map((vote: any) => ({
+        id: vote.id,
+        pollId: vote.pollId,
+        optionId: vote.optionIndex + 1, // Backend uses 0-indexed, frontend uses 1-indexed
+        userId: vote.userId,
+        createdAt: vote.createdAt || new Date().toISOString(),
+      }));
+    } catch (error) {
+      console.error("❌ [Polls Service] Error fetching my votes:", error);
+      return [];
+    }
   }
 
   // Delete poll (if owner) - endpoint may not exist
