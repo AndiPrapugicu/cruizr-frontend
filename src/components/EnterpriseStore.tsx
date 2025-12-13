@@ -1887,7 +1887,7 @@ export default function EnterpriseStore() {
   }
 
   return (
-    <div className={`min-h-screen pb-24 md:pb-0 ${theme === 'dark' ? 'bg-slate-900' : 'bg-gray-50'}`}>
+    <div className={`min-h-screen pb-24 md:pb-0 overflow-y-auto ${theme === 'dark' ? 'bg-slate-900' : 'bg-gray-50'}`}>
       {/* Header */}
       <div className={`shadow-sm border-b ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 md:py-6">
