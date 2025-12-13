@@ -583,8 +583,8 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
 
       {/* Mobile Bottom Navigation - Hidden on Desktop and in individual chat */}
       {!isInIndividualChat && (
-        <div className={`md:hidden fixed bottom-0 left-0 right-0 border-t z-50 shadow-lg safe-area-pb ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'}`}>
-        <div className="flex justify-around items-center h-16 px-2">
+        <div className={`md:hidden fixed bottom-0 left-0 right-0 border-t z-50 shadow-2xl safe-area-pb backdrop-blur-xl ${theme === 'dark' ? 'bg-slate-900/95 border-slate-700' : 'bg-white/95 border-gray-200'}`}>
+        <div className="flex justify-around items-center h-20 px-1">
           {/* Main 4 navigation items */}
           {menuItems.slice(0, 4).map((item) => {
             const Icon = item.icon;
@@ -593,16 +593,22 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
               <button
                 key={item.path}
                 onClick={() => navigate(item.path)}
-                className={`flex flex-col items-center justify-center min-w-[44px] min-h-[44px] px-2 transition-colors ${
-                  active ? item.color : 'text-gray-400'
-                }`}
+                className="relative flex flex-col items-center justify-center w-16 transition-all"
               >
-                <Icon className="text-xl" />
-                <span className={`text-xs mt-1 font-medium ${
-                  active ? '' : 'text-gray-500'
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${
+                  active 
+                    ? `bg-gradient-to-br ${item.path === '/dashboard' ? 'from-blue-500 to-blue-600' : item.path === '/nearby' ? 'from-orange-500 to-orange-600' : item.path === '/likes' ? 'from-pink-500 to-pink-600' : 'from-green-500 to-green-600'} shadow-lg scale-110` 
+                    : theme === 'dark' ? 'bg-slate-800 hover:bg-slate-700' : 'bg-gray-100 hover:bg-gray-200'
                 }`}>
-                  {item.label === 'Dashboard' ? 'Home' : item.label}
-                </span>
+                  <Icon className={`text-xl ${active ? 'text-white' : theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`} />
+                </div>
+                {active && (
+                  <motion.div 
+                    layoutId="activeTab"
+                    className="absolute -bottom-1 w-1 h-1 rounded-full bg-current"
+                    style={{ color: active ? item.color.replace('text-', '') : 'transparent' }}
+                  />
+                )}
               </button>
             );
           })}
@@ -610,16 +616,21 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
           {/* More Menu Button */}
           <button
             onClick={() => setShowMobileMoreMenu(!showMobileMoreMenu)}
-            className={`flex flex-col items-center justify-center min-w-[44px] min-h-[44px] px-2 transition-colors ${
-              showMobileMoreMenu ? 'text-purple-500' : 'text-gray-400'
-            }`}
+            className="relative flex flex-col items-center justify-center w-16 transition-all"
           >
-            <FaBars className="text-xl" />
-            <span className={`text-xs mt-1 font-medium ${
-              showMobileMoreMenu ? 'text-purple-500' : 'text-gray-500'
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${
+              showMobileMoreMenu 
+                ? 'bg-gradient-to-br from-purple-500 to-purple-600 shadow-lg scale-110' 
+                : theme === 'dark' ? 'bg-slate-800 hover:bg-slate-700' : 'bg-gray-100 hover:bg-gray-200'
             }`}>
-              More
-            </span>
+              <FaBars className={`text-xl ${showMobileMoreMenu ? 'text-white' : theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`} />
+            </div>
+            {showMobileMoreMenu && (
+              <motion.div 
+                layoutId="activeTab"
+                className="absolute -bottom-1 w-1 h-1 rounded-full bg-purple-500"
+              />
+            )}
           </button>
         </div>
 
@@ -642,15 +653,15 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: 100, opacity: 0 }}
                 transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                className="fixed bottom-16 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-50 p-6 max-h-[70vh] overflow-y-auto"
+                className={`fixed bottom-20 left-0 right-0 rounded-t-3xl shadow-2xl z-50 p-6 max-h-[70vh] overflow-y-auto ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'}`}
               >
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold text-gray-900">More Options</h3>
+                  <h3 className={`text-lg font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>More Options</h3>
                   <button
                     onClick={() => setShowMobileMoreMenu(false)}
-                    className="p-2 hover:bg-gray-100 rounded-full transition"
+                    className={`w-8 h-8 flex items-center justify-center rounded-full transition ${theme === 'dark' ? 'hover:bg-slate-700 text-gray-400' : 'hover:bg-gray-100 text-gray-600'}`}
                   >
-                    <FaTimes className="text-gray-600" />
+                    <FaTimes className="text-lg" />
                   </button>
                 </div>
 

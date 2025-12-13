@@ -71,10 +71,10 @@ export default function Likes() {
 
   if (loading) {
     return (
-      <div className="p-8 bg-gradient-to-b from-purple-50 to-pink-100 min-h-screen flex items-center justify-center">
+      <div className={`p-8 min-h-screen flex items-center justify-center ${theme === 'dark' ? 'bg-slate-900' : 'bg-white'}`}>
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-purple-700 font-medium">Loading...</p>
+          <div className={`animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4 ${theme === 'dark' ? 'border-blue-500' : 'border-gray-400'}`}></div>
+          <p className={`font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Loading...</p>
         </div>
       </div>
     );
@@ -111,7 +111,7 @@ export default function Likes() {
               className={`ml-2 px-2 py-1 rounded-full text-xs ${
                 activeTab === "likes"
                   ? "bg-white text-pink-500"
-                  : "bg-pink-100 text-pink-600"
+                  : theme === 'dark' ? "bg-slate-700 text-gray-300" : "bg-pink-100 text-pink-600"
               }`}
             >
               {likes.length}

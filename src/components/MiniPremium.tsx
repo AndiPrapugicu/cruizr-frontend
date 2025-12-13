@@ -61,17 +61,30 @@ const MiniPremium: React.FC<MiniPremiumProps> = ({ visible, onClose }) => {
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6">
-            <div className="flex items-center justify-between">
+          <div className={`${
+            theme === 'dark'
+              ? 'bg-gradient-to-br from-slate-800 via-slate-700 to-slate-800 border-b-2 border-yellow-500/30'
+              : 'bg-gradient-to-br from-yellow-500 via-amber-500 to-yellow-600'
+          } p-6 relative overflow-hidden`}>
+            <div className={`absolute inset-0 ${
+              theme === 'dark'
+                ? 'bg-gradient-to-br from-yellow-500/5 via-transparent to-purple-500/5'
+                : 'bg-gradient-to-br from-yellow-400/20 via-transparent to-amber-500/20'
+            }`} />
+            <div className="flex items-center justify-between relative z-10">
               <div>
-                <h2 className="text-2xl font-bold">Upgrade to Premium</h2>
-                <p className="text-blue-100 text-sm mt-1">
+                <h2 className="text-2xl font-bold text-white">Upgrade to Premium</h2>
+                <p className={`text-sm mt-1 ${theme === 'dark' ? 'text-gray-300' : 'text-white text-opacity-95'}`}>
                   Choose your Premium or VIP option
                 </p>
               </div>
               <button
                 onClick={onClose}
-                className="p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-colors"
+                className={`p-2 rounded-full transition-colors ${
+                  theme === 'dark'
+                    ? 'hover:bg-slate-700 text-gray-300 hover:text-white'
+                    : 'hover:bg-white hover:bg-opacity-20 text-white'
+                }`}
               >
                 <FaTimes className="text-xl" />
               </button>
@@ -106,7 +119,11 @@ const MiniPremium: React.FC<MiniPremiumProps> = ({ visible, onClose }) => {
                   </div>
                   <button
                     onClick={handleBuy}
-                    className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-xl font-semibold hover:from-purple-600 hover:to-pink-600 transition-all"
+                    className={`px-4 py-2 rounded-xl font-semibold transition-all ${
+                      theme === 'dark'
+                        ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-400 hover:to-yellow-500 text-slate-900'
+                        : 'bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-white shadow-md'
+                    }`}
                   >
                     Buy
                   </button>

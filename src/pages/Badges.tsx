@@ -141,19 +141,19 @@ export default function Badges() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-4">
             <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-3 sm:p-4 rounded-lg">
               <div className="text-xl sm:text-2xl font-bold">{stats.totalEarned}</div>
-              <div className="text-xs sm:text-sm opacity-90">Badge-uri câștigate</div>
+              <div className="text-xs sm:text-sm opacity-90">Badges earned</div>
             </div>
             <div className="bg-gradient-to-r from-blue-400 to-blue-600 text-white p-3 sm:p-4 rounded-lg">
               <div className="text-xl sm:text-2xl font-bold">{stats.totalAvailable}</div>
-              <div className="text-xs sm:text-sm opacity-90">Total disponibile</div>
+              <div className="text-xs sm:text-sm opacity-90">Total available</div>
             </div>
             <div className="bg-gradient-to-r from-purple-400 to-purple-600 text-white p-3 sm:p-4 rounded-lg">
               <div className="text-xl sm:text-2xl font-bold">{stats.rareEarned}</div>
-              <div className="text-xs sm:text-sm opacity-90">Badge-uri rare</div>
+              <div className="text-xs sm:text-sm opacity-90">Rare badges</div>
             </div>
             <div className="bg-gradient-to-r from-green-400 to-green-600 text-white p-3 sm:p-4 rounded-lg">
               <div className="text-xl sm:text-2xl font-bold">{stats.totalPoints}</div>
-              <div className="text-xs sm:text-sm opacity-90">Puncte totale</div>
+              <div className="text-xs sm:text-sm opacity-90">Total points</div>
             </div>
           </div>
         </div>
@@ -325,10 +325,10 @@ export default function Badges() {
           >
             <FaTrophy className="text-6xl mb-4 mx-auto text-yellow-500" />
             <h3 className="text-xl font-semibold text-gray-800 mb-2">
-              Nu există badge-uri în această categorie
+              No badges found in this category.
             </h3>
             <p className="text-gray-600">
-              Încearcă să selectezi o altă categorie.
+              Try selecting a different category.
             </p>
           </motion.div>
         )}
@@ -354,10 +354,10 @@ export default function Badges() {
               <div
                 className={`p-6 text-center ${
                   selectedBadge.isRare
-                    ? "bg-gradient-to-r from-purple-500 to-pink-500"
+                    ? (theme === 'dark' ? "bg-gradient-to-r from-purple-600 to-blue-600" : "bg-gradient-to-r from-purple-500 to-purple-600")
                     : isEarned(selectedBadge.id)
                     ? "bg-gradient-to-r from-yellow-400 to-orange-500"
-                    : "bg-gradient-to-r from-gray-400 to-gray-600"
+                    : (theme === 'dark' ? "bg-gradient-to-r from-slate-600 to-slate-700" : "bg-gradient-to-r from-gray-400 to-gray-600")
                 } text-white rounded-t-3xl`}
               >
                 <div className="w-20 h-20 mx-auto mb-4 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
@@ -375,13 +375,13 @@ export default function Badges() {
               </div>
 
               <div className="p-6">
-                <p className="text-gray-600 mb-4 leading-relaxed">
+                <p className={`mb-4 leading-relaxed ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
                   {selectedBadge.description}
                 </p>
 
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-700">Status:</span>
+                    <span className={theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}>Status:</span>
                     <span
                       className={`font-semibold ${
                         isEarned(selectedBadge.id)
@@ -396,8 +396,8 @@ export default function Badges() {
                   {isEarned(selectedBadge.id) &&
                     getEarnedDate(selectedBadge.id) && (
                       <div className="flex justify-between items-center">
-                        <span className="text-gray-700">Data câștigării:</span>
-                        <span className="font-semibold">
+                        <span className={theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}>Data câștigării:</span>
+                        <span className={`font-semibold ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'}`}>
                           {getEarnedDate(selectedBadge.id)}
                         </span>
                       </div>

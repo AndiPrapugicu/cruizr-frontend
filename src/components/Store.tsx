@@ -780,7 +780,7 @@ const Store: React.FC<StoreProps> = ({
           )}
 
           {/* Content */}
-          <div className="p-6 max-h-96 overflow-y-auto">
+          <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 280px)' }}>
             {selectedTab === "inventory" ? (
               // Inventory Content
               <div>

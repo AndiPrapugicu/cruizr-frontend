@@ -225,7 +225,7 @@ export default function Chat({
             animate={{ opacity: 1, y: 0 }}
             className="text-center mt-12"
           >
-            <div className={`p-3 ${theme === 'dark' ? 'bg-blue-900/50' : 'bg-pink-100'} rounded-full w-12 h-12 mx-auto mb-4 flex items-center justify-center shadow-sm`}>
+            <div className={`p-3 ${theme === 'dark' ? 'bg-slate-700' : 'bg-gray-100'} rounded-full w-12 h-12 mx-auto mb-4 flex items-center justify-center shadow-sm`}>
               <FaHeart className={`${theme === 'dark' ? 'text-blue-400' : 'text-pink-500'} text-xl`} />
             </div>
             <h3 className={`text-lg font-semibold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'} mb-2`}>

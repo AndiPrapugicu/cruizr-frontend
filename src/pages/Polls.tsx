@@ -14,8 +14,15 @@ const Polls: React.FC = () => {
     createPoll,
     voteOnPoll,
     hasVotedOnPoll,
+    getUserVoteForPoll,
   } = usePolls();
   const [showCreateModal, setShowCreateModal] = useState(false);
+
+  // Helper function to check if an option is selected by the user
+  const isOptionSelected = (pollId: number, optionId: number): boolean => {
+    const userVote = getUserVoteForPoll(pollId);
+    return userVote?.optionId === optionId;
+  };
   const [newPoll, setNewPoll] = useState({
     question: "",
     options: ["", ""],
@@ -200,6 +207,7 @@ const Polls: React.FC = () => {
                 poll.options.length > 0 ? (
                   poll.options.map((option, index) => {
                     const userHasVoted = hasVotedOnPoll(poll.id);
+                    const isSelected = isOptionSelected(poll.id, option.id);
                     return (
                       <div key={option.id || index} className="relative">
                         <button
@@ -211,8 +219,8 @@ const Polls: React.FC = () => {
                           disabled={userHasVoted || !poll.isActive}
                           className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
                             userHasVoted
-                              ? option.isSelected
-                                ? "border-blue-500 bg-blue-50"
+                              ? isSelected
+                                ? (theme === 'dark' ? "border-blue-500 bg-blue-900/30" : "border-blue-500 bg-blue-50")
                                 : (theme === 'dark' ? 'border-slate-600 bg-slate-700' : 'border-gray-200 bg-gray-50')
                               : poll.isActive
                               ? (theme === 'dark' ? 'border-slate-600 hover:border-blue-400 hover:bg-slate-700 cursor-pointer' : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer')
@@ -220,7 +228,7 @@ const Polls: React.FC = () => {
                           }`}
                         >
                           <div className="flex items-center justify-between">
-                            <span className={`font-medium ${theme === 'dark' ? 'text-gray-100' : ''}`}>{option.text}</span>
+                            <span className={`font-medium ${isSelected && userHasVoted ? 'text-blue-600' : (theme === 'dark' ? 'text-gray-100' : 'text-gray-800')}`}>{option.text}</span>
                             <span className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                               {option.percentage}% ({option.votes})
                             </span>
@@ -229,7 +237,7 @@ const Polls: React.FC = () => {
                             <div className={`mt-2 ${theme === 'dark' ? 'bg-slate-600' : 'bg-gray-200'} rounded-full h-2`}>
                               <div
                                 className={`h-2 rounded-full transition-all ${
-                                  option.isSelected
+                                  isSelected
                                     ? "bg-blue-500"
                                     : "bg-gray-400"
                                 }`}

@@ -567,7 +567,7 @@ export default function Profile() {
           className={`${theme === 'dark' ? 'bg-slate-800' : 'bg-white'} rounded-2xl sm:rounded-3xl shadow-xl overflow-hidden`}
         >
           {/* Cover Photo */}
-          <div className="h-32 sm:h-48 bg-gradient-to-r from-pink-500 to-red-500 relative">
+          <div className={`h-32 sm:h-48 bg-gradient-to-r relative ${theme === 'dark' ? 'from-blue-600 to-purple-600' : 'from-blue-500 to-blue-600'}`}>
             {user.isVip && (
               <div className="absolute top-4 right-4">
                 <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 rounded-full font-bold flex items-center">
@@ -643,7 +643,7 @@ export default function Profile() {
 
                 <button
                   onClick={handleAddPhotos}
-                  className="absolute bottom-2 right-2 bg-gradient-to-r from-pink-500 to-red-500 text-white p-3 rounded-full shadow-lg hover:shadow-xl hover:from-pink-600 hover:to-red-600 transition-all duration-300 transform hover:scale-110 z-20"
+                  className={`absolute bottom-2 right-2 bg-gradient-to-r text-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 z-20 ${theme === 'dark' ? 'from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700' : 'from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700'}`}
                 >
                   <FaCamera className="text-lg" />
                 </button>
@@ -663,7 +663,7 @@ export default function Profile() {
                 </h2>
                 <button
                   onClick={() => navigate("/profile/edit")}
-                  className="bg-gradient-to-r from-pink-500 to-red-500 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl hover:from-pink-600 hover:to-red-600 transition-all duration-300 flex items-center space-x-2 transform hover:scale-105"
+                  className={`bg-gradient-to-r text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2 transform hover:scale-105 ${theme === 'dark' ? 'from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700' : 'from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700'}`}
                 >
                   <FaEdit className="text-lg" />
                   <span>Edit Profile</span>
@@ -727,7 +727,7 @@ export default function Profile() {
                     {user.interests.map((interest, index) => (
                       <span
                         key={index}
-                        className={`${theme === 'dark' ? 'bg-slate-700 text-gray-200' : 'bg-pink-100 text-pink-700'} px-3 py-1 rounded-full text-sm font-medium`}
+                        className={`${theme === 'dark' ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-100 text-blue-700'} px-3 py-1 rounded-full text-sm font-medium`}
                       >
                         {interest}
                       </span>
@@ -739,22 +739,22 @@ export default function Profile() {
               {/* Stats */}
               <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-200">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-pink-600">
+                  <div className={`text-2xl font-bold ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`}>
                     {user.stats.matches}
                   </div>
-                  <div className="text-sm text-gray-600">Match-uri</div>
+                  <div className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Match-uri</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">
+                  <div className={`text-2xl font-bold ${theme === 'dark' ? 'text-green-400' : 'text-blue-600'}`}>
                     {user.stats.likes}
                   </div>
-                  <div className="text-sm text-gray-600">Like-uri</div>
+                  <div className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Like-uri</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-600">
+                  <div className={`text-2xl font-bold ${theme === 'dark' ? 'text-purple-400' : 'text-purple-600'}`}>
                     {user.stats.cars}
                   </div>
-                  <div className="text-sm text-gray-600">Mașini</div>
+                  <div className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Mașini</div>
                 </div>
               </div>
             </div>
@@ -762,7 +762,7 @@ export default function Profile() {
         </motion.div>
 
         {/* Tabs */}
-        <div className={`flex space-x-1 rounded-2xl p-1 shadow-lg mt-8 ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'}`}>
+        <div className={`flex gap-2 sm:gap-1 rounded-2xl p-1 shadow-lg mt-8 ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'}`}>
           {[
             { id: "overview", label: "Overview", icon: <FaCamera /> },
             { id: "cars", label: "My Cars", icon: <FaCar /> },
@@ -773,14 +773,14 @@ export default function Profile() {
               onClick={() =>
                 setActiveTab(tab.id as "overview" | "cars" | "badges")
               }
-              className={`flex-1 flex items-center justify-center space-x-2 py-3 px-4 rounded-xl font-semibold transition ${
+              className={`flex-1 flex items-center justify-center sm:space-x-2 py-4 sm:py-3 px-2 sm:px-4 rounded-xl font-semibold transition-all ${
                 activeTab === tab.id
-                  ? "bg-gradient-to-r from-pink-500 to-red-500 text-white shadow-lg"
-                  : theme === 'dark' ? "text-gray-400 hover:bg-slate-700" : "text-gray-600 hover:bg-gray-50"
+                  ? (theme === 'dark' ? "bg-gradient-to-br from-blue-600 to-purple-600 text-white shadow-lg scale-105" : "bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg scale-105")
+                  : theme === 'dark' ? "text-gray-400 hover:bg-slate-700 hover:scale-102" : "text-gray-600 hover:bg-gray-50 hover:scale-102"
               }`}
             >
-              {tab.icon}
-              <span>{tab.label}</span>
+              <span className="text-xl sm:text-base">{tab.icon}</span>
+              <span className="hidden sm:inline">{tab.label}</span>
             </button>
           ))}
         </div>
@@ -828,7 +828,7 @@ export default function Profile() {
                     }}
                   />
                   <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                    <button className="text-white p-2 bg-pink-500 rounded-full hover:bg-pink-600 transition">
+                    <button className="text-white p-2 bg-blue-500 rounded-full hover:bg-blue-600 transition">
                       <FaEdit />
                     </button>
                   </div>
@@ -870,7 +870,7 @@ export default function Profile() {
                       <h3 className={`text-xl font-bold flex items-center ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>
                         {car.make} {car.model}
                         {car.isMain && (
-                          <span className="ml-2 bg-gradient-to-r from-pink-500 to-red-500 text-white text-xs px-2 py-1 rounded-full">
+                          <span className={`ml-2 bg-gradient-to-r text-white text-xs px-2 py-1 rounded-full ${theme === 'dark' ? 'from-blue-600 to-purple-600' : 'from-blue-500 to-blue-600'}`}>
                             PRIMARY
                           </span>
                         )}
@@ -970,7 +970,7 @@ export default function Profile() {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: user.cars.length * 0.1 }}
                 onClick={handleAddCar}
-                className="w-full bg-gray-100 border-2 border-dashed border-gray-300 rounded-2xl p-8 flex flex-col items-center justify-center text-gray-500 hover:bg-gray-200 transition"
+                className={`w-full border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center transition ${theme === 'dark' ? 'bg-slate-700 border-slate-600 text-gray-300 hover:bg-slate-600' : 'bg-gray-100 border-gray-300 text-gray-500 hover:bg-gray-200'}`}
               >
                 <FaPlus className="text-3xl mb-3" />
                 <span className="text-lg font-medium">
@@ -1025,7 +1025,7 @@ export default function Profile() {
                           </div>
                           <div className="w-full bg-gray-200 rounded-full h-2">
                             <div
-                              className="bg-gradient-to-r from-pink-500 to-red-500 h-2 rounded-full"
+                              className={`bg-gradient-to-r h-2 rounded-full ${theme === 'dark' ? 'from-blue-500 to-purple-500' : 'from-blue-500 to-blue-600'}`}
                               style={{ width: `${badge.progress}%` }}
                             ></div>
                           </div>

@@ -153,7 +153,7 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
     <div className={`${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white'} rounded-xl p-6 shadow-lg`}>
       {showTitle && (
         <div className="flex items-center justify-between mb-6">
-          <h3 className={`text-xl font-bold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>Badge-uri</h3>
+          <h3 className={`text-xl font-bold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>Badges</h3>
           {filteredBadges.length > maxBadges && !showAll && (
             <button
               onClick={() => setShowAllModal(true)}
@@ -268,7 +268,7 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
       {displayBadges.length === 0 && (
         <div className="text-center py-8">
           <FaStar className="text-4xl text-gray-400 mx-auto mb-4" />
-          <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Nu există badge-uri disponibile.</p>
+          <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>No badges available.</p>
         </div>
       )}
 
@@ -293,9 +293,9 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
               <div className="bg-gradient-to-r from-pink-500 to-purple-600 text-white p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-2xl font-bold">Toate Badge-urile</h2>
+                    <h2 className="text-2xl font-bold">All Badges</h2>
                     <p className="text-pink-100 text-sm mt-1">
-                      {userBadges.length} din {sortedBadges.length} obținute
+                      {userBadges.length} of {sortedBadges.length} earned
                     </p>
                   </div>
                   <button
@@ -388,7 +388,7 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({
                   <div className="text-center py-12">
                     <FaStar className="text-4xl text-gray-400 mx-auto mb-4" />
                     <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                      Nu există badge-uri disponibile.
+                      No badges available.
                     </p>
                   </div>
                 )}

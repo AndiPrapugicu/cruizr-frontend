@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import { useTheme } from "../contexts/ThemeContext";
 import {
   FaArrowLeft,
   FaSave,
@@ -71,6 +72,7 @@ const commonInterests = [
 
 export default function EditProfile() {
   const navigate = useNavigate();
+  const { theme } = useTheme();
   const [profile, setProfile] = useState<EditableProfile>({
     name: "",
     bio: "",
@@ -157,36 +159,36 @@ export default function EditProfile() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center w-full h-full bg-white">
+      <div className={`flex items-center justify-center w-full h-full ${theme === 'dark' ? 'bg-slate-900' : 'bg-white'}`}>
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          className="w-12 h-12 border-4 border-pink-500 border-t-transparent rounded-full"
+          className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full"
         />
       </div>
     );
   }
 
   return (
-    <div className="w-full h-full bg-gray-50 overflow-y-auto">
+    <div className={`w-full h-full overflow-y-auto ${theme === 'dark' ? 'bg-slate-900' : 'bg-gray-50'}`}>
       <div className="max-w-2xl mx-auto px-4 py-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-4">
             <button
               onClick={() => navigate("/profile")}
-              className="p-2 rounded-lg hover:bg-gray-200 transition-colors"
+              className={`p-2 rounded-lg transition-colors ${theme === 'dark' ? 'hover:bg-slate-700 text-gray-300' : 'hover:bg-gray-200 text-gray-600'}`}
             >
-              <FaArrowLeft className="text-gray-600" />
+              <FaArrowLeft />
             </button>
-            <h1 className="text-2xl font-bold text-gray-800">
+            <h1 className={`text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
               Edit profile
             </h1>
           </div>
           <button
             onClick={handleSave}
             disabled={saving}
-            className="bg-pink-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-pink-600 transition-colors disabled:opacity-50 flex items-center space-x-2"
+            className={`text-white px-6 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50 flex items-center space-x-2 ${theme === 'dark' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'}`}
           >
             <FaSave />
             <span>{saving ? "Saving..." : "Save"}</span>
@@ -198,16 +200,16 @@ export default function EditProfile() {
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="bg-white p-6 shadow-lg"
+            className={`p-6 shadow-lg ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'}`}
           >
-            <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-              <FaUser className="mr-2 text-pink-500" />
+            <h2 className={`text-xl font-semibold mb-4 flex items-center ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
+              <FaUser className="mr-2 text-blue-500" />
               Basic Information
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
                   Name
                 </label>
                 <input
@@ -216,13 +218,13 @@ export default function EditProfile() {
                   onChange={(e) =>
                     setProfile((prev) => ({ ...prev, name: e.target.value }))
                   }
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${theme === 'dark' ? 'bg-slate-700 border-slate-600 text-white placeholder:text-gray-400' : 'border-gray-300 bg-white text-gray-900'}`}
                   placeholder="Your name"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
                   City
                 </label>
                 <input
@@ -231,13 +233,13 @@ export default function EditProfile() {
                   onChange={(e) =>
                     setProfile((prev) => ({ ...prev, city: e.target.value }))
                   }
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${theme === 'dark' ? 'bg-slate-700 border-slate-600 text-white placeholder:text-gray-400' : 'border-gray-300 bg-white text-gray-900'}`}
                   placeholder="Your city"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
                   About me
                 </label>
                 <textarea
@@ -246,10 +248,10 @@ export default function EditProfile() {
                     setProfile((prev) => ({ ...prev, bio: e.target.value }))
                   }
                   rows={4}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none"
+                  className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${theme === 'dark' ? 'bg-slate-700 border-slate-600 text-white placeholder:text-gray-400' : 'border-gray-300 bg-white text-gray-900'}`}
                   placeholder="Tell them something about yourself..."
                 />
-                <p className="text-sm text-gray-500 mt-1">
+                <p className={`text-sm mt-1 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
                   {profile.bio.length}/500 characters
                 </p>
               </div>
@@ -261,29 +263,29 @@ export default function EditProfile() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.1 }}
-            className="bg-white p-6 shadow-lg"
+            className={`p-6 shadow-lg ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'}`}
           >
-            <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-              <FaHeart className="mr-2 text-pink-500" />
+            <h2 className={`text-xl font-semibold mb-4 flex items-center ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
+              <FaHeart className="mr-2 text-blue-500" />
               Interests
             </h2>
 
             {/* Selected Interests */}
             {profile.interests.length > 0 && (
               <div className="mb-4">
-                <h3 className="text-sm font-medium text-gray-700 mb-2">
+                <h3 className={`text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
                   Your interests ({profile.interests.length}/10)
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {profile.interests.map((interest, index) => (
                     <span
                       key={index}
-                      className="bg-pink-100 text-pink-700 px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-2"
+                      className={`px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-2 ${theme === 'dark' ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-100 text-blue-700'}`}
                     >
                       <span>{interest}</span>
                       <button
                         onClick={() => removeInterest(interest)}
-                        className="text-pink-500 hover:text-pink-700"
+                        className={`hover:text-blue-700 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-500'}`}
                       >
                         <FaTimes className="text-xs" />
                       </button>
@@ -302,14 +304,14 @@ export default function EditProfile() {
                     value={newInterest}
                     onChange={(e) => setNewInterest(e.target.value)}
                     onKeyPress={(e) => e.key === "Enter" && addCustomInterest()}
-                    className="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm"
+                    className={`flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm ${theme === 'dark' ? 'bg-slate-700 border-slate-600 text-white placeholder:text-gray-400' : 'border-gray-300 bg-white text-gray-900'}`}
                     placeholder="Add a custom interest..."
                     maxLength={20}
                   />
                   <button
                     onClick={addCustomInterest}
                     disabled={!newInterest.trim()}
-                    className="bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600 transition-colors disabled:opacity-50 flex items-center"
+                    className={`text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50 flex items-center ${theme === 'dark' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'}`}
                   >
                     <FaPlus />
                   </button>
@@ -320,7 +322,7 @@ export default function EditProfile() {
             {/* Common Interests */}
             {profile.interests.length < 10 && (
               <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">
+                <h3 className={`text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
                   Popular interests
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -330,7 +332,7 @@ export default function EditProfile() {
                       <button
                         key={index}
                         onClick={() => addInterest(interest)}
-                        className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium hover:bg-pink-100 hover:text-pink-700 transition-colors"
+                        className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${theme === 'dark' ? 'bg-slate-700 text-gray-300 hover:bg-blue-900/40 hover:text-blue-300' : 'bg-gray-100 text-gray-700 hover:bg-blue-100 hover:text-blue-700'}`}
                       >
                         + {interest}
                       </button>
@@ -340,7 +342,7 @@ export default function EditProfile() {
             )}
 
             {profile.interests.length >= 10 && (
-              <p className="text-sm text-orange-600 bg-orange-50 p-3 rounded-lg">
+              <p className={`text-sm p-3 rounded-lg ${theme === 'dark' ? 'text-orange-400 bg-orange-900/30' : 'text-orange-600 bg-orange-50'}`}>
                 You've reached the maximum limit of 10 interests. Remove one to
                 add another.
               </p>
@@ -352,10 +354,10 @@ export default function EditProfile() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="bg-white p-6 shadow-lg"
+            className={`p-6 shadow-lg ${theme === 'dark' ? 'bg-slate-800' : 'bg-white'}`}
           >
-            <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-              <FaCamera className="mr-2 text-pink-500" />
+            <h2 className={`text-xl font-semibold mb-4 flex items-center ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
+              <FaCamera className="mr-2 text-blue-500" />
               Photos
             </h2>
 
@@ -363,7 +365,7 @@ export default function EditProfile() {
               {profile.photos.slice(0, 6).map((photo, index) => (
                 <div
                   key={index}
-                  className="relative aspect-square bg-gray-100 rounded-xl overflow-hidden group shadow-md hover:shadow-xl transition-shadow duration-300"
+                  className={`relative aspect-square rounded-xl overflow-hidden group shadow-md hover:shadow-xl transition-shadow duration-300 ${theme === 'dark' ? 'bg-slate-700' : 'bg-gray-100'}`}
                 >
                   <img
                     src={getPhotoUrl(photo)}
@@ -380,21 +382,21 @@ export default function EditProfile() {
                 <button
                   key={`empty-${index}`}
                   onClick={() => navigate('/profile')}
-                  className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center hover:border-pink-400 hover:bg-pink-50 transition-all duration-300 cursor-pointer"
+                  className={`aspect-square rounded-xl border-2 border-dashed flex items-center justify-center transition-all duration-300 cursor-pointer ${theme === 'dark' ? 'bg-slate-700 border-slate-600 hover:border-blue-500 hover:bg-slate-600' : 'bg-gradient-to-br from-gray-50 to-gray-100 border-gray-300 hover:border-blue-400 hover:bg-blue-50'}`}
                 >
                   <div className="text-center">
-                    <FaPlus className="text-gray-400 text-2xl mb-2 mx-auto" />
-                    <p className="text-xs text-gray-500 font-medium">Add photo</p>
+                    <FaPlus className={`text-2xl mb-2 mx-auto ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`} />
+                    <p className={`text-xs font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Add photo</p>
                   </div>
                 </button>
               ))}
             </div>
 
-            <div className="mt-4 p-4 bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl border border-pink-200">
-              <p className="text-sm text-gray-700 flex items-center">
-                <FaCamera className="mr-2 text-pink-500" />
+            <div className={`mt-4 p-4 rounded-xl border ${theme === 'dark' ? 'bg-blue-900/20 border-blue-800' : 'bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200'}`}>
+              <p className={`text-sm flex items-center ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                <FaCamera className="mr-2 text-blue-500" />
                 To edit photos, use the{" "}
-                <span className="font-semibold text-pink-600 mx-1">"Add Photos"</span>
+                <span className={`font-semibold mx-1 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`}>"Add Photos"</span>
                 button on the profile page.
               </p>
             </div>

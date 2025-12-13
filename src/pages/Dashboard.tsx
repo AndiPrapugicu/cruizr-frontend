@@ -274,25 +274,46 @@ const Dashboard: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className={`${theme === 'dark' ? 'bg-gradient-to-r from-blue-600 to-indigo-600' : 'bg-gradient-to-r from-blue-500 to-indigo-500'} rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all text-white`}
+          className={`${
+            theme === 'dark'
+              ? 'bg-gradient-to-br from-slate-800 via-slate-800 to-slate-700 border-2 border-yellow-500/30'
+              : 'bg-gradient-to-br from-white via-yellow-50 to-amber-50 border-2 border-yellow-400/40'
+          } rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all relative overflow-hidden`}
         >
-          <div className="flex items-center justify-between mb-4 sm:mb-6">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center">
-              <FaCrown className="text-yellow-300 text-xl sm:text-2xl" />
+          {/* Golden glow effect */}
+          <div className={`absolute inset-0 pointer-events-none ${
+            theme === 'dark'
+              ? 'bg-gradient-to-br from-yellow-500/5 via-transparent to-purple-500/5'
+              : 'bg-gradient-to-br from-yellow-400/10 via-transparent to-amber-400/10'
+          }`} />
+          
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center ${
+                theme === 'dark'
+                  ? 'bg-gradient-to-br from-yellow-500/20 to-yellow-600/10 border border-yellow-500/30'
+                  : 'bg-gradient-to-br from-yellow-400/30 to-amber-400/20 border border-yellow-500/40'
+              }`}>
+                <FaCrown className={`text-xl sm:text-2xl ${theme === 'dark' ? 'text-yellow-400' : 'text-yellow-600'}`} />
+              </div>
             </div>
+            <h3 className={`text-xl sm:text-2xl font-bold mb-2 sm:mb-3 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+              Upgrade to Premium
+            </h3>
+            <p className={`text-sm sm:text-base mb-4 sm:mb-6 leading-relaxed ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+              Unlock exclusive benefits and advanced features.
+            </p>
+            <button
+              className={`w-full py-2.5 sm:py-3 px-4 sm:px-6 rounded-xl font-semibold transition-all text-sm sm:text-base ${
+                theme === 'dark'
+                  ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-slate-900 hover:from-yellow-400 hover:to-yellow-500'
+                  : 'bg-gradient-to-r from-yellow-500 to-amber-500 text-white hover:from-yellow-600 hover:to-amber-600 shadow-md'
+              }`}
+              onClick={() => setShowPremium(true)}
+            >
+              Upgrade Now
+            </button>
           </div>
-          <h3 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3 text-white">
-            Upgrade to Premium
-          </h3>
-          <p className="text-sm sm:text-base text-white text-opacity-90 mb-4 sm:mb-6 leading-relaxed">
-            Unlock exclusive benefits and advanced features.
-          </p>
-          <button
-            className="w-full bg-white bg-opacity-20 backdrop-blur-sm text-white py-2.5 sm:py-3 px-4 sm:px-6 rounded-xl font-semibold hover:bg-opacity-30 transition-all text-sm sm:text-base"
-            onClick={() => setShowPremium(true)}
-          >
-            Upgrade Now
-          </button>
         </motion.div>
       </div>
 

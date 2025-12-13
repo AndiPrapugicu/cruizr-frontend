@@ -223,8 +223,8 @@ export default function ChatPage() {
         <div className="p-4 sm:p-6">
           {/* Header */}
           <div className="flex items-center space-x-3 mb-4 sm:mb-6">
-            <div className="p-2 sm:p-3 bg-pink-100 rounded-2xl shadow-sm">
-              <FaComments className="text-pink-500 text-lg sm:text-xl" />
+            <div className={`p-2 sm:p-3 rounded-2xl shadow-sm ${theme === 'dark' ? 'bg-blue-900/50' : 'bg-blue-100'}`}>
+              <FaComments className="text-blue-500 text-lg sm:text-xl" />
             </div>
             <div>
               <h2 className={`text-xl sm:text-2xl font-bold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'}`}>Conversations</h2>
@@ -251,7 +251,7 @@ export default function ChatPage() {
               </p>
               <button
                 onClick={() => navigate("/nearby")}
-                className="bg-pink-500 hover:bg-pink-600 text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-full font-semibold shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
+                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-full font-semibold shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
               >
                 <FaSearch className="inline mr-2" />
                 Discover people
@@ -271,7 +271,7 @@ export default function ChatPage() {
                       flex items-center space-x-4 p-4 rounded-2xl cursor-pointer transition-all duration-300
                       ${
                         match.matchId === matchId
-                          ? "bg-pink-50 border-2 border-pink-200 text-gray-800 shadow-md"
+                          ? (theme === 'dark' ? "bg-blue-900/30 border-2 border-blue-500 text-gray-100 shadow-md" : "bg-blue-50 border-2 border-blue-200 text-gray-800 shadow-md")
                           : theme === 'dark' ? "bg-slate-700 hover:bg-slate-600 shadow-sm hover:shadow-md" : "bg-white hover:bg-gray-50 shadow-sm hover:shadow-md"
                       }
                     `}
@@ -306,8 +306,8 @@ export default function ChatPage() {
                         className={`w-14 h-14 rounded-full object-cover border-3 transition-all
                           ${
                             match.matchId === matchId
-                              ? "border-white shadow-lg"
-                              : "border-pink-200 group-hover:border-pink-300"
+                              ? "border-blue-400 shadow-lg"
+                              : (theme === 'dark' ? "border-slate-600 group-hover:border-slate-500" : "border-blue-200 group-hover:border-blue-300")
                           }`}
                       />
                       {/* Dacă există mesaj unread pentru acest match */}
@@ -330,8 +330,8 @@ export default function ChatPage() {
                         className={`text-lg font-semibold truncate
                         ${
                           match.matchId === matchId
-                            ? "text-pink-700"
-                            : "text-gray-800"
+                            ? (theme === 'dark' ? "text-blue-400" : "text-blue-700")
+                            : (theme === 'dark' ? "text-gray-100" : "text-gray-800")
                         }
                       `}
                       >
@@ -341,8 +341,8 @@ export default function ChatPage() {
                         className={`text-sm truncate
                         ${
                           match.matchId === matchId
-                            ? "text-pink-600"
-                            : "text-gray-600"
+                            ? (theme === 'dark' ? "text-blue-300" : "text-blue-600")
+                            : (theme === 'dark' ? "text-gray-400" : "text-gray-600")
                         }
                       `}
                       >
@@ -354,8 +354,8 @@ export default function ChatPage() {
                           className={`mt-1 text-sm italic truncate
                           ${
                             match.matchId === matchId
-                              ? "text-pink-500"
-                              : "text-pink-600"
+                              ? (theme === 'dark' ? "text-yellow-400" : "text-blue-500")
+                              : (theme === 'dark' ? "text-yellow-500" : "text-blue-600")
                           }
                         `}
                         >
@@ -371,7 +371,7 @@ export default function ChatPage() {
                         animate={{ scale: 1 }}
                         className="flex-shrink-0"
                       >
-                        <FaHeart className="text-pink-500 text-lg" />
+                        <FaHeart className="text-blue-500 text-lg" />
                       </motion.div>
                     )}
                   </motion.div>
@@ -395,8 +395,8 @@ export default function ChatPage() {
             className={`flex-1 flex flex-col items-center justify-center px-4 ${theme === 'dark' ? 'bg-slate-900' : 'bg-gray-50'}`}
           >
             <div className="text-center max-w-md mx-auto p-4 sm:p-8">
-              <div className="p-4 sm:p-6 bg-pink-100 rounded-full w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 flex items-center justify-center shadow-sm">
-                <FaComments className="text-pink-500 text-xl sm:text-2xl" />
+              <div className={`p-4 sm:p-6 rounded-full w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 flex items-center justify-center shadow-sm ${theme === 'dark' ? 'bg-blue-900/50' : 'bg-blue-100'}`}>
+                <FaComments className="text-blue-500 text-xl sm:text-2xl" />
               </div>
               <h3 className={`text-xl sm:text-2xl font-bold ${theme === 'dark' ? 'text-gray-100' : 'text-gray-800'} mb-2 sm:mb-3`}>
                 Selectează o conversație
@@ -410,9 +410,9 @@ export default function ChatPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5 }}
-                  className={`mt-6 p-4 ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-pink-200'} rounded-xl shadow-lg border`}
+                  className={`mt-6 p-4 ${theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-blue-200'} rounded-xl shadow-lg border`}
                 >
-                  <div className="flex items-center justify-center space-x-2 text-pink-600">
+                  <div className={`flex items-center justify-center space-x-2 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`}>
                     <FaUsers className="text-lg" />
                     <span className="font-semibold">
                       {matches.length}{" "}

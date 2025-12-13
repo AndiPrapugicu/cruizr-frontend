@@ -1305,15 +1305,15 @@ export default function Nearby() {
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 z-20"
+              className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 z-20 lg:max-w-[600px] lg:mx-auto"
             >
-              <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-6">
-                <FaHeart className="text-3xl text-gray-400" />
+              <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-6 ${theme === 'dark' ? 'bg-slate-700' : 'bg-gray-200'}`}>
+                <FaHeart className={`text-3xl ${theme === 'dark' ? 'text-slate-400' : 'text-gray-400'}`} />
               </div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">
+              <h3 className={`text-2xl font-bold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
                 No more people
               </h3>
-              <p className="text-gray-600 mb-6">
+              <p className={`mb-6 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                 You've seen everyone in your area. Come back later for new
                 profiles!
               </p>
